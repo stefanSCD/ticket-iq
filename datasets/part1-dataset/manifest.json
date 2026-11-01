@@ -1,0 +1,40 @@
+{
+  "name": "TicketIQ synthetic dataset",
+  "version": "1.0",
+  "generated": "2026-10-28",
+  "synthetic": true,
+  "stats": {
+    "projects": 5,
+    "document_files": 285,
+    "documentation_words": 67286,
+    "tickets": 500,
+    "decision_annotations": 900,
+    "ticket_level_sft_examples": 500,
+    "retrieval_chunks": 1990,
+    "ticket_classes": {
+      "resolved": 150,
+      "unresolved": 150,
+      "partially_resolved": 100,
+      "already_clear": 50,
+      "conflicting": 50
+    },
+    "decision_classes": {
+      "resolved": 550,
+      "unresolved": 200,
+      "partially_resolved": 100,
+      "conflicting": 50
+    },
+    "splits": {
+      "train": 300,
+      "validation": 100,
+      "test": 100
+    }
+  },
+  "project_splits": {
+    "shopflow": "train",
+    "ledgercloud": "train",
+    "parcelroute": "train",
+    "carequeue": "validation",
+    "learnspace": "test"
+  }
+}

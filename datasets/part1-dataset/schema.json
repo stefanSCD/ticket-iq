@@ -1,0 +1,24 @@
+{
+  "ticket": {
+    "ticket_id": "string",
+    "project_id": "string",
+    "feature_id": "string",
+    "story": "string",
+    "acceptance_criteria": "string[]",
+    "ground_truth_ticket_class": "resolved|unresolved|partially_resolved|already_clear|conflicting",
+    "annotation_ids": "string[]"
+  },
+  "annotation": {
+    "annotation_id": "string",
+    "ticket_id": "string",
+    "question": "string",
+    "status": "resolved|unresolved|partially_resolved|conflicting",
+    "evidence": "{doc_id,quote}[]",
+    "should_ask": "boolean",
+    "suggested_clarification": "string|null"
+  },
+  "sft": {
+    "input": "object{instruction,ticket,evidence}",
+    "output": "object{decisions,no_questions_needed}"
+  }
+}
