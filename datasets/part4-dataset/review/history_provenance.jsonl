@@ -1,0 +1,40 @@
+{"original_request_style": "underspecified", "source_ids": ["TN-CAT-BR-01", "TN-CAT-FAQ-02"], "ticket_id": "TN-001"}
+{"original_request_style": "explicit", "source_ids": ["TN-CAT-WF-02", "TN-CAT-API-04"], "ticket_id": "TN-002"}
+{"original_request_style": "underspecified", "source_ids": ["TN-RSV-WF-03"], "ticket_id": "TN-003"}
+{"original_request_style": "explicit", "source_ids": ["TN-RSV-BR-04"], "ticket_id": "TN-004"}
+{"original_request_style": "underspecified", "source_ids": ["TN-TRN-WF-01", "TN-TRN-BR-05"], "ticket_id": "TN-005"}
+{"original_request_style": "explicit", "source_ids": ["TN-TRN-BR-04", "TN-TRN-ADR-03"], "ticket_id": "TN-006"}
+{"original_request_style": "underspecified", "source_ids": ["TN-APR-WF-03", "TN-APR-ADR-01"], "ticket_id": "TN-007"}
+{"original_request_style": "explicit", "source_ids": ["TN-APR-BR-03", "TN-APR-ADR-02"], "ticket_id": "TN-008"}
+{"original_request_style": "underspecified", "source_ids": ["TN-OUT-ADR-01"], "ticket_id": "TN-009"}
+{"original_request_style": "explicit", "source_ids": ["TN-OUT-WF-01", "TN-OUT-WF-02"], "ticket_id": "TN-010"}
+{"original_request_style": "underspecified", "source_ids": ["TN-RET-BR-01", "TN-RET-BR-02", "TN-RET-WF-01"], "ticket_id": "TN-011"}
+{"original_request_style": "explicit", "source_ids": ["TN-RET-BR-03", "TN-RET-WF-02", "TN-RET-API-04"], "ticket_id": "TN-012"}
+{"original_request_style": "underspecified", "source_ids": ["TN-EXT-WF-02"], "ticket_id": "TN-013"}
+{"original_request_style": "explicit", "source_ids": ["TN-EXT-BR-02", "TN-EXT-ADR-02"], "ticket_id": "TN-014"}
+{"original_request_style": "underspecified", "source_ids": ["TN-CAN-WF-03", "TN-CAN-ADR-01", "TN-CAN-ADR-03"], "ticket_id": "TN-015"}
+{"original_request_style": "explicit", "source_ids": ["TN-CAN-BR-04", "TN-CAN-WF-02"], "ticket_id": "TN-016"}
+{"original_request_style": "underspecified", "source_ids": ["TN-WAI-BR-04", "TN-WAI-API-01"], "ticket_id": "TN-017"}
+{"original_request_style": "explicit", "source_ids": ["TN-WAI-BR-03", "TN-WAI-API-04"], "ticket_id": "TN-018"}
+{"original_request_style": "underspecified", "source_ids": ["TN-NOS-API-01", "TN-NOS-WF-01"], "ticket_id": "TN-019"}
+{"original_request_style": "explicit", "source_ids": ["TN-NOS-ADR-03", "TN-NOS-FAQ-02"], "ticket_id": "TN-020"}
+{"original_request_style": "underspecified", "source_ids": ["TN-OVD-API-02", "TN-OVD-ADR-01"], "ticket_id": "TN-021"}
+{"original_request_style": "explicit", "source_ids": ["TN-OVD-API-03", "TN-OVD-ADR-02"], "ticket_id": "TN-022"}
+{"original_request_style": "underspecified", "source_ids": ["TN-DAM-BR-01", "TN-DAM-API-01"], "ticket_id": "TN-023"}
+{"original_request_style": "explicit", "source_ids": ["TN-DAM-BR-04", "TN-DAM-API-03"], "ticket_id": "TN-024"}
+{"original_request_style": "underspecified", "source_ids": ["TN-MNT-WF-03", "TN-MNT-BR-01"], "ticket_id": "TN-025"}
+{"original_request_style": "explicit", "source_ids": ["TN-MNT-API-02", "TN-MNT-API-03"], "ticket_id": "TN-026"}
+{"original_request_style": "underspecified", "source_ids": ["TN-XFR-ADR-02", "TN-XFR-ADR-03"], "ticket_id": "TN-027"}
+{"original_request_style": "explicit", "source_ids": ["TN-XFR-BR-01", "TN-XFR-API-02"], "ticket_id": "TN-028"}
+{"original_request_style": "underspecified", "source_ids": ["TN-KIT-BR-01", "TN-KIT-ADR-03"], "ticket_id": "TN-029"}
+{"original_request_style": "explicit", "source_ids": ["TN-KIT-WF-02", "TN-KIT-API-04"], "ticket_id": "TN-030"}
+{"original_request_style": "underspecified", "source_ids": ["TN-NTF-WF-03", "TN-NTF-ADR-01"], "ticket_id": "TN-031"}
+{"original_request_style": "explicit", "source_ids": ["TN-NTF-ADR-03", "TN-NTF-API-02"], "ticket_id": "TN-032"}
+{"original_request_style": "underspecified", "source_ids": ["TN-SEC-WF-01", "TN-SEC-WF-02"], "ticket_id": "TN-033"}
+{"original_request_style": "explicit", "source_ids": ["TN-SEC-API-02"], "ticket_id": "TN-034"}
+{"original_request_style": "underspecified", "source_ids": ["TN-AUD-WF-02", "TN-AUD-API-02", "TN-AUD-ADR-01"], "ticket_id": "TN-035"}
+{"original_request_style": "explicit", "source_ids": ["TN-AUD-API-04"], "ticket_id": "TN-036"}
+{"original_request_style": "underspecified", "source_ids": ["TN-INT-ADR-02"], "ticket_id": "TN-037"}
+{"original_request_style": "explicit", "source_ids": ["TN-INT-API-04"], "ticket_id": "TN-038"}
+{"original_request_style": "underspecified", "source_ids": ["TN-RPT-WF-03", "TN-RPT-ADR-03"], "ticket_id": "TN-039"}
+{"original_request_style": "explicit", "source_ids": ["TN-RPT-WF-02", "TN-RPT-API-02"], "ticket_id": "TN-040"}

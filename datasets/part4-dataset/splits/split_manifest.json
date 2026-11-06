@@ -1,0 +1,65 @@
+{
+  "areas": {
+    "test": [
+      "RET",
+      "OVD",
+      "AUD",
+      "RPT"
+    ],
+    "train": [
+      "CAT",
+      "RSV",
+      "APR",
+      "EXT",
+      "CAN",
+      "WAI",
+      "DAM",
+      "MNT",
+      "KIT",
+      "XFR"
+    ],
+    "validation": [
+      "TRN",
+      "OUT",
+      "NOS",
+      "SEC",
+      "INT",
+      "NTF"
+    ]
+  },
+  "counts": {
+    "test": {
+      "categories": {
+        "already_clear": 4,
+        "conflicting_documentation": 4,
+        "partially_resolved": 8,
+        "resolved_by_documentation": 12,
+        "unresolved": 12
+      },
+      "tickets": 40
+    },
+    "train": {
+      "categories": {
+        "already_clear": 10,
+        "conflicting_documentation": 10,
+        "partially_resolved": 20,
+        "resolved_by_documentation": 30,
+        "unresolved": 30
+      },
+      "tickets": 100
+    },
+    "validation": {
+      "categories": {
+        "already_clear": 6,
+        "conflicting_documentation": 6,
+        "partially_resolved": 12,
+        "resolved_by_documentation": 18,
+        "unresolved": 18
+      },
+      "tickets": 60
+    }
+  },
+  "notes": "Train/validation/test are 100/60/40 target tickets, grouped by product area. Related booking, maintenance, and kit cases stay in train; checkout, identity, and integration cases stay in validation; return, overdue, audit, and reporting cases stay in test. Audit cases may cite shared incident-access source rules from the training documentation. All project docs and pre-cutoff completed history may be indexed at evaluation time. This is a within-project feature holdout, not an unseen-project benchmark.",
+  "seed": 41106,
+  "strategy": "within_project_feature_group_holdout"
+}

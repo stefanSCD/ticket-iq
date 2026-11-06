@@ -1,0 +1,163 @@
+{
+  "$defs": {
+    "evidence": {
+      "properties": {
+        "exact_quote": {
+          "type": "string"
+        },
+        "source_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_id",
+        "document_id",
+        "exact_quote",
+        "path",
+        "published_at"
+      ],
+      "type": "object"
+    },
+    "golden_answer": {
+      "properties": {
+        "category": {
+          "enum": [
+            "resolved_by_documentation",
+            "unresolved",
+            "partially_resolved",
+            "conflicting_documentation",
+            "already_clear"
+          ]
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/evidence"
+          },
+          "type": "array"
+        },
+        "expected_questions": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "should_ask_questions": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "ticket_id",
+        "category",
+        "difficulty_level",
+        "should_ask_questions",
+        "recommendation",
+        "expected_questions",
+        "evidence",
+        "conflict_sources"
+      ],
+      "type": "object"
+    },
+    "label": {
+      "properties": {
+        "category": {
+          "enum": [
+            "resolved_by_documentation",
+            "unresolved",
+            "partially_resolved",
+            "conflicting_documentation",
+            "already_clear"
+          ]
+        },
+        "difficulty_level": {
+          "enum": [
+            "L1",
+            "L2",
+            "L3"
+          ]
+        }
+      },
+      "required": [
+        "ticket_id",
+        "category",
+        "difficulty_level",
+        "area_id",
+        "split"
+      ],
+      "type": "object"
+    },
+    "target_ticket": {
+      "additionalProperties": false,
+      "properties": {
+        "assignee": {
+          "type": "string"
+        },
+        "component": {
+          "type": "string"
+        },
+        "created": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "fix_version": {
+          "type": "string"
+        },
+        "issue_type": {
+          "type": "string"
+        },
+        "labels": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "priority": {
+          "type": "string"
+        },
+        "project_id": {
+          "type": "string"
+        },
+        "reporter": {
+          "type": "string"
+        },
+        "snapshot_at": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "ticket_id": {
+          "type": "string"
+        },
+        "updated": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "ticket_id",
+        "project_id",
+        "issue_type",
+        "summary",
+        "description",
+        "component",
+        "priority",
+        "status",
+        "reporter",
+        "assignee",
+        "created",
+        "updated",
+        "snapshot_at",
+        "fix_version",
+        "labels"
+      ],
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Select the appropriate $defs entry for each JSONL artifact. This is a part-4 schema; no central schema migration is implied.",
+  "title": "ToolNest dataset record schemas"
+}
