@@ -2,12 +2,13 @@
 """Validate dataset integrity; this does not replace independent semantic review."""
 
 import csv
-import hashlib
 import json
 from collections import Counter
 from datetime import datetime
 from pathlib import Path
 from zipfile import ZipFile
+
+from dataset_integrity import OPTIONAL_ARCHIVES, content_hash, file_hash
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -260,32 +261,47 @@ def main():
                 check(json.loads(value) == record[key] if isinstance(record[key], (list, dict)) else value == record[key],
                       f'CSV content differs: {csv_path}/{record["ticket_id"]}/{key}')
 
-    for name in ['toolnest-docs.zip', 'toolnest-tickets.zip']:
-        with ZipFile(ROOT / name) as archive:
+    missing_archives = validate_packaging(ROOT, manifest)
+
+    print(json.dumps(dict(result='PASS', integrity_checks=CHECKS,
+                          documents=len(documents), source_passages=len(sources), targets=len(tickets),
+                          completed_history=len(history), retrieval_chunks=len(chunks),
+                          categories=dict(Counter(g['category'] for g in golden)),
+                          optional_archives_absent=missing_archives,
+                          semantic_review='Not independently human-reviewed; see methodology.md'), indent=2))
+
+
+def validate_packaging(root, manifest):
+    """Check loose files strictly; known convenience archives may be absent."""
+    missing_archives = []
+    for name in OPTIONAL_ARCHIVES:
+        if not (root / name).exists():
+            missing_archives.append(name)
+            continue
+        with ZipFile(root / name) as archive:
             check(archive.testzip() is None, f'Archive CRC failure: {name}')
             names = archive.namelist()
             check(len(names) == len(set(names)), f'Duplicate archive entry: {name}')
             for member in names:
-                path = ROOT / member
-                check(path.is_relative_to(ROOT) and '..' not in Path(member).parts, 'Unsafe archive path')
-                check(path.is_file() and path.read_bytes() == archive.read(member), f'Stale archive entry: {name}/{member}')
+                path = (root / member).resolve()
+                check(path.is_relative_to(root.resolve()) and '..' not in Path(member).parts, 'Unsafe archive path')
+                check(path.is_file() and file_hash(path) == content_hash(archive.read(member), path.suffix),
+                      f'Stale archive entry: {name}/{member}')
                 if name == 'toolnest-docs.zip':
                     check(member.startswith('docs/') or member == 'corpus/documents.jsonl', 'Answer key in documentation ZIP')
             if name == 'toolnest-tickets.zip':
                 check('tickets/tickets.jsonl' in names and 'review/golden_answers.jsonl' in names,
                       'Ticket archive lacks inputs or separated answers')
 
-    actual_files = {p.relative_to(ROOT).as_posix() for p in ROOT.rglob('*') if p.is_file()
+    actual_files = {p.relative_to(root).as_posix() for p in root.rglob('*') if p.is_file()
                     and p.name != 'manifest.json' and '__pycache__' not in p.parts and not p.name.startswith('.')}
-    check(actual_files == set(manifest['files']), 'Manifest file inventory differs; rebuild after edits')
+    check(manifest.get('hash_format') == 'sha256-text-lf-v1', 'Unsupported manifest hash format; rebuild after edits')
+    check(actual_files == set(manifest['files']) - set(missing_archives),
+          'Manifest file inventory differs; rebuild after edits')
     for name, expected_hash in manifest['files'].items():
-        check(hashlib.sha256((ROOT / name).read_bytes()).hexdigest() == expected_hash, f'Integrity hash mismatch: {name}')
-
-    print(json.dumps(dict(result='PASS', integrity_checks=CHECKS,
-                          documents=len(documents), source_passages=len(sources), targets=len(tickets),
-                          completed_history=len(history), retrieval_chunks=len(chunks),
-                          categories=dict(Counter(g['category'] for g in golden)),
-                          semantic_review='Not independently human-reviewed; see methodology.md'), indent=2))
+        if name not in missing_archives:
+            check(file_hash(root / name) == expected_hash, f'Integrity hash mismatch: {name}')
+    return missing_archives
 
 
 if __name__ == '__main__':

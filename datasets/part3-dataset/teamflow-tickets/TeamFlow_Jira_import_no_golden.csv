@@ -1,0 +1,201 @@
+﻿Issue Type,Summary,Description,Priority,Labels
+Story,Restrict task search to active workspace,TF-0001 — A user belongs to two companies and reports task names appearing across workspace boundaries. Correct the workspace search scope.,Medium,area-workspace;synthetic;teamflow
+Story,Workspace switching keyboard shortcut,TF-0002 — Product requests a shortcut to switch between workspaces without opening settings. The shortcut has not been chosen.,Medium,area-workspace;synthetic;teamflow
+Story,Show workspace switcher with last-used workspaces,TF-0003 — Add a quick switcher that preserves workspace isolation and lists recent workspaces.,Medium,area-workspace;synthetic;teamflow
+Story,Handle expired invitation links,TF-0004 — Users are accepting team invitations long after they were sent. Implement the documented expiry and rejection behavior.,Medium,area-accounts;synthetic;teamflow
+Story,Invitation reminders for pending members,TF-0005 — Introduce automatic reminder emails for invitations that have not been accepted. Reminder cadence has not been approved.,Medium,area-accounts;synthetic;teamflow
+Story,Add a resend invitation action,TF-0006 — Allow admins to resend outstanding invitations while preserving the existing acceptance rules.,Medium,area-accounts;synthetic;teamflow
+Story,Apply login lockout policy,TF-0007 — Implement protection against repeated invalid password attempts using the product security rules.,Medium,area-authentication;synthetic;teamflow
+Story,Optional passkey sign-in,TF-0008 — Add passkeys as an alternative to password login. The baseline does not define enrollment policy.,Medium,area-authentication;synthetic;teamflow
+Story,Display remaining session warning,TF-0009 — Warn authenticated users shortly before their session expires from inactivity.,Medium,area-authentication;synthetic;teamflow
+Story,Prevent removal of final workspace owner,TF-0010 — The workspace membership screen currently lets a sole owner remove their owner role. Apply the documented safeguard.,Medium,area-roles;synthetic;teamflow
+Story,Custom workspace roles,TF-0011 — Customers request configurable roles beyond the four built-in roles. No permission editor is specified.,Medium,area-roles;synthetic;teamflow
+Story,Introduce a role comparison view,TF-0012 — Display the capabilities of each documented workspace role in an admin-only comparison view.,Medium,area-roles;synthetic;teamflow
+Story,Reject edits to archived projects,TF-0013 — API clients are still changing tasks after the parent project was archived. Enforce the documented project lifecycle behavior.,Medium,area-projects;synthetic;teamflow
+Story,Project duplication wizard,TF-0014 — Allow a manager to duplicate an entire project configuration. The cloning scope is unspecified.,Medium,area-projects;synthetic;teamflow
+Story,Enable project activation wizard,TF-0015 — Guide a manager through activating a newly created draft project.,Medium,area-projects;synthetic;teamflow
+Story,Apply observer read-only access,TF-0016 — Observers can currently change task fields in a project. Match project permissions to the published access rules.,Medium,area-project-access;synthetic;teamflow
+Story,Project-specific temporary access,TF-0017 — Let an external reviewer access a project for a limited period. The baseline does not define the expiration rule for non-guest project roles.,Medium,area-project-access;synthetic;teamflow
+Story,Show project membership capacity,TF-0018 — Display active membership usage when a manager invites another team member.,Medium,area-project-access;synthetic;teamflow
+Story,Validate story acceptance criteria,TF-0019 — A STORY moves to READY without acceptance criteria. Apply required task-field validation.,Medium,area-task-fields;synthetic;teamflow
+Story,New task type SPIKE,TF-0020 — Product requests a SPIKE ticket type. Its behavior has not been specified.,Medium,area-task-fields;synthetic;teamflow
+Story,Create task form with type-specific hints,TF-0021 — Display explanatory hints for STORY and BUG creation while retaining existing validations.,Medium,area-task-fields;synthetic;teamflow
+Story,Reject unsupported task transitions,TF-0022 — The board lets a task jump straight from BACKLOG to DONE. Implement the authorized workflow graph.,Medium,area-task-states;synthetic;teamflow
+Story,Bulk approval of reviewed tasks,TF-0023 — Allow a manager to approve a group of IN_REVIEW tasks in one action. Partial-failure behavior is undefined.,Medium,area-task-states;synthetic;teamflow
+Story,Explain blocked Done action,"TF-0024 — When the user cannot finish a task, show the documented state-transition restriction.",Medium,area-task-states;synthetic;teamflow
+Story,Clear assignee after membership removal,TF-0025 — An assignee was removed from a project but open tasks still point to their user account. Apply the reassignment policy.,Medium,area-assignment;synthetic;teamflow
+Story,Multiple co-assignees per task,TF-0026 — Support multiple people being accountable for one task. The ownership semantics need a product decision.,Medium,area-assignment;synthetic;teamflow
+Story,Add claim-task action to board,TF-0027 — Allow contributors to claim unassigned tasks from a project board.,Medium,area-assignment;synthetic;teamflow
+Story,Restrict P0 priority assignment,TF-0028 — Non-managers are currently able to set P0-CRITICAL. Apply the documented priority permission.,Medium,area-priority;synthetic;teamflow
+Story,Automatic priority escalation,TF-0029 — Increase task priority when a due date gets close. Escalation thresholds are not documented.,Medium,area-priority;synthetic;teamflow
+Story,Display P0 impact guidance,TF-0030 — Add an inline help panel when a manager assigns critical priority.,Medium,area-priority;synthetic;teamflow
+Story,Reject cyclic blocking links,TF-0031 — A pair of teams created a circular BLOCKS chain that cannot be completed. Implement dependency cycle validation.,Medium,area-dependencies;synthetic;teamflow
+Story,Cross-workspace blocking dependencies,TF-0032 — Customers want to mark tasks in different workspaces as blocking each other. Authorization and visibility requirements are unspecified.,Medium,area-dependencies;synthetic;teamflow
+Story,Show dependency reason before Done,TF-0033 — Present blocking tasks before allowing a task to enter DONE.,Medium,area-dependencies;synthetic;teamflow
+Story,Allow editing task estimates before Done,TF-0034 — Users should be able to maintain time estimates on work in progress without rewriting logged actual hours.,Medium,area-estimates;synthetic;teamflow
+Story,Automatic estimate suggestions,TF-0035 — Suggest task estimates based on historical work. There is no approved estimation algorithm.,Medium,area-estimates;synthetic;teamflow
+Story,Add overdue badge for tasks,TF-0036 — Display overdue status on task cards using the documented time-zone rules.,Medium,area-estimates;synthetic;teamflow
+Story,Prevent completion with unfinished subtasks,TF-0037 — Parent tasks are being marked DONE while children remain open. Enforce the documented completion constraint.,Medium,area-subtasks;synthetic;teamflow
+Story,Recursive subtask trees,TF-0038 — Users request subtasks nested under other subtasks. The supported nesting depth is not decided for the new feature.,Medium,area-subtasks;synthetic;teamflow
+Story,Build parent task progress indicator,TF-0039 — Show completed versus unfinished child tasks on the parent task card.,Medium,area-subtasks;synthetic;teamflow
+Story,Enforce maximum task labels,TF-0040 — A task accepts unlimited project labels. Apply the published label cap.,Medium,area-labels;synthetic;teamflow
+Story,Label color palette,TF-0041 — Add user-configurable colors to labels. The baseline defines label names but no color behavior.,Medium,area-labels;synthetic;teamflow
+Story,Add custom-field editor,TF-0042 — Allow project managers to edit the definitions of supported custom fields.,Medium,area-labels;synthetic;teamflow
+Story,Implement comment edit permissions,TF-0043 — Allow authors to edit their own comments according to the normative business rule while retaining audit history.,Medium,area-comments;synthetic;teamflow
+Story,Reaction emojis on comments,TF-0044 — Add emoji reactions to task comments. The allowed reactions and counting rules are undefined.,Medium,area-comments;synthetic;teamflow
+Story,Notify mentioned users,"TF-0045 — When a user is mentioned in a comment, notify people who currently have access to that task.",Medium,area-comments;synthetic;teamflow
+Story,Quarantine uploaded attachments,TF-0046 — An attachment becomes downloadable before scanning finishes. Enforce the documented download gate.,Medium,area-attachments;synthetic;teamflow
+Story,Preview video attachments,TF-0047 — Product wants inline video previews in task files. Supported formats and size policy are unspecified.,Medium,area-attachments;synthetic;teamflow
+Story,Show attachment scan progress,TF-0048 — Display quarantine and scanning status in the file panel while observing upload policy.,Medium,area-attachments;synthetic;teamflow
+Story,Limit sprint duration,TF-0049 — Sprint managers are creating six-week iterations. Enforce documented start-end duration constraints.,Medium,area-sprint-creation;synthetic;teamflow
+Story,Recurring sprint templates,TF-0050 — Create new planned sprints automatically every few weeks. No recurrence rule exists.,Medium,area-sprint-creation;synthetic;teamflow
+Story,Show sprint capacity warning,TF-0051 — Warn managers when estimated work exceeds advisory sprint capacity.,Medium,area-sprint-creation;synthetic;teamflow
+Story,Return unfinished work to backlog,"TF-0052 — When a sprint completes, ensure unfinished tasks follow the documented rollover behavior.",Medium,area-sprint-completion;synthetic;teamflow
+Story,Reopen completed sprint,TF-0053 — Customers ask to reopen a completed sprint to change scope. New authorization and history rules are undefined.,Medium,area-sprint-completion;synthetic;teamflow
+Story,Add completed sprint summary screen,TF-0054 — Display historical commitment values after a manager completes a sprint.,Medium,area-sprint-completion;synthetic;teamflow
+Story,Require authorization to persist backlog order,TF-0055 — Contributors are saving their private drag order as the shared project backlog sequence. Enforce manager authorization.,Medium,area-backlog;synthetic;teamflow
+Story,Automatic backlog ranking,TF-0056 — Provide an AI-generated sort order for the backlog. No ranking criteria are specified.,Medium,area-backlog;synthetic;teamflow
+Story,Create manual backlog reorder UI,TF-0057 — Let managers change persistent backlog ordering in a drag-and-drop view.,Medium,area-backlog;synthetic;teamflow
+Story,Protect board counts by project permission,TF-0058 — Project board counts currently include work the viewer cannot access. Correct the visibility filter.,Medium,area-boards;synthetic;teamflow
+Story,Custom board columns,TF-0059 — Let managers create arbitrary columns in addition to state-based ones. The column mapping is not defined.,Medium,area-boards;synthetic;teamflow
+Story,Offer saved team board views,TF-0060 — Managers can publish project-wide saved views using supported filter fields.,Medium,area-boards;synthetic;teamflow
+Story,Enable in-app notifications for eligible users,TF-0061 — Task mentions and assignments need reliable in-app notifications with correct recipient access.,Medium,area-notifications;synthetic;teamflow
+Story,Daily digest email,TF-0062 — Add a daily digest of task changes. Neither delivery time nor contents are approved.,Medium,area-notifications;synthetic;teamflow
+Story,Allow mention-email preference toggle,TF-0063 — Add a settings control for email alerts on mentions while preserving the normative default.,Medium,area-notifications;synthetic;teamflow
+Story,Write audit records for assignee changes,"TF-0064 — When a task changes owner, keep the required activity history with actor and subject details.",Medium,area-audit;synthetic;teamflow
+Story,Audit-log export for contributors,TF-0065 — Allow contributors to export their workspace-wide audit history. Access scope is not specified.,Medium,area-audit;synthetic;teamflow
+Story,Show task activity tab,TF-0066 — Let authorized contributors read the activity history on tasks they can access.,Medium,area-audit;synthetic;teamflow
+Story,Prevent unauthorized matches in task search,TF-0067 — Search results leak task titles from restricted projects. Enforce current membership filtering.,Medium,area-search;synthetic;teamflow
+Story,Semantic search ranking,TF-0068 — Introduce semantic task search across textual content. There is no approved embedding or relevance policy.,Medium,area-search;synthetic;teamflow
+Story,Add advanced task filter panel,"TF-0069 — Allow search by supported facets including project, state and assignee.",Medium,area-search;synthetic;teamflow
+Story,Compute cycle time from workflow events,TF-0070 — The cycle-time dashboard currently starts counting at task creation rather than work start. Apply the documented metric.,Medium,area-reports;synthetic;teamflow
+Story,Predictive sprint completion chart,TF-0071 — Show projected sprint completion based on prior velocities. The prediction method is undefined.,Medium,area-reports;synthetic;teamflow
+Story,Show report freshness indicator,TF-0072 — Display as_of alongside derived project reports to clarify freshness.,Medium,area-reports;synthetic;teamflow
+Story,Validate worklog duration,TF-0073 — An entry permits negative time or more than a full day. Apply the defined worklog range.,Medium,area-time-tracking;synthetic;teamflow
+Story,Automatic time tracking,TF-0074 — Start and stop effort timers from task cards. Pause and idle-time rules are not described.,Medium,area-time-tracking;synthetic;teamflow
+Story,Add worklog correction flow,TF-0075 — Allow later corrections with the existing manager reason requirement.,Medium,area-time-tracking;synthetic;teamflow
+Story,Prevent incomplete milestones from showing complete,TF-0076 — A milestone is marked complete while linked work is still open. Apply the documented completion rule.,Medium,area-releases;synthetic;teamflow
+Story,Release approval gate,TF-0077 — Require approvals before a release can be published. Reviewer roles are not defined.,Medium,area-releases;synthetic;teamflow
+Story,Add release snapshot details,TF-0078 — Display the task list captured at the time a release was published.,Medium,area-releases;synthetic;teamflow
+Story,Reject guest edits,TF-0079 — External guests can edit project tasks through the API. Enforce read-only guest policy.,Medium,area-guests;synthetic;teamflow
+Story,Public project share link,TF-0080 — Create shareable public project links that do not require accounts. Visibility and expiration are unspecified.,Medium,area-guests;synthetic;teamflow
+Story,Show guest access expiry,TF-0081 — Display the configured expiry date on the guest membership panel.,Medium,area-guests;synthetic;teamflow
+Story,Keep existing tasks unchanged after template edits,TF-0082 — A manager updates a task template and existing generated tasks are unexpectedly modified. Enforce non-retroactive behavior.,Medium,area-templates;synthetic;teamflow
+Story,Template gallery across workspaces,TF-0083 — Allow users to publish templates usable by all company workspaces. Sharing permissions are not defined.,Medium,area-templates;synthetic;teamflow
+Story,Support task creation from a template,TF-0084 — Instantiate templates with new stable task keys and enforce required custom fields.,Medium,area-templates;synthetic;teamflow
+Story,Expire project export links,TF-0085 — Project export downloads remain accessible indefinitely. Implement the published link expiration rule.,Medium,area-archive;synthetic;teamflow
+Story,Scheduled project exports,TF-0086 — Product requests automatic recurring project exports. The retention and delivery destination are undefined.,Medium,area-archive;synthetic;teamflow
+Story,Add project restoration confirmation,TF-0087 — Support restoring a recently archived project under the documented administrator rules.,Medium,area-archive;synthetic;teamflow
+Story,Sign outgoing webhook events,TF-0088 — Outgoing webhook requests need verifiable signatures and stable event IDs as documented.,Medium,area-webhooks;synthetic;teamflow
+Story,Webhook delivery to multiple URLs,TF-0089 — Allow several endpoints for one webhook subscription. Ordering semantics are undefined.,Medium,area-webhooks;synthetic;teamflow
+Story,Display webhook attempt history,TF-0090 — Show recent failed delivery status and scheduled retry details for admins.,Medium,area-webhooks;synthetic;teamflow
+Story,Revoke sessions after account deactivation,TF-0091 — A deactivated user can still perform actions with a previously issued token. Apply deactivation semantics.,Medium,area-retention;synthetic;teamflow
+Story,Per-project retention policies,TF-0092 — Let projects configure their own audit retention period. Allowed minimums and maximums are unspecified.,Medium,area-retention;synthetic;teamflow
+Story,Show deletion job status,TF-0093 — Display a safe progress and final status for a workspace deletion request.,Medium,area-retention;synthetic;teamflow
+Story,Reject client-supplied role escalation,TF-0094 — A modified browser request can submit an OWNER role in its payload. Enforce trusted server-side authorization.,Medium,area-security;synthetic;teamflow
+Story,Two-person approval for exports,TF-0095 — Require a second administrator to approve sensitive exports. Approval rules are not documented.,Medium,area-security;synthetic;teamflow
+Story,Display security rate-limit guidance,TF-0096 — Show actionable retry guidance when an API operation is rate limited.,Medium,area-security;synthetic;teamflow
+Story,Reject partial imports on invalid mappings,TF-0097 — An import contains unmapped statuses yet creates some tasks. Implement all-or-nothing mandatory validation.,Medium,area-imports;synthetic;teamflow
+Story,Support spreadsheet formulas in imports,TF-0098 — Customers request calculated fields in imported spreadsheets. Formula evaluation and safety rules are undefined.,Medium,area-imports;synthetic;teamflow
+Story,Add import preview,TF-0099 — Display errors for invalid keys and unknown assignees before committing an import.,Medium,area-imports;synthetic;teamflow
+Story,Offer keyboard task operations,"TF-0100 — The workflow currently depends on drag-and-drop, preventing keyboard-only users from moving tasks.",Medium,area-accessibility;synthetic;teamflow
+Story,User-selected high-contrast themes,TF-0101 — Add three selectable high-contrast themes. The exact palette and persistence behavior are unspecified.,Medium,area-accessibility;synthetic;teamflow
+Story,Localize board status labels,TF-0102 — Translate UI text without altering stable API status codes.,Medium,area-accessibility;synthetic;teamflow
+Story,Enforce free-plan project quota,TF-0103 — A FREE workspace continues activating projects beyond its plan allowance. Apply published quota enforcement.,Medium,area-plans;synthetic;teamflow
+Story,Temporary quota grace period,TF-0104 — Let workspaces temporarily exceed paid-plan quotas during an upgrade. No grace duration is specified.,Medium,area-plans;synthetic;teamflow
+Story,Show subscription usage meter,TF-0105 — Display active projects and active members to owners and admins only.,Medium,area-plans;synthetic;teamflow
+Story,Keep workspace references after rename,TF-0106 — Renaming a workspace currently breaks links to existing task and sprint resources. Preserve the documented immutable resource identity.,Medium,area-workspace;synthetic;teamflow
+Story,Workspace avatar upload,TF-0107 — Allow a workspace owner to upload an organization avatar. No asset policy or dimensions are specified.,Medium,area-workspace;synthetic;teamflow
+Story,Prevent cancelled invite acceptance,TF-0108 — A cancelled workspace invitation is still accepted by an old link. Enforce the cancellation rule.,Medium,area-accounts;synthetic;teamflow
+Story,Batch resend of workspace invites,TF-0109 — Allow admins to resend all pending invitations at once. No throttling decision is documented.,Medium,area-accounts;synthetic;teamflow
+Story,Detect rotated refresh-token reuse,TF-0110 — A rotated refresh token can be reused without ending its session. Apply the session security policy.,Medium,area-authentication;synthetic;teamflow
+Story,Remember-me setting for shared devices,TF-0111 — Add a remember-me checkbox to login. The persistence policy is undefined.,Medium,area-authentication;synthetic;teamflow
+Story,Forbid guest workspace reports,TF-0112 — A GUEST can open workspace-wide analytics despite restricted role grants. Apply access restrictions.,Medium,area-roles;synthetic;teamflow
+Story,Workspace role request workflow,TF-0113 — Let members request promotion to ADMIN. The approval process is unspecified.,Medium,area-roles;synthetic;teamflow
+Story,Keep project key stable after first task,TF-0114 — Renaming a project key breaks existing task identifiers. Protect the published immutability constraint.,Medium,area-projects;synthetic;teamflow
+Story,Automatic project archive after inactivity,TF-0115 — Automatically archive long-inactive projects. The inactivity threshold is unspecified.,Medium,area-projects;synthetic;teamflow
+Story,Enforce project membership for contributor reads,TF-0116 — A workspace member accesses a project without explicit membership. Restrict project reads according to membership.,Medium,area-project-access;synthetic;teamflow
+Story,Project access requests,TF-0117 — Allow a user to request access when a project link is restricted. No approver workflow is defined.,Medium,area-project-access;synthetic;teamflow
+Story,Require reproduction information for bugs,TF-0118 — A BUG goes into the backlog with no reproduction details and no explanation. Implement the documented validation.,Medium,area-task-fields;synthetic;teamflow
+Story,Task title auto-generation,TF-0119 — Suggest a title from the task description during creation. The generation format is not specified.,Medium,area-task-fields;synthetic;teamflow
+Story,Require reason for reopening Done,TF-0120 — A manager reopens DONE work without a reason. Apply the documented reopen constraint.,Medium,area-task-states;synthetic;teamflow
+Story,Reopen approval for non-managers,TF-0121 — Introduce approval requests for contributors who want to reopen DONE tasks. The approver is unspecified.,Medium,area-task-states;synthetic;teamflow
+Story,Notify newly assigned contributor,"TF-0122 — After task reassignment, the new assignee should receive the documented in-app event.",Medium,area-assignment;synthetic;teamflow
+Story,Round-robin auto-assignment,TF-0123 — Automatically assign unassigned tasks to eligible contributors. No fairness rule is specified.,Medium,area-assignment;synthetic;teamflow
+Story,Keep priority change independent of sprint,TF-0124 — Changing task priority should not silently alter a task's sprint assignment or state.,Medium,area-priority;synthetic;teamflow
+Story,SLA timers for P0 bugs,TF-0125 — Show an escalation timer on critical bugs. The response target is not approved.,Medium,area-priority;synthetic;teamflow
+Story,Reject Done when blockers remain open,TF-0126 — A task with an unfinished incoming BLOCKS dependency is being completed. Apply its completion restriction.,Medium,area-dependencies;synthetic;teamflow
+Story,Dependency impact notifications,TF-0127 — Notify followers when an upstream blocking task changes. Notification recipients are undefined.,Medium,area-dependencies;synthetic;teamflow
+Story,Compute overdue using project timezone,TF-0128 — Task cards show overdue status based on the viewer's browser time zone. Apply project-local scheduling rules.,Medium,area-estimates;synthetic;teamflow
+Story,Automated estimate recalculation,TF-0129 — Recompute task estimates when subtasks are added. No aggregation rule is documented.,Medium,area-estimates;synthetic;teamflow
+Story,Enforce one subtask nesting level,TF-0130 — Users can create grandchildren under subtasks. Enforce the published hierarchy limit.,Medium,area-subtasks;synthetic;teamflow
+Story,Subtask creation from checklist,TF-0131 — Convert arbitrary checklist items into subtasks. Duplicate handling is unspecified.,Medium,area-subtasks;synthetic;teamflow
+Story,Limit custom-field definition changes to managers,TF-0132 — Contributors can change project-wide custom-field schemas. Enforce the manager permission rule.,Medium,area-labels;synthetic;teamflow
+Story,Cross-project label library,TF-0133 — Offer shared labels across all workspace projects. Ownership of label edits is undefined.,Medium,area-labels;synthetic;teamflow
+Story,Preserve comment edit audit trail,TF-0134 — Editing a comment currently overwrites the old content without any version metadata. Apply audit requirements.,Medium,area-comments;synthetic;teamflow
+Story,Inline comment translation,TF-0135 — Translate task comments automatically on read. Language-choice behavior is unspecified.,Medium,area-comments;synthetic;teamflow
+Story,Enforce attachment size limit,TF-0136 — The file API accepts task attachments above the documented maximum. Reject oversized uploads.,Medium,area-attachments;synthetic;teamflow
+Story,Automatic image resizing,TF-0137 — Compress images attached to tasks to lower storage costs. Target dimensions are undefined.,Medium,area-attachments;synthetic;teamflow
+Story,Keep sprint capacity advisory,TF-0138 — Sprint scheduling currently blocks task assignment when estimated capacity is exceeded. Apply the advisory-only policy.,Medium,area-sprint-creation;synthetic;teamflow
+Story,Sprint calendar holiday rules,TF-0139 — Adjust sprint dates around holidays. The holiday calendar source is unspecified.,Medium,area-sprint-creation;synthetic;teamflow
+Story,Prevent parallel active sprints,TF-0140 — A project has more than one ACTIVE sprint. Enforce the documented one-active-sprint rule.,Medium,area-sprint-completion;synthetic;teamflow
+Story,Automated sprint close,TF-0141 — Automatically complete sprints at their end date. The execution policy is unspecified.,Medium,area-sprint-completion;synthetic;teamflow
+Story,Record active sprint scope changes,TF-0142 — A manager adds work during an active sprint but no scope-change event is recorded. Add the required audit event.,Medium,area-backlog;synthetic;teamflow
+Story,Backlog WIP limit,TF-0143 — Limit the number of ready tasks in a backlog. The threshold is missing.,Medium,area-backlog;synthetic;teamflow
+Story,Require transition validation for drag actions,TF-0144 — Dragging a card between board columns bypasses the task API transition checks. Enforce documented behavior.,Medium,area-boards;synthetic;teamflow
+Story,Swimlanes by dependency,TF-0145 — Add dependency-based swimlanes to the board. Grouping behavior has not been defined.,Medium,area-boards;synthetic;teamflow
+Story,Prevent inaccessible content in alerts,TF-0146 — A notification still contains confidential task text after a user's project access is revoked. Apply payload security policy.,Medium,area-notifications;synthetic;teamflow
+Story,Weekly sprint summary email,TF-0147 — Send a weekly summary to project teams. Its audience and schedule are undecided.,Medium,area-notifications;synthetic;teamflow
+Story,Keep audit history append-only,TF-0148 — The admin panel can rewrite previously recorded audit events. Restrict modifications as documented.,Medium,area-audit;synthetic;teamflow
+Story,Tamper-evidence audit report,TF-0149 — Introduce a signed audit log digest. Signing cadence is unspecified.,Medium,area-audit;synthetic;teamflow
+Story,Apply phrase matching semantics,TF-0150 — Quoted search terms are matching nonadjacent words. Enforce documented contiguous phrase behavior.,Medium,area-search;synthetic;teamflow
+Story,Saved search alerts,TF-0151 — Notify users when new tasks match a saved search. Delivery frequency is undefined.,Medium,area-search;synthetic;teamflow
+Story,Include as_of in report payload,TF-0152 — Reports lack a way to tell users when metrics were computed. Include documented freshness metadata.,Medium,area-reports;synthetic;teamflow
+Story,Team performance score,TF-0153 — Create a performance score combining cycle time and throughput. No formula is approved.,Medium,area-reports;synthetic;teamflow
+Story,Restrict worklog late edits,TF-0154 — A contributor edits an old worklog without manager correction authority. Enforce the author edit window.,Medium,area-time-tracking;synthetic;teamflow
+Story,Billable time flag,TF-0155 — Support billable versus nonbillable worklogs. The default is undefined.,Medium,area-time-tracking;synthetic;teamflow
+Story,Visualize sprint overlap in planning calendar,"TF-0156 — Display existing sprint dates with no overlaps as required by sprint creation rules, plus a warning when dates are being edited.",Medium,area-sprint-creation;synthetic;teamflow
+Story,Add audit export screen for admin,TF-0157 — Give authorized admins an audit history view with the documented security boundary.,Medium,area-audit;synthetic;teamflow
+Story,Expose scoped search results in workspace header,TF-0158 — Add a global quick search that never reveals task titles the user cannot access.,Medium,area-search;synthetic;teamflow
+Story,Add a sprint dashboard landing page,TF-0159 — Show existing supported sprint metrics and a last-updated timestamp.,Medium,area-reports;synthetic;teamflow
+Story,Build notification settings onboarding,TF-0160 — Explain that in-app notifications exist for eligible events and let users configure their email preferences.,Medium,area-notifications;synthetic;teamflow
+Story,Resolve session inactivity expiry,TF-0161 — Authentication sessions are expiring at different inactivity thresholds in different clients. Implement one consistent threshold.,Medium,area-session-timeout;synthetic;teamflow
+Story,Align session-expiry banner with security policy,TF-0162 — The web app warning banner and server session controller use different inactivity limits. Align their behaviors.,Medium,area-session-timeout;synthetic;teamflow
+Story,Write acceptance tests for session expiry,TF-0163 — QA needs a single deterministic idle-session expiry test for the next release.,Medium,area-session-timeout;synthetic;teamflow
+Story,Document user-facing idle logout timing,TF-0164 — Support needs the official idle logout duration for the account help page.,Medium,area-session-timeout;synthetic;teamflow
+Story,Apply comment editing time window,TF-0165 — The comment edit action is enabled for different durations across the product specifications.,Medium,area-comment-edit-window;synthetic;teamflow
+Story,Correct edit-comment button state,TF-0166 — The button is visible in one client for an hour and in another for only half an hour.,Medium,area-comment-edit-window;synthetic;teamflow
+Story,Unify API validation for stale comment edits,TF-0167 — Comment update endpoints and help text disagree about how late an author may edit.,Medium,area-comment-edit-window;synthetic;teamflow
+Story,Finalize comment-edit acceptance tests,TF-0168 — QA has two contradictory documents for the allowed author edit interval.,Medium,area-comment-edit-window;synthetic;teamflow
+Story,Set default mention email preference,TF-0169 — Implement the initial value of the mention-email checkbox for newly registered accounts.,Medium,area-mention-email-default;synthetic;teamflow
+Story,Update notification onboarding copy,TF-0170 — The onboarding screen describes the mention-email default but normative rules and support answers disagree.,Medium,area-mention-email-default;synthetic;teamflow
+Story,Fix notification preference initialization,TF-0171 — The first-login preference record is initialized differently in the frontend and notification worker.,Medium,area-mention-email-default;synthetic;teamflow
+Story,Define mention email default tests,TF-0172 — QA requires the expected out-of-box mention-email behavior to be agreed.,Medium,area-mention-email-default;synthetic;teamflow
+Story,Enforce archived project restoration deadline,TF-0173 — Project restore eligibility is inconsistent between product rules and support FAQ.,Medium,area-project-restore-window;synthetic;teamflow
+Story,Configure archived project restore CTA,TF-0174 — The restore action disappears earlier in one client than described in the help center.,Medium,area-project-restore-window;synthetic;teamflow
+Story,Fix archive restoration API eligibility,TF-0175 — The API needs one accepted maximum age for restoration requests.,Medium,area-project-restore-window;synthetic;teamflow
+Story,Specify archive recovery help article,TF-0176 — Publish the official recovery window for archived projects.,Medium,area-project-restore-window;synthetic;teamflow
+Story,Choose task priority when creating from template,TF-0177 — A task template specifies P1-HIGH but template instantiation is documented as P2-NORMAL by default.,Medium,area-template-priority-default;synthetic;teamflow
+Story,Align template priority selector initial value,TF-0178 — The template creation flow and the task form disagree about the initial priority after selecting a template.,Medium,area-template-priority-default;synthetic;teamflow
+Story,Write template-based task priority tests,TF-0179 — QA must test a task generated from a template that includes a non-P2 priority.,Medium,area-template-priority-default;synthetic;teamflow
+Story,Resolve template default priority documentation,TF-0180 — Documentation describes two different default behaviors for tasks instantiated from templates.,Medium,area-template-priority-default;synthetic;teamflow
+Task,Change create-task button label,"TF-0181 — On the project task list, replace the exact button text ""New task"" with ""Create task"" in English. Keep click behavior, placement and permissions unchanged.",Medium,area-ui;synthetic;teamflow
+Task,Add explicit confirmation title to archive dialog,"TF-0182 — Change the title of the existing archive confirmation dialog to ""Archive project?"". Keep body text and buttons unchanged.",Medium,area-ui;synthetic;teamflow
+Task,Add aria-label to collapsed navigation,"TF-0183 — For the sidebar toggle icon button, add aria-label=""Expand navigation"" when collapsed and aria-label=""Collapse navigation"" when expanded. Do not alter layout.",Medium,area-accessibility;synthetic;teamflow
+Task,Rename sprint board empty-state message,"TF-0184 — When a sprint contains no tasks, display exactly ""No tasks in this sprint yet."" in the existing empty-state text component.",Medium,area-ui;synthetic;teamflow
+Task,Correct settings breadcrumb,"TF-0185 — On Account > Notifications, replace breadcrumb ""Alerts"" with ""Notifications"". Do not change URL routing.",Medium,area-settings;synthetic;teamflow
+Task,Fix comment placeholder text,"TF-0186 — In the task comment editor, change the placeholder to ""Write a comment..."". Preserve submission behavior and validation.",Medium,area-comments;synthetic;teamflow
+Task,Make project key readonly after task creation,"TF-0187 — For an existing project with at least one task, display the project key as read-only on the settings page. Show the helper text ""Project keys cannot be changed after task creation.""",Medium,area-projects;synthetic;teamflow
+Task,Show minutes unit next to effort input,"TF-0188 — On the worklog form, append a static ""minutes"" unit label to the existing duration input. Do not change data format.",Medium,area-time-tracking;synthetic;teamflow
+Task,Update overdue badge accessible text,"TF-0189 — For task cards marked overdue, set the accessible label to ""Task is overdue"" without changing badge logic.",Medium,area-ui;synthetic;teamflow
+Task,Fix export jobs page title,"TF-0190 — Change the export jobs page heading from ""Downloads"" to ""Project exports"" for all supported locales using the existing localization key.",Medium,area-ui;synthetic;teamflow
+Task,Change webhook delivery history empty message,"TF-0191 — When there are no webhook delivery attempts, display ""No delivery attempts recorded."" in the history panel.",Medium,area-webhooks;synthetic;teamflow
+Task,Add search clear button tooltip,"TF-0192 — Set the search input clear-button tooltip to ""Clear search"". Clicking it must continue to empty the current query.",Medium,area-search;synthetic;teamflow
+Task,Replace expired-session toast text,"TF-0193 — When the session is already invalid and a login screen is shown, display the toast ""Your session has expired. Please sign in again."" Do not change timeout logic.",Medium,area-authentication;synthetic;teamflow
+Task,Correct archived task icon title,"TF-0194 — In task detail, change the archived status icon title attribute to ""Archived task"". Preserve the current icon.",Medium,area-tasks;synthetic;teamflow
+Task,Change published-release status tooltip,"TF-0195 — On a release with state PUBLISHED, show tooltip ""This release has been published."" Do not add new actions.",Medium,area-releases;synthetic;teamflow
+Task,Fix filter reset button text,"TF-0196 — On the board filter menu, rename ""Remove filters"" to ""Reset filters"". Clicking it must continue to clear selected filters.",Medium,area-boards;synthetic;teamflow
+Task,Add read-only guest badge text,"TF-0197 — On a guest membership record, show the badge text ""Guest · Read-only"". Do not grant or remove permissions.",Medium,area-guests;synthetic;teamflow
+Task,Change import preview warning heading,"TF-0198 — In the import preview, rename the warnings subsection heading to ""Warnings (non-blocking)""; keep validation behavior unchanged.",Medium,area-imports;synthetic;teamflow
+Task,Fix report freshness label,"TF-0199 — On each report header, display ""Data as of"" before the existing as_of timestamp. Preserve the stored value and formatting.",Medium,area-reports;synthetic;teamflow
+Task,Improve scanning placeholder text,"TF-0200 — For an uploaded file pending antivirus scanning, replace current placeholder with ""Scanning attachment..."". Do not allow downloads until scanning finishes.",Medium,area-attachments;synthetic;teamflow

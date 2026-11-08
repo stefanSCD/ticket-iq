@@ -42,8 +42,8 @@ knowledge-registry.md         hidden answer key, never RAG content
 source/                       authored content AND answer keys, never RAG content
 scripts/                      reproducible builder and validator
 manifest.json, schema.json, methodology.md
-toolnest-docs.zip              convenience copy of source docs
-toolnest-tickets.zip           convenience copy of inputs, history, and SEPARATE keys
+toolnest-docs.zip              optional generated copy of source docs
+toolnest-tickets.zip           optional generated copy of inputs, history, and SEPARATE keys
 ```
 
 **Retrieval:** index `retrieval/chunks.jsonl` with `project_id=toolnest`. Do not also index loose Markdown or the archived copies. Enforce `available_at <= ticket.snapshot_at`. Only the 40 completed history tickets belong in the prebuilt corpus; the review targets do not. All recorded source publication and history completion dates precede every target snapshot. Historical outcomes do not override active release rules.
@@ -63,7 +63,7 @@ python3 scripts/build_dataset.py
 python3 scripts/validate_dataset.py
 ```
 
-Both scripts use only the Python standard library. Generation is deterministic, including archive timestamps. Edit `source/` and rebuild rather than editing generated copies. The validator checks counts, schemas, citations and exact quotes, temporal availability, split membership, question/category rules, input/key separation, archive boundaries, and file hashes.
+Both scripts use only the Python standard library. Generation is deterministic, including archive timestamps. Edit `source/` and rebuild rather than editing generated copies. The validator checks counts, schemas, citations and exact quotes, temporal availability, split membership, question/category rules, input/key separation, and file hashes. Archive copies are optional in the repository: the builder generates them, and the validator checks their boundaries and contents when present. Text hashes normalize CRLF to LF so Windows and Unix checkouts validate consistently; ZIP hashes remain byte-exact.
 
 ## Review before research use
 

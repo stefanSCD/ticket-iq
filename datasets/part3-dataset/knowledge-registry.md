@@ -1,8 +1,8 @@
 # TeamFlow — Knowledge Registry
 
 **Dataset:** TeamFlow fictional project, documentation corpus v1.0 (English).
-**Purpose:** An index of source knowledge usable for RAG and evidence citations when interpreting synthetic Jira tickets.
-**Canonical source:** `TeamFlow_Project_Documentation_100_pages.md` inside `teamflow-docs.zip`.
+**Purpose:** A review-only index of source references and intentionally conflicting requirements. Do not index this registry for retrieval or include it in agent input.
+**Canonical source:** [TeamFlow documentation](teamflow-docs/TeamFlow_Project_Documentation_100_pages.md), containing the 100 source sections used for retrieval.
 
 ## Source structure
 
@@ -137,9 +137,9 @@ These references express incompatible requirements in the v1.0 corpus. Do not si
 
 ## Ticket/knowledge linkage
 
-- Input-only tickets: `tickets.jsonl` (no golden information).
-- Golden labels: `ticket_labels.jsonl` (category + L1/L2/L3 difficulty).
-- Full expected answers with evidence: `golden_answers.jsonl` or `TeamFlow_200_tickets_with_golden.json`.
+- Input-only tickets: `teamflow-tickets/tickets.jsonl` (no golden information).
+- Golden labels: `teamflow-tickets/ticket_labels.jsonl` (category + L1/L2/L3 difficulty).
+- Full expected answers with evidence: `teamflow-tickets/golden_answers.jsonl` or `teamflow-tickets/TeamFlow_200_tickets_with_golden.json`.
 - Fields `evidence[].source_id` point to exact passage IDs in the Markdown documentation.
 - For `unresolved` tickets, an empty evidence list does not by itself prove that a requirement is absent: manually verify absence across the source corpus.
 - Keep the golden files outside the RAG prompt and evaluation input.
@@ -151,10 +151,10 @@ These references express incompatible requirements in the v1.0 corpus. Do not si
 - The 20 conflicting tickets reuse five underlying source conflicts in different scenarios; consider this when splitting train/validation/test.
 - Automatically generated and structurally checked; human semantic review is still required before using it as a trusted benchmark.
 
-## Files for GitHub part2-dataset
+## Files in part3-dataset
 
-- `knowledge-registry.md` — this registry.
-- `teamflow-docs.zip` — 100-page source documentation (Markdown, PDF, DOCX).
-- `teamflow-tickets.zip` — tickets, golden answers, Jira CSV, and review files.
+- `knowledge-registry.md` — this review-only registry.
+- `teamflow-docs/` — extracted documentation with 100 logical sections (Markdown, PDF, DOCX).
+- `teamflow-tickets/` — extracted tickets, golden answers, Jira CSV, and review files.
 
-**Compatibility note:** These are TeamFlow equivalents of the three files shown for another project. Their internal structure has not been verified against that colleague’s ZIPs or the team’s central schema.
+**Normalization:** The original files retain their source format. The shared converter, `scripts/normalize_datasets.py` at the repository root, exports TeamFlow alongside the other datasets into [the normalized collection](../normalized/README.md), with common fields and categories and separate agent inputs and reference answers.

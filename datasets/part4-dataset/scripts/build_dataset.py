@@ -2,7 +2,6 @@
 """Rebuild the fictional ToolNest dataset with Python's standard library only."""
 
 import csv
-import hashlib
 import importlib.util
 import json
 import random
@@ -10,6 +9,8 @@ from collections import Counter
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
+
+from dataset_integrity import file_hash
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -87,7 +88,7 @@ def load_source(name):
 def write_text(path, text):
     path = ROOT / path
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(text.rstrip() + '\n', encoding='utf-8')
+    path.write_text(text.rstrip() + '\n', encoding='utf-8', newline='\n')
 
 
 def write_json(path, value):
@@ -320,7 +321,8 @@ def main():
                             target_tickets=len(tickets), completed_history_tickets=len(history),
                             categories=dict(Counter(g['category'] for g in golden)),
                             retrieval_chunks=len(chunks)),
-                files={p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest() for p in files}))
+                hash_format='sha256-text-lf-v1',
+                files={p.relative_to(ROOT).as_posix(): file_hash(p) for p in files}))
     print(json.dumps(dict(documents=len(documents), target_tickets=len(tickets), history=len(history),
                           categories=dict(Counter(g['category'] for g in golden)),
                           splits={s: len(r['tickets']) for s, r in split_rows.items()}), indent=2))
@@ -433,8 +435,8 @@ knowledge-registry.md         hidden answer key, never RAG content
 source/                       authored content AND answer keys, never RAG content
 scripts/                      reproducible builder and validator
 manifest.json, schema.json, methodology.md
-toolnest-docs.zip              convenience copy of source docs
-toolnest-tickets.zip           convenience copy of inputs, history, and SEPARATE keys
+toolnest-docs.zip              optional generated copy of source docs
+toolnest-tickets.zip           optional generated copy of inputs, history, and SEPARATE keys
 ```
 
 **Retrieval:** index `retrieval/chunks.jsonl` with `project_id=toolnest`. Do not also index loose Markdown or the archived copies. Enforce `available_at <= ticket.snapshot_at`. Only the 40 completed history tickets belong in the prebuilt corpus; the review targets do not. All recorded source publication and history completion dates precede every target snapshot. Historical outcomes do not override active release rules.
@@ -454,7 +456,7 @@ python3 scripts/build_dataset.py
 python3 scripts/validate_dataset.py
 ```
 
-Both scripts use only the Python standard library. Generation is deterministic, including archive timestamps. Edit `source/` and rebuild rather than editing generated copies. The validator checks counts, schemas, citations and exact quotes, temporal availability, split membership, question/category rules, input/key separation, archive boundaries, and file hashes.
+Both scripts use only the Python standard library. Generation is deterministic, including archive timestamps. Edit `source/` and rebuild rather than editing generated copies. The validator checks counts, schemas, citations and exact quotes, temporal availability, split membership, question/category rules, input/key separation, and file hashes. Archive copies are optional in the repository: the builder generates them, and the validator checks their boundaries and contents when present. Text hashes normalize CRLF to LF so Windows and Unix checkouts validate consistently; ZIP hashes remain byte-exact.
 
 ## Review before research use
 
