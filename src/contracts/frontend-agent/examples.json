@@ -1,0 +1,2551 @@
+{
+  "description": "Fictional application API payloads. schema selects a definition in contract.schema.json. csrf-fixture-token is mock data, not a real credential. Refinement is one sequence; revision, revocation, unknown_outcome and reanalyze are alternate branches. Snapshot hashes inherit illustrative fixtures from sibling contracts.",
+  "examples": [
+    {
+      "name": "Authenticated bootstrap",
+      "scenario": "refinement",
+      "method": "GET",
+      "route": "/api/v1/bootstrap",
+      "schema": "BootstrapResponse",
+      "http_status": 200,
+      "payload": {
+        "ok": true,
+        "user": {
+          "user_id": "user-author-001",
+          "display_name": "Demo author"
+        },
+        "csrf_token": "csrf-fixture-token",
+        "projects": [
+          {
+            "project_ref": "project-toolnest-demo",
+            "label": "ToolNest"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Select a project and ticket",
+      "scenario": "refinement",
+      "method": "POST",
+      "route": "/api/v1/sessions",
+      "schema": "CreateSessionRequest",
+      "headers": {
+        "X-CSRF-Token": "csrf-fixture-token"
+      },
+      "payload": {
+        "contract_version": "1.0",
+        "command_id": "cmd-create-001",
+        "project_ref": "project-toolnest-demo",
+        "ticket_selector": "TN-123"
+      }
+    },
+    {
+      "name": "Session creation is accepted, not complete",
+      "scenario": "refinement",
+      "method": "POST",
+      "route": "/api/v1/sessions",
+      "schema": "CommandReceipt",
+      "http_status": 202,
+      "payload": {
+        "ok": true,
+        "command_id": "cmd-create-001",
+        "session_id": "session-001",
+        "accepted_version": 1,
+        "action": "create_session",
+        "replayed": false
+      }
+    },
+    {
+      "name": "Initial analysis snapshot",
+      "scenario": "refinement",
+      "method": "GET",
+      "route": "/api/v1/sessions/session-001",
+      "schema": "SessionResponse",
+      "http_status": 200,
+      "payload": {
+        "ok": true,
+        "session": {
+          "session_id": "session-001",
+          "version": 1,
+          "created_at": "2026-11-09T10:00:00Z",
+          "updated_at": "2026-11-09T10:00:00Z",
+          "project": {
+            "project_ref": "project-toolnest-demo",
+            "label": "ToolNest"
+          },
+          "ticket_selector": "TN-123",
+          "state": "analyzing",
+          "ticket": null,
+          "assessment": null,
+          "current_proposal_id": null,
+          "save": null,
+          "actions": {
+            "can_send_message": false,
+            "can_request_revision": false,
+            "can_approve": false,
+            "can_revoke": false,
+            "can_reanalyze": false
+          },
+          "last_error": null,
+          "last_event_sequence": 1,
+          "last_message_sequence": 0
+        }
+      }
+    },
+    {
+      "name": "Poll durable progress events",
+      "scenario": "refinement",
+      "method": "GET",
+      "route": "/api/v1/sessions/session-001/events?after=1&limit=100",
+      "schema": "EventPage",
+      "http_status": 200,
+      "payload": {
+        "ok": true,
+        "session_id": "session-001",
+        "events": [
+          {
+            "sequence": 2,
+            "session_id": "session-001",
+            "session_version": 2,
+            "occurred_at": "2026-11-09T10:01:00Z",
+            "type": "message.created",
+            "resource_id": "message-question-001"
+          },
+          {
+            "sequence": 3,
+            "session_id": "session-001",
+            "session_version": 2,
+            "occurred_at": "2026-11-09T10:01:00Z",
+            "type": "assessment.changed",
+            "resource_id": "session-001"
+          },
+          {
+            "sequence": 4,
+            "session_id": "session-001",
+            "session_version": 2,
+            "occurred_at": "2026-11-09T10:01:00Z",
+            "type": "session.changed",
+            "resource_id": "session-001"
+          }
+        ],
+        "next_after": 4,
+        "has_more": false
+      }
+    },
+    {
+      "name": "Question awaits the author",
+      "scenario": "refinement",
+      "method": "GET",
+      "route": "/api/v1/sessions/session-001",
+      "schema": "SessionResponse",
+      "http_status": 200,
+      "payload": {
+        "ok": true,
+        "session": {
+          "session_id": "session-001",
+          "version": 2,
+          "created_at": "2026-11-09T10:00:00Z",
+          "updated_at": "2026-11-09T10:01:00Z",
+          "project": {
+            "project_ref": "project-toolnest-demo",
+            "label": "ToolNest"
+          },
+          "ticket_selector": "TN-123",
+          "state": "awaiting_clarification",
+          "ticket": {
+            "ticket_id": "10001",
+            "key": "TN-123",
+            "title": "Allow reservation cancellation",
+            "description": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Add the ability to cancel a reservation."
+                    }
+                  ]
+                }
+              ]
+            },
+            "acceptance_criteria": null,
+            "acceptance_criteria_state": "available",
+            "status": {
+              "id": "10000",
+              "name": "To Do"
+            },
+            "label": [
+              "reservations"
+            ],
+            "updated_at": "2026-11-05T10:00:00Z",
+            "version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "assessment": {
+            "verdict": "needs_clarification",
+            "summary": "Cancellation eligibility is documented; the notification decision is still open.",
+            "ticket_version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "questions": [
+              {
+                "question_id": "question-001",
+                "text": "When a reservation is cancelled, should a notification be sent? If so, to whom and through which channel?",
+                "state": "open",
+                "answer_message_id": null,
+                "citation_ids": []
+              }
+            ],
+            "citation_ids": [
+              "citation-v1:3218d96d9c641973220551237c48b2deec98774d89067bff73f0edb52ffaeecf"
+            ],
+            "author_message_ids": [],
+            "blocking_reasons": [
+              "open_decision"
+            ]
+          },
+          "current_proposal_id": null,
+          "save": null,
+          "actions": {
+            "can_send_message": true,
+            "can_request_revision": false,
+            "can_approve": false,
+            "can_revoke": false,
+            "can_reanalyze": true
+          },
+          "last_error": null,
+          "last_event_sequence": 4,
+          "last_message_sequence": 1
+        }
+      }
+    },
+    {
+      "name": "Read the initial question",
+      "scenario": "refinement",
+      "method": "GET",
+      "route": "/api/v1/sessions/session-001/messages?after=0&limit=50",
+      "schema": "MessagePage",
+      "http_status": 200,
+      "payload": {
+        "ok": true,
+        "session_id": "session-001",
+        "messages": [
+          {
+            "message_id": "message-question-001",
+            "sequence": 1,
+            "role": "assistant",
+            "kind": "question",
+            "text": "When a reservation is cancelled, should a notification be sent? If so, to whom and through which channel?",
+            "question_id": "question-001",
+            "created_at": "2026-11-09T10:01:00Z"
+          }
+        ],
+        "next_after": 1,
+        "has_more": false
+      }
+    },
+    {
+      "name": "Answer the clarification without approving",
+      "scenario": "refinement",
+      "method": "POST",
+      "route": "/api/v1/sessions/session-001/messages",
+      "schema": "MessageRequest",
+      "headers": {
+        "X-CSRF-Token": "csrf-fixture-token"
+      },
+      "payload": {
+        "contract_version": "1.0",
+        "command_id": "cmd-answer-001",
+        "expected_session_version": 2,
+        "kind": "clarification_answer",
+        "question_id": "question-001",
+        "text": "Yes. Send an email to the person who made the reservation."
+      }
+    },
+    {
+      "name": "Clarification accepted for reassessment",
+      "scenario": "refinement",
+      "method": "POST",
+      "route": "/api/v1/sessions/session-001/messages",
+      "schema": "CommandReceipt",
+      "http_status": 202,
+      "payload": {
+        "ok": true,
+        "command_id": "cmd-answer-001",
+        "session_id": "session-001",
+        "accepted_version": 3,
+        "action": "send_message",
+        "replayed": false
+      }
+    },
+    {
+      "name": "Proposal ready for review",
+      "scenario": "refinement",
+      "method": "GET",
+      "route": "/api/v1/sessions/session-001",
+      "schema": "SessionResponse",
+      "http_status": 200,
+      "payload": {
+        "ok": true,
+        "session": {
+          "session_id": "session-001",
+          "version": 4,
+          "created_at": "2026-11-09T10:00:00Z",
+          "updated_at": "2026-11-09T10:03:00Z",
+          "project": {
+            "project_ref": "project-toolnest-demo",
+            "label": "ToolNest"
+          },
+          "ticket_selector": "TN-123",
+          "state": "proposal_ready",
+          "ticket": {
+            "ticket_id": "10001",
+            "key": "TN-123",
+            "title": "Allow reservation cancellation",
+            "description": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Add the ability to cancel a reservation."
+                    }
+                  ]
+                }
+              ]
+            },
+            "acceptance_criteria": null,
+            "acceptance_criteria_state": "available",
+            "status": {
+              "id": "10000",
+              "name": "To Do"
+            },
+            "label": [
+              "reservations"
+            ],
+            "updated_at": "2026-11-05T10:00:00Z",
+            "version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "assessment": {
+            "verdict": "ready",
+            "summary": "The proposal combines the documented cancellation rule with the author's email-notification decision.",
+            "ticket_version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "questions": [
+              {
+                "question_id": "question-001",
+                "text": "When a reservation is cancelled, should a notification be sent? If so, to whom and through which channel?",
+                "state": "answered",
+                "answer_message_id": "message-answer-001",
+                "citation_ids": []
+              }
+            ],
+            "citation_ids": [
+              "citation-v1:3218d96d9c641973220551237c48b2deec98774d89067bff73f0edb52ffaeecf"
+            ],
+            "author_message_ids": [
+              "message-answer-001"
+            ],
+            "blocking_reasons": []
+          },
+          "current_proposal_id": "proposal-001",
+          "save": null,
+          "actions": {
+            "can_send_message": true,
+            "can_request_revision": true,
+            "can_approve": true,
+            "can_revoke": false,
+            "can_reanalyze": true
+          },
+          "last_error": null,
+          "last_event_sequence": 10,
+          "last_message_sequence": 3
+        }
+      }
+    },
+    {
+      "name": "Load the exact immutable proposal",
+      "scenario": "refinement",
+      "method": "GET",
+      "route": "/api/v1/sessions/session-001/proposals/proposal-001",
+      "schema": "ProposalResponse",
+      "http_status": 200,
+      "payload": {
+        "ok": true,
+        "status": "current",
+        "proposal": {
+          "proposal_id": "proposal-001",
+          "created_at": "2026-11-09T10:03:00Z",
+          "ticket_version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "base": {
+            "title": "Allow reservation cancellation",
+            "description": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Add the ability to cancel a reservation."
+                    }
+                  ]
+                }
+              ]
+            },
+            "acceptance_criteria": null
+          },
+          "changes": {
+            "description": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Allow cancellation of reservations that have not yet been collected. After successful cancellation, email the person who made the reservation."
+                    }
+                  ]
+                }
+              ]
+            },
+            "acceptance_criteria": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "1. A reservation that has not been collected can be cancelled."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "2. A reservation that has already been collected cannot be cancelled."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "3. After a successful cancellation, email the person who made the reservation."
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "preview": {
+            "title": "Allow reservation cancellation",
+            "description": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Allow cancellation of reservations that have not yet been collected. After successful cancellation, email the person who made the reservation."
+                    }
+                  ]
+                }
+              ]
+            },
+            "acceptance_criteria": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "1. A reservation that has not been collected can be cancelled."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "2. A reservation that has already been collected cannot be cancelled."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "3. After a successful cancellation, email the person who made the reservation."
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "requirements": [
+            {
+              "requirement_id": "requirement-001",
+              "text": "Reservations that have not been collected can be cancelled.",
+              "affected_fields": [
+                "description",
+                "acceptance_criteria"
+              ],
+              "sources": [
+                {
+                  "kind": "citation",
+                  "citation_id": "citation-v1:3218d96d9c641973220551237c48b2deec98774d89067bff73f0edb52ffaeecf"
+                }
+              ]
+            },
+            {
+              "requirement_id": "requirement-002",
+              "text": "Reservations that have already been collected cannot be cancelled.",
+              "affected_fields": [
+                "description",
+                "acceptance_criteria"
+              ],
+              "sources": [
+                {
+                  "kind": "citation",
+                  "citation_id": "citation-v1:3218d96d9c641973220551237c48b2deec98774d89067bff73f0edb52ffaeecf"
+                }
+              ]
+            },
+            {
+              "requirement_id": "requirement-003",
+              "text": "After successful cancellation, email the person who made the reservation.",
+              "affected_fields": [
+                "description",
+                "acceptance_criteria"
+              ],
+              "sources": [
+                {
+                  "kind": "author_message",
+                  "message_id": "message-answer-001"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Inspect the cited rule",
+      "scenario": "refinement",
+      "method": "GET",
+      "route": "/api/v1/sessions/session-001/citations/citation-v1:3218d96d9c641973220551237c48b2deec98774d89067bff73f0edb52ffaeecf",
+      "schema": "CitationResponse",
+      "http_status": 200,
+      "payload": {
+        "ok": true,
+        "citation": {
+          "citation_id": "citation-v1:3218d96d9c641973220551237c48b2deec98774d89067bff73f0edb52ffaeecf",
+          "source": {
+            "scope": {
+              "corpus_id": "ticketiq-fixtures",
+              "dataset_id": "part4-dataset",
+              "project_id": "toolnest"
+            },
+            "kind": "document",
+            "doc_id": "EX-CANCEL-01",
+            "source_version": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "excerpt": "Only reservations that have not yet been collected can be cancelled.",
+          "span": {
+            "start": 28,
+            "end": 96
+          },
+          "metadata": {
+            "title": "Reservation cancellation",
+            "source_path": "part4-dataset/docs/EX-CANCEL-01.md",
+            "url": null,
+            "document_type": "business_rules",
+            "status": "active",
+            "availability": {
+              "known_available_at": "2026-11-01T09:00:00Z",
+              "complete": true
+            }
+          },
+          "index_revision": "fixtures-20261109-r1",
+          "temporal_filter": {
+            "mode": "strict",
+            "snapshot_at": "2026-11-06T12:00:00Z"
+          },
+          "temporal_status": "verified",
+          "retrieval_profile_id": "fixture-profile-v1"
+        }
+      }
+    },
+    {
+      "name": "Read new transcript entries after reconnect",
+      "scenario": "refinement",
+      "method": "GET",
+      "route": "/api/v1/sessions/session-001/messages?after=1&limit=50",
+      "schema": "MessagePage",
+      "http_status": 200,
+      "payload": {
+        "ok": true,
+        "session_id": "session-001",
+        "messages": [
+          {
+            "message_id": "message-answer-001",
+            "sequence": 2,
+            "role": "user",
+            "kind": "clarification_answer",
+            "text": "Yes. Send an email to the person who made the reservation.",
+            "question_id": "question-001",
+            "created_at": "2026-11-09T10:02:00Z"
+          },
+          {
+            "message_id": "message-proposal-001",
+            "sequence": 3,
+            "role": "assistant",
+            "kind": "proposal_notice",
+            "text": "Review the proposed description and acceptance criteria before approving the save.",
+            "question_id": null,
+            "created_at": "2026-11-09T10:03:00Z"
+          }
+        ],
+        "next_after": 3,
+        "has_more": false
+      }
+    },
+    {
+      "name": "Explicit Approve and save action",
+      "scenario": "refinement",
+      "method": "POST",
+      "route": "/api/v1/sessions/session-001/approvals",
+      "schema": "ApproveRequest",
+      "headers": {
+        "X-CSRF-Token": "csrf-fixture-token"
+      },
+      "payload": {
+        "contract_version": "1.0",
+        "command_id": "cmd-approve-001",
+        "expected_session_version": 4,
+        "proposal_id": "proposal-001"
+      }
+    },
+    {
+      "name": "Approval accepted and one save queued",
+      "scenario": "refinement",
+      "method": "POST",
+      "route": "/api/v1/sessions/session-001/approvals",
+      "schema": "CommandReceipt",
+      "http_status": 202,
+      "payload": {
+        "ok": true,
+        "command_id": "cmd-approve-001",
+        "session_id": "session-001",
+        "accepted_version": 5,
+        "action": "approve",
+        "replayed": false
+      }
+    },
+    {
+      "name": "Save queued before MCP reservation",
+      "scenario": "refinement",
+      "method": "GET",
+      "route": "/api/v1/sessions/session-001",
+      "schema": "SessionResponse",
+      "http_status": 200,
+      "payload": {
+        "ok": true,
+        "session": {
+          "session_id": "session-001",
+          "version": 5,
+          "created_at": "2026-11-09T10:00:00Z",
+          "updated_at": "2026-11-09T10:04:00Z",
+          "project": {
+            "project_ref": "project-toolnest-demo",
+            "label": "ToolNest"
+          },
+          "ticket_selector": "TN-123",
+          "state": "saving",
+          "ticket": {
+            "ticket_id": "10001",
+            "key": "TN-123",
+            "title": "Allow reservation cancellation",
+            "description": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Add the ability to cancel a reservation."
+                    }
+                  ]
+                }
+              ]
+            },
+            "acceptance_criteria": null,
+            "acceptance_criteria_state": "available",
+            "status": {
+              "id": "10000",
+              "name": "To Do"
+            },
+            "label": [
+              "reservations"
+            ],
+            "updated_at": "2026-11-05T10:00:00Z",
+            "version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "assessment": {
+            "verdict": "ready",
+            "summary": "The proposal combines the documented cancellation rule with the author's email-notification decision.",
+            "ticket_version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "questions": [
+              {
+                "question_id": "question-001",
+                "text": "When a reservation is cancelled, should a notification be sent? If so, to whom and through which channel?",
+                "state": "answered",
+                "answer_message_id": "message-answer-001",
+                "citation_ids": []
+              }
+            ],
+            "citation_ids": [
+              "citation-v1:3218d96d9c641973220551237c48b2deec98774d89067bff73f0edb52ffaeecf"
+            ],
+            "author_message_ids": [
+              "message-answer-001"
+            ],
+            "blocking_reasons": []
+          },
+          "current_proposal_id": "proposal-001",
+          "save": {
+            "approval_id": "approval-001",
+            "operation_id": "save-001",
+            "stage": "queued",
+            "expires_at": "2026-11-09T10:34:00Z",
+            "verified_update": null,
+            "error": null
+          },
+          "actions": {
+            "can_send_message": false,
+            "can_request_revision": false,
+            "can_approve": false,
+            "can_revoke": true,
+            "can_reanalyze": false
+          },
+          "last_error": null,
+          "last_event_sequence": 13,
+          "last_message_sequence": 3
+        }
+      }
+    },
+    {
+      "name": "Same approval command replay does not create another save",
+      "scenario": "refinement",
+      "method": "POST",
+      "route": "/api/v1/sessions/session-001/approvals",
+      "schema": "CommandReceipt",
+      "http_status": 202,
+      "payload": {
+        "ok": true,
+        "command_id": "cmd-approve-001",
+        "session_id": "session-001",
+        "accepted_version": 5,
+        "action": "approve",
+        "replayed": true
+      }
+    },
+    {
+      "name": "Jira saved but approval bookkeeping is pending",
+      "scenario": "refinement",
+      "method": "GET",
+      "route": "/api/v1/sessions/session-001",
+      "schema": "SessionResponse",
+      "http_status": 200,
+      "payload": {
+        "ok": true,
+        "session": {
+          "session_id": "session-001",
+          "version": 7,
+          "created_at": "2026-11-09T10:00:00Z",
+          "updated_at": "2026-11-09T10:05:00Z",
+          "project": {
+            "project_ref": "project-toolnest-demo",
+            "label": "ToolNest"
+          },
+          "ticket_selector": "TN-123",
+          "state": "saving",
+          "ticket": {
+            "ticket_id": "10001",
+            "key": "TN-123",
+            "title": "Allow reservation cancellation",
+            "description": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Allow cancellation of reservations that have not yet been collected. After successful cancellation, email the person who made the reservation."
+                    }
+                  ]
+                }
+              ]
+            },
+            "acceptance_criteria": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "1. A reservation that has not been collected can be cancelled."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "2. A reservation that has already been collected cannot be cancelled."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "3. After a successful cancellation, email the person who made the reservation."
+                    }
+                  ]
+                }
+              ]
+            },
+            "acceptance_criteria_state": "available",
+            "status": {
+              "id": "10000",
+              "name": "To Do"
+            },
+            "label": [
+              "reservations"
+            ],
+            "updated_at": "2026-11-09T10:05:00Z",
+            "version": "snapshot-v1:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+          },
+          "assessment": {
+            "verdict": "ready",
+            "summary": "The proposal combines the documented cancellation rule with the author's email-notification decision.",
+            "ticket_version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "questions": [
+              {
+                "question_id": "question-001",
+                "text": "When a reservation is cancelled, should a notification be sent? If so, to whom and through which channel?",
+                "state": "answered",
+                "answer_message_id": "message-answer-001",
+                "citation_ids": []
+              }
+            ],
+            "citation_ids": [
+              "citation-v1:3218d96d9c641973220551237c48b2deec98774d89067bff73f0edb52ffaeecf"
+            ],
+            "author_message_ids": [
+              "message-answer-001"
+            ],
+            "blocking_reasons": []
+          },
+          "current_proposal_id": "proposal-001",
+          "save": {
+            "approval_id": "approval-001",
+            "operation_id": "save-001",
+            "stage": "reporting_pending",
+            "expires_at": "2026-11-09T10:34:00Z",
+            "verified_update": {
+              "ticket_id": "10001",
+              "key": "TN-123",
+              "version": "snapshot-v1:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              "changed_fields": [
+                "description",
+                "acceptance_criteria"
+              ]
+            },
+            "error": null
+          },
+          "actions": {
+            "can_send_message": false,
+            "can_request_revision": false,
+            "can_approve": false,
+            "can_revoke": false,
+            "can_reanalyze": false
+          },
+          "last_error": null,
+          "last_event_sequence": 15,
+          "last_message_sequence": 3
+        }
+      }
+    },
+    {
+      "name": "Final progress after reporting acknowledgement",
+      "scenario": "refinement",
+      "method": "GET",
+      "route": "/api/v1/sessions/session-001/events?after=15&limit=100",
+      "schema": "EventPage",
+      "http_status": 200,
+      "payload": {
+        "ok": true,
+        "session_id": "session-001",
+        "events": [
+          {
+            "sequence": 16,
+            "session_id": "session-001",
+            "session_version": 8,
+            "occurred_at": "2026-11-09T10:05:01Z",
+            "type": "save.changed",
+            "resource_id": "save-001"
+          },
+          {
+            "sequence": 17,
+            "session_id": "session-001",
+            "session_version": 8,
+            "occurred_at": "2026-11-09T10:05:01Z",
+            "type": "approval.changed",
+            "resource_id": "approval-001"
+          },
+          {
+            "sequence": 18,
+            "session_id": "session-001",
+            "session_version": 8,
+            "occurred_at": "2026-11-09T10:05:01Z",
+            "type": "session.changed",
+            "resource_id": "session-001"
+          }
+        ],
+        "next_after": 18,
+        "has_more": false
+      }
+    },
+    {
+      "name": "Confirmed update snapshot",
+      "scenario": "refinement",
+      "method": "GET",
+      "route": "/api/v1/sessions/session-001",
+      "schema": "SessionResponse",
+      "http_status": 200,
+      "payload": {
+        "ok": true,
+        "session": {
+          "session_id": "session-001",
+          "version": 8,
+          "created_at": "2026-11-09T10:00:00Z",
+          "updated_at": "2026-11-09T10:05:01Z",
+          "project": {
+            "project_ref": "project-toolnest-demo",
+            "label": "ToolNest"
+          },
+          "ticket_selector": "TN-123",
+          "state": "updated",
+          "ticket": {
+            "ticket_id": "10001",
+            "key": "TN-123",
+            "title": "Allow reservation cancellation",
+            "description": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Allow cancellation of reservations that have not yet been collected. After successful cancellation, email the person who made the reservation."
+                    }
+                  ]
+                }
+              ]
+            },
+            "acceptance_criteria": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "1. A reservation that has not been collected can be cancelled."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "2. A reservation that has already been collected cannot be cancelled."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "3. After a successful cancellation, email the person who made the reservation."
+                    }
+                  ]
+                }
+              ]
+            },
+            "acceptance_criteria_state": "available",
+            "status": {
+              "id": "10000",
+              "name": "To Do"
+            },
+            "label": [
+              "reservations"
+            ],
+            "updated_at": "2026-11-09T10:05:00Z",
+            "version": "snapshot-v1:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+          },
+          "assessment": {
+            "verdict": "ready",
+            "summary": "The proposal combines the documented cancellation rule with the author's email-notification decision.",
+            "ticket_version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "questions": [
+              {
+                "question_id": "question-001",
+                "text": "When a reservation is cancelled, should a notification be sent? If so, to whom and through which channel?",
+                "state": "answered",
+                "answer_message_id": "message-answer-001",
+                "citation_ids": []
+              }
+            ],
+            "citation_ids": [
+              "citation-v1:3218d96d9c641973220551237c48b2deec98774d89067bff73f0edb52ffaeecf"
+            ],
+            "author_message_ids": [
+              "message-answer-001"
+            ],
+            "blocking_reasons": []
+          },
+          "current_proposal_id": "proposal-001",
+          "save": {
+            "approval_id": "approval-001",
+            "operation_id": "save-001",
+            "stage": "succeeded",
+            "expires_at": "2026-11-09T10:34:00Z",
+            "verified_update": {
+              "ticket_id": "10001",
+              "key": "TN-123",
+              "version": "snapshot-v1:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              "changed_fields": [
+                "description",
+                "acceptance_criteria"
+              ]
+            },
+            "error": null
+          },
+          "actions": {
+            "can_send_message": false,
+            "can_request_revision": false,
+            "can_approve": false,
+            "can_revoke": false,
+            "can_reanalyze": true
+          },
+          "last_error": null,
+          "last_event_sequence": 18,
+          "last_message_sequence": 3
+        }
+      }
+    },
+    {
+      "name": "Revision request creates no approval",
+      "scenario": "revision",
+      "method": "POST",
+      "route": "/api/v1/sessions/session-001/revisions",
+      "schema": "RevisionRequest",
+      "headers": {
+        "X-CSRF-Token": "csrf-fixture-token"
+      },
+      "payload": {
+        "contract_version": "1.0",
+        "command_id": "cmd-revise-001",
+        "expected_session_version": 4,
+        "proposal_id": "proposal-001",
+        "text": "Use SMS instead of email for the cancellation notification."
+      }
+    },
+    {
+      "name": "Revision accepted for a new proposal",
+      "scenario": "revision",
+      "method": "POST",
+      "route": "/api/v1/sessions/session-001/revisions",
+      "schema": "CommandReceipt",
+      "http_status": 202,
+      "payload": {
+        "ok": true,
+        "command_id": "cmd-revise-001",
+        "session_id": "session-001",
+        "accepted_version": 5,
+        "action": "request_revision",
+        "replayed": false
+      }
+    },
+    {
+      "name": "Revoke before the worker reserves approval",
+      "scenario": "revocation",
+      "method": "POST",
+      "route": "/api/v1/sessions/session-001/approvals/approval-001/revoke",
+      "schema": "SessionCommand",
+      "headers": {
+        "X-CSRF-Token": "csrf-fixture-token"
+      },
+      "payload": {
+        "contract_version": "1.0",
+        "command_id": "cmd-revoke-001",
+        "expected_session_version": 5
+      }
+    },
+    {
+      "name": "Revocation committed before dispatch",
+      "scenario": "revocation",
+      "method": "POST",
+      "route": "/api/v1/sessions/session-001/approvals/approval-001/revoke",
+      "schema": "CommandReceipt",
+      "http_status": 200,
+      "payload": {
+        "ok": true,
+        "command_id": "cmd-revoke-001",
+        "session_id": "session-001",
+        "accepted_version": 6,
+        "action": "revoke",
+        "replayed": false
+      }
+    },
+    {
+      "name": "Unknown write blocks repeat save actions",
+      "scenario": "unknown_outcome",
+      "method": "GET",
+      "route": "/api/v1/sessions/session-001",
+      "schema": "SessionResponse",
+      "http_status": 200,
+      "payload": {
+        "ok": true,
+        "session": {
+          "session_id": "session-001",
+          "version": 7,
+          "created_at": "2026-11-09T10:00:00Z",
+          "updated_at": "2026-11-09T10:05:00Z",
+          "project": {
+            "project_ref": "project-toolnest-demo",
+            "label": "ToolNest"
+          },
+          "ticket_selector": "TN-123",
+          "state": "blocked",
+          "ticket": {
+            "ticket_id": "10001",
+            "key": "TN-123",
+            "title": "Allow reservation cancellation",
+            "description": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Add the ability to cancel a reservation."
+                    }
+                  ]
+                }
+              ]
+            },
+            "acceptance_criteria": null,
+            "acceptance_criteria_state": "available",
+            "status": {
+              "id": "10000",
+              "name": "To Do"
+            },
+            "label": [
+              "reservations"
+            ],
+            "updated_at": "2026-11-05T10:00:00Z",
+            "version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "assessment": {
+            "verdict": "ready",
+            "summary": "The proposal combines the documented cancellation rule with the author's email-notification decision.",
+            "ticket_version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "questions": [
+              {
+                "question_id": "question-001",
+                "text": "When a reservation is cancelled, should a notification be sent? If so, to whom and through which channel?",
+                "state": "answered",
+                "answer_message_id": "message-answer-001",
+                "citation_ids": []
+              }
+            ],
+            "citation_ids": [
+              "citation-v1:3218d96d9c641973220551237c48b2deec98774d89067bff73f0edb52ffaeecf"
+            ],
+            "author_message_ids": [
+              "message-answer-001"
+            ],
+            "blocking_reasons": []
+          },
+          "current_proposal_id": "proposal-001",
+          "save": {
+            "approval_id": "approval-001",
+            "operation_id": "save-001",
+            "stage": "unknown",
+            "expires_at": "2026-11-09T10:34:00Z",
+            "verified_update": null,
+            "error": {
+              "code": "SAVE_OUTCOME_UNKNOWN",
+              "message": "The update may have reached Jira. Its outcome must be reconciled before another save.",
+              "retryable": false
+            }
+          },
+          "actions": {
+            "can_send_message": false,
+            "can_request_revision": false,
+            "can_approve": false,
+            "can_revoke": false,
+            "can_reanalyze": false
+          },
+          "last_error": {
+            "code": "SAVE_OUTCOME_UNKNOWN",
+            "message": "The update may have reached Jira. Its outcome must be reconciled before another save.",
+            "retryable": false
+          },
+          "last_event_sequence": 15,
+          "last_message_sequence": 3
+        }
+      }
+    },
+    {
+      "name": "Explicitly reanalyze after the confirmed update",
+      "scenario": "reanalyze",
+      "method": "POST",
+      "route": "/api/v1/sessions/session-001/reanalyze",
+      "schema": "SessionCommand",
+      "headers": {
+        "X-CSRF-Token": "csrf-fixture-token"
+      },
+      "payload": {
+        "contract_version": "1.0",
+        "command_id": "cmd-reanalyze-001",
+        "expected_session_version": 8
+      }
+    },
+    {
+      "name": "Reject a stale browser tab",
+      "scenario": "errors",
+      "method": "POST",
+      "route": "/api/v1/sessions/session-001/approvals",
+      "schema": "ErrorResponse",
+      "http_status": 409,
+      "payload": {
+        "ok": false,
+        "error": {
+          "code": "SESSION_VERSION_CONFLICT",
+          "message": "The session changed. Reload and review the current proposal.",
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "Reject a superseded proposal",
+      "scenario": "errors",
+      "method": "POST",
+      "route": "/api/v1/sessions/session-001/approvals",
+      "schema": "ErrorResponse",
+      "http_status": 409,
+      "payload": {
+        "ok": false,
+        "error": {
+          "code": "PROPOSAL_STALE",
+          "message": "This proposal is no longer current.",
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "Reject a command ID reused for different input",
+      "scenario": "errors",
+      "method": "POST",
+      "route": "/api/v1/sessions/session-001/messages",
+      "schema": "ErrorResponse",
+      "http_status": 409,
+      "payload": {
+        "ok": false,
+        "error": {
+          "code": "COMMAND_CONFLICT",
+          "message": "This command ID is already bound to another request.",
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "Revocation cannot cancel an authorized attempt",
+      "scenario": "errors",
+      "method": "POST",
+      "route": "/api/v1/sessions/session-001/approvals/approval-001/revoke",
+      "schema": "ErrorResponse",
+      "http_status": 409,
+      "payload": {
+        "ok": false,
+        "error": {
+          "code": "APPROVAL_IN_PROGRESS",
+          "message": "The save attempt is already authorized; cancellation is not confirmed.",
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "Session authentication expired",
+      "scenario": "errors",
+      "method": "GET",
+      "route": "/api/v1/sessions/session-001",
+      "schema": "ErrorResponse",
+      "http_status": 401,
+      "payload": {
+        "ok": false,
+        "error": {
+          "code": "UNAUTHENTICATED",
+          "message": "Sign in again to resume this session.",
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "Transient request failure",
+      "scenario": "errors",
+      "method": "GET",
+      "route": "/api/v1/sessions/session-001",
+      "schema": "ErrorResponse",
+      "http_status": 503,
+      "payload": {
+        "ok": false,
+        "error": {
+          "code": "SERVICE_UNAVAILABLE",
+          "message": "Session state is temporarily unavailable.",
+          "retryable": true
+        }
+      }
+    },
+    {
+      "name": "Browser request rate limited",
+      "scenario": "errors",
+      "method": "GET",
+      "route": "/api/v1/sessions/session-001/events?after=18&limit=100",
+      "schema": "ErrorResponse",
+      "http_status": 429,
+      "payload": {
+        "ok": false,
+        "error": {
+          "code": "RATE_LIMITED",
+          "message": "Wait before polling again.",
+          "retryable": true,
+          "retry_after_seconds": 3
+        }
+      }
+    },
+    {
+      "name": "Inspect evidence discovered through a document read",
+      "schema": "CitationResponse",
+      "payload": {
+        "ok": true,
+        "citation": {
+          "citation_id": "citation-v1:598928770581460a54cebd068be3a44d33f4ad27cd04f1db75a4e88fac56d10e",
+          "source": {
+            "scope": {
+              "corpus_id": "ticketiq-fixtures",
+              "dataset_id": "part4-dataset",
+              "project_id": "toolnest"
+            },
+            "kind": "document",
+            "doc_id": "EX-CANCEL-01",
+            "source_version": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "excerpt": "The original booking remains visible after cancellation.",
+          "span": {
+            "start": 98,
+            "end": 154
+          },
+          "metadata": {
+            "title": "Reservation cancellation",
+            "source_path": "part4-dataset/docs/EX-CANCEL-01.md",
+            "url": null,
+            "document_type": "business_rules",
+            "status": "active",
+            "availability": {
+              "known_available_at": "2026-11-01T09:00:00Z",
+              "complete": true
+            }
+          },
+          "temporal_status": "verified",
+          "index_revision": "fixtures-20261109-r1",
+          "retrieval_profile_id": "fixture-profile-v1",
+          "temporal_filter": {
+            "mode": "strict",
+            "snapshot_at": "2026-11-06T12:00:00Z"
+          }
+        }
+      },
+      "method": "GET",
+      "route": "/api/v1/sessions/session-001/citations/citation-v1:598928770581460a54cebd068be3a44d33f4ad27cd04f1db75a4e88fac56d10e",
+      "http_status": 200,
+      "scenario": "document_read"
+    },
+    {
+      "name": "Persist the revision as author provenance",
+      "schema": "MessagePage",
+      "payload": {
+        "ok": true,
+        "session_id": "session-001",
+        "messages": [
+          {
+            "message_id": "message-revision-001",
+            "sequence": 4,
+            "role": "user",
+            "kind": "revision_request",
+            "text": "Use SMS instead of email for the cancellation notification.",
+            "question_id": null,
+            "created_at": "2026-11-09T10:04:00Z"
+          }
+        ],
+        "next_after": 4,
+        "has_more": false
+      },
+      "method": "GET",
+      "route": "/api/v1/sessions/session-001/messages?after=3",
+      "http_status": 200,
+      "scenario": "revision"
+    },
+    {
+      "name": "Revised proposal cites the replacing author decision",
+      "schema": "ProposalResponse",
+      "payload": {
+        "ok": true,
+        "status": "current",
+        "proposal": {
+          "proposal_id": "proposal-002",
+          "created_at": "2026-11-09T10:04:30Z",
+          "ticket_version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "base": {
+            "title": "Allow reservation cancellation",
+            "description": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Add the ability to cancel a reservation."
+                    }
+                  ]
+                }
+              ]
+            },
+            "acceptance_criteria": null
+          },
+          "changes": {
+            "description": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Allow cancellation of reservations that have not yet been collected. After successful cancellation, send an SMS to the person who made the reservation."
+                    }
+                  ]
+                }
+              ]
+            },
+            "acceptance_criteria": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "1. A reservation that has not been collected can be cancelled."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "2. A reservation that has already been collected cannot be cancelled."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "3. After a successful cancellation, send an SMS to the person who made the reservation."
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "preview": {
+            "title": "Allow reservation cancellation",
+            "description": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Allow cancellation of reservations that have not yet been collected. After successful cancellation, send an SMS to the person who made the reservation."
+                    }
+                  ]
+                }
+              ]
+            },
+            "acceptance_criteria": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "1. A reservation that has not been collected can be cancelled."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "2. A reservation that has already been collected cannot be cancelled."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "3. After a successful cancellation, send an SMS to the person who made the reservation."
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "requirements": [
+            {
+              "requirement_id": "requirement-001",
+              "text": "Reservations that have not been collected can be cancelled.",
+              "affected_fields": [
+                "description",
+                "acceptance_criteria"
+              ],
+              "sources": [
+                {
+                  "kind": "citation",
+                  "citation_id": "citation-v1:3218d96d9c641973220551237c48b2deec98774d89067bff73f0edb52ffaeecf"
+                }
+              ]
+            },
+            {
+              "requirement_id": "requirement-002",
+              "text": "Reservations that have already been collected cannot be cancelled.",
+              "affected_fields": [
+                "description",
+                "acceptance_criteria"
+              ],
+              "sources": [
+                {
+                  "kind": "citation",
+                  "citation_id": "citation-v1:3218d96d9c641973220551237c48b2deec98774d89067bff73f0edb52ffaeecf"
+                }
+              ]
+            },
+            {
+              "requirement_id": "requirement-003",
+              "text": "After successful cancellation, send an SMS to the person who made the reservation.",
+              "affected_fields": [
+                "description",
+                "acceptance_criteria"
+              ],
+              "sources": [
+                {
+                  "kind": "author_message",
+                  "message_id": "message-revision-001"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "method": "GET",
+      "route": "/api/v1/sessions/session-001/proposals/proposal-002",
+      "http_status": 200,
+      "scenario": "revision"
+    },
+    {
+      "name": "Revised proposal still requires explicit approval",
+      "schema": "SessionResponse",
+      "payload": {
+        "ok": true,
+        "session": {
+          "session_id": "session-001",
+          "version": 6,
+          "created_at": "2026-11-09T10:00:00Z",
+          "updated_at": "2026-11-09T10:04:30Z",
+          "project": {
+            "project_ref": "project-toolnest-demo",
+            "label": "ToolNest"
+          },
+          "ticket_selector": "TN-123",
+          "state": "proposal_ready",
+          "ticket": {
+            "ticket_id": "10001",
+            "key": "TN-123",
+            "title": "Allow reservation cancellation",
+            "description": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Add the ability to cancel a reservation."
+                    }
+                  ]
+                }
+              ]
+            },
+            "acceptance_criteria": null,
+            "acceptance_criteria_state": "available",
+            "status": {
+              "id": "10000",
+              "name": "To Do"
+            },
+            "label": [
+              "reservations"
+            ],
+            "updated_at": "2026-11-05T10:00:00Z",
+            "version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "assessment": {
+            "verdict": "ready",
+            "summary": "The author replaced email with SMS; review the new proposal before saving.",
+            "ticket_version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "questions": [
+              {
+                "question_id": "question-001",
+                "text": "When a reservation is cancelled, should a notification be sent? If so, to whom and through which channel?",
+                "state": "answered",
+                "answer_message_id": "message-answer-001",
+                "citation_ids": []
+              }
+            ],
+            "citation_ids": [
+              "citation-v1:3218d96d9c641973220551237c48b2deec98774d89067bff73f0edb52ffaeecf"
+            ],
+            "author_message_ids": [
+              "message-revision-001"
+            ],
+            "blocking_reasons": []
+          },
+          "current_proposal_id": "proposal-002",
+          "save": null,
+          "actions": {
+            "can_send_message": true,
+            "can_request_revision": true,
+            "can_approve": true,
+            "can_revoke": false,
+            "can_reanalyze": true
+          },
+          "last_error": null,
+          "last_event_sequence": 14,
+          "last_message_sequence": 4
+        }
+      },
+      "method": "GET",
+      "route": "/api/v1/sessions/session-001",
+      "http_status": 200,
+      "scenario": "revision"
+    },
+    {
+      "name": "Missing required context blocks assessment without a partial proposal",
+      "schema": "SessionResponse",
+      "payload": {
+        "ok": true,
+        "session": {
+          "session_id": "session-001",
+          "version": 2,
+          "created_at": "2026-11-09T10:00:00Z",
+          "updated_at": "2026-11-09T10:01:00Z",
+          "project": {
+            "project_ref": "project-toolnest-demo",
+            "label": "ToolNest"
+          },
+          "ticket_selector": "TN-123",
+          "state": "blocked",
+          "ticket": {
+            "ticket_id": "10001",
+            "key": "TN-123",
+            "title": "Allow reservation cancellation",
+            "description": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Add the ability to cancel a reservation."
+                    }
+                  ]
+                }
+              ]
+            },
+            "acceptance_criteria": null,
+            "acceptance_criteria_state": "available",
+            "status": {
+              "id": "10000",
+              "name": "To Do"
+            },
+            "label": [
+              "reservations"
+            ],
+            "updated_at": "2026-11-05T10:00:00Z",
+            "version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "assessment": {
+            "verdict": "insufficient_evidence",
+            "summary": "The ticket depends on a specification that is not accessible.",
+            "ticket_version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "questions": [],
+            "citation_ids": [],
+            "author_message_ids": [],
+            "blocking_reasons": [
+              "missing_required_context"
+            ]
+          },
+          "current_proposal_id": null,
+          "save": null,
+          "actions": {
+            "can_send_message": true,
+            "can_request_revision": false,
+            "can_approve": false,
+            "can_revoke": false,
+            "can_reanalyze": true
+          },
+          "last_error": null,
+          "last_event_sequence": 4,
+          "last_message_sequence": 1
+        }
+      },
+      "method": "GET",
+      "route": "/api/v1/sessions/session-001",
+      "http_status": 200,
+      "scenario": "insufficient_evidence"
+    },
+    {
+      "name": "Repeated evidence churn requires explicit reanalysis",
+      "schema": "SessionResponse",
+      "payload": {
+        "ok": true,
+        "session": {
+          "session_id": "session-001",
+          "version": 2,
+          "created_at": "2026-11-09T10:00:00Z",
+          "updated_at": "2026-11-09T10:01:00Z",
+          "project": {
+            "project_ref": "project-toolnest-demo",
+            "label": "ToolNest"
+          },
+          "ticket_selector": "TN-123",
+          "state": "blocked",
+          "ticket": {
+            "ticket_id": "10001",
+            "key": "TN-123",
+            "title": "Allow reservation cancellation",
+            "description": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Add the ability to cancel a reservation."
+                    }
+                  ]
+                }
+              ]
+            },
+            "acceptance_criteria": null,
+            "acceptance_criteria_state": "available",
+            "status": {
+              "id": "10000",
+              "name": "To Do"
+            },
+            "label": [
+              "reservations"
+            ],
+            "updated_at": "2026-11-05T10:00:00Z",
+            "version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "assessment": null,
+          "current_proposal_id": null,
+          "save": null,
+          "actions": {
+            "can_send_message": true,
+            "can_request_revision": false,
+            "can_approve": false,
+            "can_revoke": false,
+            "can_reanalyze": true
+          },
+          "last_error": {
+            "code": "EVIDENCE_REFRESH_REQUIRED",
+            "message": "The index changed again during the bounded restart. Reanalyze when it stabilizes.",
+            "retryable": false
+          },
+          "last_event_sequence": 4,
+          "last_message_sequence": 1
+        }
+      },
+      "method": "GET",
+      "route": "/api/v1/sessions/session-001",
+      "http_status": 200,
+      "scenario": "evidence_refresh"
+    },
+    {
+      "name": "Inspect the conflicting rule before answering",
+      "schema": "CitationResponse",
+      "payload": {
+        "ok": true,
+        "citation": {
+          "source": {
+            "scope": {
+              "corpus_id": "ticketiq-fixtures",
+              "dataset_id": "part4-dataset",
+              "project_id": "toolnest"
+            },
+            "kind": "document",
+            "doc_id": "EX-CANCEL-CONFLICT",
+            "source_version": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+          },
+          "excerpt": "Collected reservations can also be cancelled.",
+          "span": {
+            "start": 0,
+            "end": 45
+          },
+          "metadata": {
+            "title": "Conflicting cancellation FAQ",
+            "source_path": "part4-dataset/docs/EX-CANCEL-CONFLICT.md",
+            "url": null,
+            "document_type": "faq",
+            "status": "active",
+            "availability": {
+              "known_available_at": "2026-11-01T09:00:00Z",
+              "complete": true
+            }
+          },
+          "temporal_status": "verified",
+          "citation_id": "citation-v1:a9ca4af306971b5e42c751a8b457241f68ea7031865562c488af6503b2ebf20e",
+          "index_revision": "fixtures-20261109-r1",
+          "retrieval_profile_id": "fixture-profile-v1",
+          "temporal_filter": {
+            "mode": "strict",
+            "snapshot_at": "2026-11-06T12:00:00Z"
+          }
+        }
+      },
+      "method": "GET",
+      "route": "/api/v1/sessions/session-001/citations/citation-v1:a9ca4af306971b5e42c751a8b457241f68ea7031865562c488af6503b2ebf20e",
+      "http_status": 200,
+      "scenario": "conflicting_evidence"
+    },
+    {
+      "name": "Show both conflicting sources before a proposal exists",
+      "schema": "SessionResponse",
+      "payload": {
+        "ok": true,
+        "session": {
+          "session_id": "session-001",
+          "version": 2,
+          "created_at": "2026-11-09T10:00:00Z",
+          "updated_at": "2026-11-09T10:01:00Z",
+          "project": {
+            "project_ref": "project-toolnest-demo",
+            "label": "ToolNest"
+          },
+          "ticket_selector": "TN-123",
+          "state": "awaiting_clarification",
+          "ticket": {
+            "ticket_id": "10001",
+            "key": "TN-123",
+            "title": "Allow reservation cancellation",
+            "description": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Add the ability to cancel a reservation."
+                    }
+                  ]
+                }
+              ]
+            },
+            "acceptance_criteria": null,
+            "acceptance_criteria_state": "available",
+            "status": {
+              "id": "10000",
+              "name": "To Do"
+            },
+            "label": [
+              "reservations"
+            ],
+            "updated_at": "2026-11-05T10:00:00Z",
+            "version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "assessment": {
+            "verdict": "needs_clarification",
+            "summary": "Two active rules disagree about cancellation after collection.",
+            "ticket_version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "questions": [
+              {
+                "question_id": "question-conflict-001",
+                "text": "One active rule prohibits cancellation after collection and another allows it. Which rule governs this ticket?",
+                "state": "open",
+                "answer_message_id": null,
+                "citation_ids": [
+                  "citation-v1:3218d96d9c641973220551237c48b2deec98774d89067bff73f0edb52ffaeecf",
+                  "citation-v1:a9ca4af306971b5e42c751a8b457241f68ea7031865562c488af6503b2ebf20e"
+                ]
+              }
+            ],
+            "citation_ids": [
+              "citation-v1:3218d96d9c641973220551237c48b2deec98774d89067bff73f0edb52ffaeecf",
+              "citation-v1:a9ca4af306971b5e42c751a8b457241f68ea7031865562c488af6503b2ebf20e"
+            ],
+            "author_message_ids": [],
+            "blocking_reasons": [
+              "conflicting_evidence"
+            ]
+          },
+          "current_proposal_id": null,
+          "save": null,
+          "actions": {
+            "can_send_message": true,
+            "can_request_revision": false,
+            "can_approve": false,
+            "can_revoke": false,
+            "can_reanalyze": true
+          },
+          "last_error": null,
+          "last_event_sequence": 4,
+          "last_message_sequence": 1
+        }
+      },
+      "method": "GET",
+      "route": "/api/v1/sessions/session-001",
+      "http_status": 200,
+      "scenario": "conflicting_evidence"
+    },
+    {
+      "name": "Recovery synchronization retains the save guard",
+      "schema": "SessionResponse",
+      "payload": {
+        "ok": true,
+        "session": {
+          "session_id": "session-001",
+          "version": 7,
+          "created_at": "2026-11-09T10:00:00Z",
+          "updated_at": "2026-11-09T10:05:00Z",
+          "project": {
+            "project_ref": "project-toolnest-demo",
+            "label": "ToolNest"
+          },
+          "ticket_selector": "TN-123",
+          "state": "blocked",
+          "ticket": {
+            "ticket_id": "10001",
+            "key": "TN-123",
+            "title": "Allow reservation cancellation",
+            "description": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Add the ability to cancel a reservation."
+                    }
+                  ]
+                }
+              ]
+            },
+            "acceptance_criteria": null,
+            "acceptance_criteria_state": "available",
+            "status": {
+              "id": "10000",
+              "name": "To Do"
+            },
+            "label": [
+              "reservations"
+            ],
+            "updated_at": "2026-11-05T10:00:00Z",
+            "version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "assessment": {
+            "verdict": "ready",
+            "summary": "The proposal combines the documented cancellation rule with the author's email-notification decision.",
+            "ticket_version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "questions": [
+              {
+                "question_id": "question-001",
+                "text": "When a reservation is cancelled, should a notification be sent? If so, to whom and through which channel?",
+                "state": "answered",
+                "answer_message_id": "message-answer-001",
+                "citation_ids": []
+              }
+            ],
+            "citation_ids": [
+              "citation-v1:3218d96d9c641973220551237c48b2deec98774d89067bff73f0edb52ffaeecf"
+            ],
+            "author_message_ids": [
+              "message-answer-001"
+            ],
+            "blocking_reasons": []
+          },
+          "current_proposal_id": "proposal-001",
+          "save": {
+            "approval_id": "approval-001",
+            "operation_id": "save-001",
+            "stage": "unknown",
+            "expires_at": "2026-11-09T10:34:00Z",
+            "verified_update": null,
+            "error": {
+              "code": "RECOVERY_PENDING",
+              "message": "Verified evidence is being synchronized between Agent and MCP. Saving remains blocked.",
+              "retryable": false
+            }
+          },
+          "actions": {
+            "can_send_message": false,
+            "can_request_revision": false,
+            "can_approve": false,
+            "can_revoke": false,
+            "can_reanalyze": false
+          },
+          "last_error": {
+            "code": "RECOVERY_PENDING",
+            "message": "Verified evidence is being synchronized between Agent and MCP. Saving remains blocked.",
+            "retryable": false
+          },
+          "last_event_sequence": 15,
+          "last_message_sequence": 3
+        }
+      },
+      "method": "GET",
+      "route": "/api/v1/sessions/session-001",
+      "http_status": 200,
+      "scenario": "recovery_success"
+    },
+    {
+      "name": "Finalized verified recovery exposes success",
+      "schema": "SessionResponse",
+      "payload": {
+        "ok": true,
+        "session": {
+          "session_id": "session-001",
+          "version": 10,
+          "created_at": "2026-11-09T10:00:00Z",
+          "updated_at": "2026-11-09T11:00:02Z",
+          "project": {
+            "project_ref": "project-toolnest-demo",
+            "label": "ToolNest"
+          },
+          "ticket_selector": "TN-123",
+          "state": "updated",
+          "ticket": {
+            "ticket_id": "10001",
+            "key": "TN-123",
+            "title": "Allow reservation cancellation",
+            "description": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Allow cancellation of reservations that have not yet been collected. After successful cancellation, email the person who made the reservation."
+                    }
+                  ]
+                }
+              ]
+            },
+            "acceptance_criteria": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "1. A reservation that has not been collected can be cancelled."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "2. A reservation that has already been collected cannot be cancelled."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "3. After a successful cancellation, email the person who made the reservation."
+                    }
+                  ]
+                }
+              ]
+            },
+            "acceptance_criteria_state": "available",
+            "status": {
+              "id": "10000",
+              "name": "To Do"
+            },
+            "label": [
+              "reservations"
+            ],
+            "updated_at": "2026-11-09T10:05:00Z",
+            "version": "snapshot-v1:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+          },
+          "assessment": {
+            "verdict": "ready",
+            "summary": "The proposal combines the documented cancellation rule with the author's email-notification decision.",
+            "ticket_version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "questions": [
+              {
+                "question_id": "question-001",
+                "text": "When a reservation is cancelled, should a notification be sent? If so, to whom and through which channel?",
+                "state": "answered",
+                "answer_message_id": "message-answer-001",
+                "citation_ids": []
+              }
+            ],
+            "citation_ids": [
+              "citation-v1:3218d96d9c641973220551237c48b2deec98774d89067bff73f0edb52ffaeecf"
+            ],
+            "author_message_ids": [
+              "message-answer-001"
+            ],
+            "blocking_reasons": []
+          },
+          "current_proposal_id": "proposal-001",
+          "save": {
+            "approval_id": "approval-001",
+            "operation_id": "save-001",
+            "stage": "succeeded",
+            "expires_at": "2026-11-09T10:34:00Z",
+            "verified_update": {
+              "ticket_id": "10001",
+              "key": "TN-123",
+              "version": "snapshot-v1:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              "changed_fields": [
+                "description",
+                "acceptance_criteria"
+              ]
+            },
+            "error": null
+          },
+          "actions": {
+            "can_send_message": false,
+            "can_request_revision": false,
+            "can_approve": false,
+            "can_revoke": false,
+            "can_reanalyze": true
+          },
+          "last_error": null,
+          "last_event_sequence": 22,
+          "last_message_sequence": 3
+        }
+      },
+      "method": "GET",
+      "route": "/api/v1/sessions/session-001",
+      "http_status": 200,
+      "scenario": "recovery_success"
+    },
+    {
+      "name": "Verified non-application requires a new proposal",
+      "schema": "SessionResponse",
+      "payload": {
+        "ok": true,
+        "session": {
+          "session_id": "session-001",
+          "version": 10,
+          "created_at": "2026-11-09T10:00:00Z",
+          "updated_at": "2026-11-09T11:00:02Z",
+          "project": {
+            "project_ref": "project-toolnest-demo",
+            "label": "ToolNest"
+          },
+          "ticket_selector": "TN-123",
+          "state": "blocked",
+          "ticket": {
+            "ticket_id": "10001",
+            "key": "TN-123",
+            "title": "Allow reservation cancellation",
+            "description": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Add the ability to cancel a reservation."
+                    }
+                  ]
+                }
+              ]
+            },
+            "acceptance_criteria": null,
+            "acceptance_criteria_state": "available",
+            "status": {
+              "id": "10000",
+              "name": "To Do"
+            },
+            "label": [
+              "reservations"
+            ],
+            "updated_at": "2026-11-05T10:00:00Z",
+            "version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "assessment": {
+            "verdict": "ready",
+            "summary": "The proposal combines the documented cancellation rule with the author's email-notification decision.",
+            "ticket_version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "questions": [
+              {
+                "question_id": "question-001",
+                "text": "When a reservation is cancelled, should a notification be sent? If so, to whom and through which channel?",
+                "state": "answered",
+                "answer_message_id": "message-answer-001",
+                "citation_ids": []
+              }
+            ],
+            "citation_ids": [
+              "citation-v1:3218d96d9c641973220551237c48b2deec98774d89067bff73f0edb52ffaeecf"
+            ],
+            "author_message_ids": [
+              "message-answer-001"
+            ],
+            "blocking_reasons": []
+          },
+          "current_proposal_id": null,
+          "save": {
+            "approval_id": "approval-001",
+            "operation_id": "save-001",
+            "stage": "failed",
+            "expires_at": "2026-11-09T10:34:00Z",
+            "verified_update": null,
+            "error": {
+              "code": "SAVE_REJECTED",
+              "message": "Recovery proved no write occurred. Reanalyze before preparing another proposal.",
+              "retryable": false
+            }
+          },
+          "actions": {
+            "can_send_message": false,
+            "can_request_revision": false,
+            "can_approve": false,
+            "can_revoke": false,
+            "can_reanalyze": true
+          },
+          "last_error": {
+            "code": "SAVE_REJECTED",
+            "message": "Recovery proved no write occurred. Reanalyze before preparing another proposal.",
+            "retryable": false
+          },
+          "last_event_sequence": 22,
+          "last_message_sequence": 3
+        }
+      },
+      "method": "GET",
+      "route": "/api/v1/sessions/session-001",
+      "http_status": 200,
+      "scenario": "recovery_not_applied"
+    },
+    {
+      "name": "An explicit decision may be recorded as a comment",
+      "scenario": "author_decision",
+      "schema": "MessageRequest",
+      "payload": {
+        "contract_version": "1.0",
+        "command_id": "cmd-decision-001",
+        "expected_session_version": 4,
+        "kind": "comment",
+        "text": "Use SMS instead of email for the cancellation notification."
+      }
+    },
+    {
+      "name": "Retain the exact author decision message",
+      "scenario": "author_decision",
+      "schema": "MessagePage",
+      "payload": {
+        "ok": true,
+        "session_id": "session-001",
+        "messages": [
+          {
+            "message_id": "message-decision-001",
+            "sequence": 4,
+            "role": "user",
+            "kind": "comment",
+            "text": "Use SMS instead of email for the cancellation notification.",
+            "question_id": null,
+            "created_at": "2026-11-09T10:04:00Z"
+          }
+        ],
+        "next_after": 4,
+        "has_more": false
+      }
+    },
+    {
+      "name": "Proposal cites an explicit decision without treating it as approval",
+      "scenario": "author_decision",
+      "schema": "ProposalResponse",
+      "payload": {
+        "ok": true,
+        "status": "current",
+        "proposal": {
+          "proposal_id": "proposal-decision-003",
+          "created_at": "2026-11-09T10:04:30Z",
+          "ticket_version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "base": {
+            "title": "Allow reservation cancellation",
+            "description": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Add the ability to cancel a reservation."
+                    }
+                  ]
+                }
+              ]
+            },
+            "acceptance_criteria": null
+          },
+          "changes": {
+            "description": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Allow cancellation of reservations that have not yet been collected. After successful cancellation, send an SMS to the person who made the reservation."
+                    }
+                  ]
+                }
+              ]
+            },
+            "acceptance_criteria": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "1. A reservation that has not been collected can be cancelled."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "2. A reservation that has already been collected cannot be cancelled."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "3. After a successful cancellation, send an SMS to the person who made the reservation."
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "preview": {
+            "title": "Allow reservation cancellation",
+            "description": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Allow cancellation of reservations that have not yet been collected. After successful cancellation, send an SMS to the person who made the reservation."
+                    }
+                  ]
+                }
+              ]
+            },
+            "acceptance_criteria": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "1. A reservation that has not been collected can be cancelled."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "2. A reservation that has already been collected cannot be cancelled."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "3. After a successful cancellation, send an SMS to the person who made the reservation."
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "requirements": [
+            {
+              "requirement_id": "requirement-001",
+              "text": "Reservations that have not been collected can be cancelled.",
+              "affected_fields": [
+                "description",
+                "acceptance_criteria"
+              ],
+              "sources": [
+                {
+                  "kind": "citation",
+                  "citation_id": "citation-v1:3218d96d9c641973220551237c48b2deec98774d89067bff73f0edb52ffaeecf"
+                }
+              ]
+            },
+            {
+              "requirement_id": "requirement-002",
+              "text": "Reservations that have already been collected cannot be cancelled.",
+              "affected_fields": [
+                "description",
+                "acceptance_criteria"
+              ],
+              "sources": [
+                {
+                  "kind": "citation",
+                  "citation_id": "citation-v1:3218d96d9c641973220551237c48b2deec98774d89067bff73f0edb52ffaeecf"
+                }
+              ]
+            },
+            {
+              "requirement_id": "requirement-003",
+              "text": "After successful cancellation, send an SMS to the person who made the reservation.",
+              "affected_fields": [
+                "description",
+                "acceptance_criteria"
+              ],
+              "sources": [
+                {
+                  "kind": "author_message",
+                  "message_id": "message-decision-001"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

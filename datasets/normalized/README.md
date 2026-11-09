@@ -1,5 +1,6 @@
 # Normalized TicketIQ datasets
 
+This document defines the corpus and leakage boundaries for the shared TicketIQ ingestion, retrieval, and evaluation pipeline. These rules take precedence over standalone usage instructions in the original dataset READMEs. In the shared pipeline, ingest only the normalized documentation and completed history listed below; do not ingest original prebuilt chunks alongside them.
 
 From the repository root:
 
@@ -42,6 +43,8 @@ Part 1's 900 individual decision annotations remain in `decisions`; ticket-level
 Part 1 retains its project-based splits; ToolNest retains its feature-group splits. PCON and TeamFlow have `split: null` until the team defines suitable partitions. The combined counts are 400 train, 160 validation, 140 test, and 400 unassigned. Do not treat this mixed split as a single cross-project benchmark without defining an evaluation protocol.
 
 Read history comments along with the original historical request when constructing retrieval text. Exclude review targets and all golden records from that corpus. Index one representation of each source; prebuilt chunks and alternate exports are not copied into this normalized collection. Chunk the normalized sources with the chosen common strategy and derive retrieval judgments from golden evidence as needed.
+
+This exclusion applies to all review targets, not just the ticket currently being assessed, and to every train/validation/test partition. Part 1, PCON, and TeamFlow currently contribute no completed history. A successful history search in one of those scopes may therefore return no results; do not populate it with other review targets or borrow history from another project.
 
 `effective_at`, `updated_at`, `published_at`, and `available_at` are distinct. Only ToolNest documents supply an explicit publication date used as `available_at`; other unknown availability dates remain null. Do not infer publication from an effective date or silently apply temporal filtering to datasets without sufficient metadata. Use ToolNest history's `resolved_at` and comment dates when enforcing its snapshot boundary.
 

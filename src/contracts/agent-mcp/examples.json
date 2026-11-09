@@ -1,0 +1,1658 @@
+{
+  "description": "Fictional MCP JSON-RPC messages. schema names a definition in contract.schema.json. The main refinement sequence assumes the author's clarification and explicit approval occur in the separate Agent/frontend workflow before call 8. Alternative errors are independent outcomes. Snapshot hashes are illustrative; the initial ticket timestamp precedes the retrieval cutoff.",
+  "examples": [
+    {
+      "name": "Initialize the MCP client",
+      "scenario": "refinement",
+      "schema": "InitializeRequest",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {
+          "protocolVersion": "2025-11-25",
+          "capabilities": {},
+          "clientInfo": {
+            "name": "ticketiq-agent",
+            "version": "1.0.0"
+          }
+        }
+      }
+    },
+    {
+      "name": "MCP server capabilities",
+      "scenario": "refinement",
+      "schema": "InitializeResponse",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": {
+          "protocolVersion": "2025-11-25",
+          "capabilities": {
+            "tools": {
+              "listChanged": false
+            }
+          },
+          "serverInfo": {
+            "name": "ticketiq-mcp",
+            "version": "1.0.0"
+          }
+        }
+      }
+    },
+    {
+      "name": "Client initialization complete",
+      "scenario": "refinement",
+      "schema": "InitializedNotification",
+      "payload": {
+        "jsonrpc": "2.0",
+        "method": "notifications/initialized"
+      }
+    },
+    {
+      "name": "Discover the five tool definitions",
+      "scenario": "refinement",
+      "schema": "ToolsListRequest",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "method": "tools/list",
+        "params": {}
+      }
+    },
+    {
+      "name": "Bootstrap the selected ticket",
+      "scenario": "refinement",
+      "schema": "ToolCallRequest",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "method": "tools/call",
+        "params": {
+          "name": "get_ticket",
+          "arguments": {
+            "ticket_id": "TN-123"
+          },
+          "_meta": {
+            "ticketiq/context": {
+              "contract_version": "1.0",
+              "run_id": "run-001",
+              "session_id": "session-001",
+              "actor_id": "user-author-001",
+              "connection_id": "jira-demo",
+              "project_id": "toolnest",
+              "ticket_selector": "TN-123",
+              "rag_scope": {
+                "corpus_id": "ticketiq-fixtures",
+                "dataset_id": "part4-dataset",
+                "project_id": "toolnest"
+              },
+              "target_corpus_ticket_id": "EX-TARGET-001",
+              "temporal_filter": {
+                "mode": "strict",
+                "snapshot_at": "2026-11-06T12:00:00Z"
+              },
+              "retrieval_mode": "hybrid",
+              "initial_index_revision": null
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Ticket and matching edit capabilities",
+      "scenario": "refinement",
+      "schema": "GetTicketResponse",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"ok\":true,\"ticket\":{\"connection_id\":\"jira-demo\",\"project_id\":\"toolnest\",\"ticket_id\":\"10001\",\"key\":\"TN-123\",\"jira_project_id\":\"10000\",\"title\":\"Allow reservation cancellation\",\"description\":{\"type\":\"doc\",\"version\":1,\"content\":[{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"Add the ability to cancel a reservation.\"}]}]},\"acceptance_criteria\":null,\"acceptance_criteria_state\":\"available\",\"status\":{\"id\":\"10000\",\"name\":\"To Do\"},\"label\":[\"reservations\"],\"updated_at\":\"2026-11-05T10:00:00Z\",\"version\":\"snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},\"edit_capabilities\":{\"ok\":true,\"connection_id\":\"jira-demo\",\"project_id\":\"toolnest\",\"ticket_id\":\"10001\",\"version\":\"snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"concurrency\":\"preflight_only\",\"mapping\":{\"revision\":\"1\",\"acceptance_criteria_field_id\":\"customfield_10042\"},\"fields\":{\"title\":{\"editable\":true,\"clearable\":false,\"reason\":null},\"description\":{\"editable\":true,\"clearable\":true,\"reason\":null},\"acceptance_criteria\":{\"editable\":true,\"clearable\":true,\"reason\":null}}},\"capability_error\":null}"
+            }
+          ],
+          "structuredContent": {
+            "ok": true,
+            "ticket": {
+              "connection_id": "jira-demo",
+              "project_id": "toolnest",
+              "ticket_id": "10001",
+              "key": "TN-123",
+              "jira_project_id": "10000",
+              "title": "Allow reservation cancellation",
+              "description": {
+                "type": "doc",
+                "version": 1,
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Add the ability to cancel a reservation."
+                      }
+                    ]
+                  }
+                ]
+              },
+              "acceptance_criteria": null,
+              "acceptance_criteria_state": "available",
+              "status": {
+                "id": "10000",
+                "name": "To Do"
+              },
+              "label": [
+                "reservations"
+              ],
+              "updated_at": "2026-11-05T10:00:00Z",
+              "version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "edit_capabilities": {
+              "ok": true,
+              "connection_id": "jira-demo",
+              "project_id": "toolnest",
+              "ticket_id": "10001",
+              "version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "concurrency": "preflight_only",
+              "mapping": {
+                "revision": "1",
+                "acceptance_criteria_field_id": "customfield_10042"
+              },
+              "fields": {
+                "title": {
+                  "editable": true,
+                  "clearable": false,
+                  "reason": null
+                },
+                "description": {
+                  "editable": true,
+                  "clearable": true,
+                  "reason": null
+                },
+                "acceptance_criteria": {
+                  "editable": true,
+                  "clearable": true,
+                  "reason": null
+                }
+              }
+            },
+            "capability_error": null
+          },
+          "isError": false
+        }
+      }
+    },
+    {
+      "name": "Search documentation with trusted context",
+      "scenario": "refinement",
+      "schema": "ToolCallRequest",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 4,
+        "method": "tools/call",
+        "params": {
+          "name": "search_docs",
+          "arguments": {
+            "project_id": "toolnest",
+            "query": "When can a reservation be cancelled?",
+            "top_k": 5
+          },
+          "_meta": {
+            "ticketiq/context": {
+              "contract_version": "1.0",
+              "run_id": "run-001",
+              "session_id": "session-001",
+              "actor_id": "user-author-001",
+              "connection_id": "jira-demo",
+              "project_id": "toolnest",
+              "ticket_selector": "TN-123",
+              "rag_scope": {
+                "corpus_id": "ticketiq-fixtures",
+                "dataset_id": "part4-dataset",
+                "project_id": "toolnest"
+              },
+              "target_corpus_ticket_id": "EX-TARGET-001",
+              "temporal_filter": {
+                "mode": "strict",
+                "snapshot_at": "2026-11-06T12:00:00Z"
+              },
+              "retrieval_mode": "hybrid",
+              "initial_index_revision": null
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Forward cited documentation unchanged",
+      "scenario": "refinement",
+      "schema": "SearchDocsResponse",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 4,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"ok\":true,\"scope\":{\"corpus_id\":\"ticketiq-fixtures\",\"dataset_id\":\"part4-dataset\",\"project_id\":\"toolnest\"},\"index_revision\":\"fixtures-20261109-r1\",\"retrieval_profile_id\":\"fixture-profile-v1\",\"retrieval_mode\":\"hybrid\",\"temporal_filter\":{\"mode\":\"strict\",\"snapshot_at\":\"2026-11-06T12:00:00Z\"},\"warnings\":[\"UNKNOWN_AVAILABILITY_EXCLUDED\",\"KNOWN_FUTURE_SOURCE_EXCLUDED\"],\"returned_count\":1,\"results\":[{\"rank\":1,\"score\":0.9,\"citation_id\":\"citation-v1:3218d96d9c641973220551237c48b2deec98774d89067bff73f0edb52ffaeecf\",\"source\":{\"scope\":{\"corpus_id\":\"ticketiq-fixtures\",\"dataset_id\":\"part4-dataset\",\"project_id\":\"toolnest\"},\"kind\":\"document\",\"doc_id\":\"EX-CANCEL-01\",\"source_version\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},\"chunk_id\":\"chunk-cancel-01\",\"passage_id\":null,\"excerpt\":\"Only reservations that have not yet been collected can be cancelled.\",\"span\":{\"start\":28,\"end\":96},\"metadata\":{\"title\":\"Reservation cancellation\",\"source_path\":\"part4-dataset/docs/EX-CANCEL-01.md\",\"url\":null,\"document_type\":\"business_rules\",\"status\":\"active\",\"availability\":{\"known_available_at\":\"2026-11-01T09:00:00Z\",\"complete\":true}},\"temporal_status\":\"verified\"}]}"
+            }
+          ],
+          "structuredContent": {
+            "ok": true,
+            "scope": {
+              "corpus_id": "ticketiq-fixtures",
+              "dataset_id": "part4-dataset",
+              "project_id": "toolnest"
+            },
+            "index_revision": "fixtures-20261109-r1",
+            "retrieval_profile_id": "fixture-profile-v1",
+            "retrieval_mode": "hybrid",
+            "temporal_filter": {
+              "mode": "strict",
+              "snapshot_at": "2026-11-06T12:00:00Z"
+            },
+            "warnings": [
+              "UNKNOWN_AVAILABILITY_EXCLUDED",
+              "KNOWN_FUTURE_SOURCE_EXCLUDED"
+            ],
+            "returned_count": 1,
+            "results": [
+              {
+                "rank": 1,
+                "score": 0.9,
+                "citation_id": "citation-v1:3218d96d9c641973220551237c48b2deec98774d89067bff73f0edb52ffaeecf",
+                "source": {
+                  "scope": {
+                    "corpus_id": "ticketiq-fixtures",
+                    "dataset_id": "part4-dataset",
+                    "project_id": "toolnest"
+                  },
+                  "kind": "document",
+                  "doc_id": "EX-CANCEL-01",
+                  "source_version": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                },
+                "chunk_id": "chunk-cancel-01",
+                "passage_id": null,
+                "excerpt": "Only reservations that have not yet been collected can be cancelled.",
+                "span": {
+                  "start": 28,
+                  "end": 96
+                },
+                "metadata": {
+                  "title": "Reservation cancellation",
+                  "source_path": "part4-dataset/docs/EX-CANCEL-01.md",
+                  "url": null,
+                  "document_type": "business_rules",
+                  "status": "active",
+                  "availability": {
+                    "known_available_at": "2026-11-01T09:00:00Z",
+                    "complete": true
+                  }
+                },
+                "temporal_status": "verified"
+              }
+            ]
+          },
+          "isError": false
+        }
+      }
+    },
+    {
+      "name": "Search completed history after generation pinning",
+      "scenario": "refinement",
+      "schema": "ToolCallRequest",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 5,
+        "method": "tools/call",
+        "params": {
+          "name": "search_tickets",
+          "arguments": {
+            "project_id": "toolnest",
+            "query": "What cancellation checks were implemented?",
+            "top_k": 5
+          },
+          "_meta": {
+            "ticketiq/context": {
+              "contract_version": "1.0",
+              "run_id": "run-001",
+              "session_id": "session-001",
+              "actor_id": "user-author-001",
+              "connection_id": "jira-demo",
+              "project_id": "toolnest",
+              "ticket_selector": "TN-123",
+              "rag_scope": {
+                "corpus_id": "ticketiq-fixtures",
+                "dataset_id": "part4-dataset",
+                "project_id": "toolnest"
+              },
+              "target_corpus_ticket_id": "EX-TARGET-001",
+              "temporal_filter": {
+                "mode": "strict",
+                "snapshot_at": "2026-11-06T12:00:00Z"
+              },
+              "retrieval_mode": "hybrid",
+              "initial_index_revision": null
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Forward completed-history evidence unchanged",
+      "scenario": "refinement",
+      "schema": "SearchTicketsResponse",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 5,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"ok\":true,\"scope\":{\"corpus_id\":\"ticketiq-fixtures\",\"dataset_id\":\"part4-dataset\",\"project_id\":\"toolnest\"},\"index_revision\":\"fixtures-20261109-r1\",\"retrieval_profile_id\":\"fixture-profile-v1\",\"retrieval_mode\":\"hybrid\",\"temporal_filter\":{\"mode\":\"strict\",\"snapshot_at\":\"2026-11-06T12:00:00Z\"},\"warnings\":[],\"returned_count\":1,\"results\":[{\"rank\":1,\"score\":0.8,\"citation_id\":\"citation-v1:6219ba06c0bbde2ebfe2f75ff5b271d083a145ba3de6e0318e533a9b6f04f9ee\",\"source\":{\"scope\":{\"corpus_id\":\"ticketiq-fixtures\",\"dataset_id\":\"part4-dataset\",\"project_id\":\"toolnest\"},\"kind\":\"history_ticket\",\"ticket_id\":\"EX-HIST-001\",\"source_version\":\"sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\"},\"chunk_id\":\"chunk-history-01\",\"passage_id\":null,\"excerpt\":\"Implemented and accepted: cancellation is blocked once the reservation is collected.\",\"span\":{\"start\":167,\"end\":251},\"metadata\":{\"title\":\"Cancellation eligibility check\",\"source_path\":\"part4-dataset/corpus/history_tickets.jsonl\",\"url\":null,\"document_type\":null,\"status\":\"Done\",\"availability\":{\"known_available_at\":\"2026-11-04T10:00:00Z\",\"complete\":true}},\"temporal_status\":\"verified\"}]}"
+            }
+          ],
+          "structuredContent": {
+            "ok": true,
+            "scope": {
+              "corpus_id": "ticketiq-fixtures",
+              "dataset_id": "part4-dataset",
+              "project_id": "toolnest"
+            },
+            "index_revision": "fixtures-20261109-r1",
+            "retrieval_profile_id": "fixture-profile-v1",
+            "retrieval_mode": "hybrid",
+            "temporal_filter": {
+              "mode": "strict",
+              "snapshot_at": "2026-11-06T12:00:00Z"
+            },
+            "warnings": [],
+            "returned_count": 1,
+            "results": [
+              {
+                "rank": 1,
+                "score": 0.8,
+                "citation_id": "citation-v1:6219ba06c0bbde2ebfe2f75ff5b271d083a145ba3de6e0318e533a9b6f04f9ee",
+                "source": {
+                  "scope": {
+                    "corpus_id": "ticketiq-fixtures",
+                    "dataset_id": "part4-dataset",
+                    "project_id": "toolnest"
+                  },
+                  "kind": "history_ticket",
+                  "ticket_id": "EX-HIST-001",
+                  "source_version": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+                },
+                "chunk_id": "chunk-history-01",
+                "passage_id": null,
+                "excerpt": "Implemented and accepted: cancellation is blocked once the reservation is collected.",
+                "span": {
+                  "start": 167,
+                  "end": 251
+                },
+                "metadata": {
+                  "title": "Cancellation eligibility check",
+                  "source_path": "part4-dataset/corpus/history_tickets.jsonl",
+                  "url": null,
+                  "document_type": null,
+                  "status": "Done",
+                  "availability": {
+                    "known_available_at": "2026-11-04T10:00:00Z",
+                    "complete": true
+                  }
+                },
+                "temporal_status": "verified"
+              }
+            ]
+          },
+          "isError": false
+        }
+      }
+    },
+    {
+      "name": "Read a previously cited document",
+      "scenario": "refinement",
+      "schema": "ToolCallRequest",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 6,
+        "method": "tools/call",
+        "params": {
+          "name": "get_document",
+          "arguments": {
+            "project_id": "toolnest",
+            "doc_id": "EX-CANCEL-01",
+            "offset": 0,
+            "limit": 120
+          },
+          "_meta": {
+            "ticketiq/context": {
+              "contract_version": "1.0",
+              "run_id": "run-001",
+              "session_id": "session-001",
+              "actor_id": "user-author-001",
+              "connection_id": "jira-demo",
+              "project_id": "toolnest",
+              "ticket_selector": "TN-123",
+              "rag_scope": {
+                "corpus_id": "ticketiq-fixtures",
+                "dataset_id": "part4-dataset",
+                "project_id": "toolnest"
+              },
+              "target_corpus_ticket_id": "EX-TARGET-001",
+              "temporal_filter": {
+                "mode": "strict",
+                "snapshot_at": "2026-11-06T12:00:00Z"
+              },
+              "retrieval_mode": "hybrid",
+              "initial_index_revision": null
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "First pinned source page",
+      "scenario": "refinement",
+      "schema": "GetDocumentResponse",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 6,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"ok\":true,\"source\":{\"scope\":{\"corpus_id\":\"ticketiq-fixtures\",\"dataset_id\":\"part4-dataset\",\"project_id\":\"toolnest\"},\"kind\":\"document\",\"doc_id\":\"EX-CANCEL-01\",\"source_version\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},\"index_revision\":\"fixtures-20261109-r1\",\"metadata\":{\"title\":\"Reservation cancellation\",\"source_path\":\"part4-dataset/docs/EX-CANCEL-01.md\",\"url\":null,\"document_type\":\"business_rules\",\"status\":\"active\",\"availability\":{\"known_available_at\":\"2026-11-01T09:00:00Z\",\"complete\":true}},\"temporal_filter\":{\"mode\":\"strict\",\"snapshot_at\":\"2026-11-06T12:00:00Z\"},\"temporal_status\":\"verified\",\"warnings\":[],\"content\":\"# Reservation cancellation\\n\\nOnly reservations that have not yet been collected can be cancelled.\\n\\nThe original booking r\",\"offset\":0,\"total_chars\":208,\"next_offset\":120,\"retrieval_profile_id\":\"fixture-profile-v1\",\"citation\":{\"citation_id\":\"citation-v1:ab2737cbd444d6498f9d6963cffce75b4f3efe7f95f870ccc49da24cdc5fb86e\",\"source\":{\"scope\":{\"corpus_id\":\"ticketiq-fixtures\",\"dataset_id\":\"part4-dataset\",\"project_id\":\"toolnest\"},\"kind\":\"document\",\"doc_id\":\"EX-CANCEL-01\",\"source_version\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},\"excerpt\":\"# Reservation cancellation\\n\\nOnly reservations that have not yet been collected can be cancelled.\\n\\nThe original booking r\",\"span\":{\"start\":0,\"end\":120},\"metadata\":{\"title\":\"Reservation cancellation\",\"source_path\":\"part4-dataset/docs/EX-CANCEL-01.md\",\"url\":null,\"document_type\":\"business_rules\",\"status\":\"active\",\"availability\":{\"known_available_at\":\"2026-11-01T09:00:00Z\",\"complete\":true}},\"temporal_status\":\"verified\"}}"
+            }
+          ],
+          "structuredContent": {
+            "ok": true,
+            "source": {
+              "scope": {
+                "corpus_id": "ticketiq-fixtures",
+                "dataset_id": "part4-dataset",
+                "project_id": "toolnest"
+              },
+              "kind": "document",
+              "doc_id": "EX-CANCEL-01",
+              "source_version": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "index_revision": "fixtures-20261109-r1",
+            "metadata": {
+              "title": "Reservation cancellation",
+              "source_path": "part4-dataset/docs/EX-CANCEL-01.md",
+              "url": null,
+              "document_type": "business_rules",
+              "status": "active",
+              "availability": {
+                "known_available_at": "2026-11-01T09:00:00Z",
+                "complete": true
+              }
+            },
+            "temporal_filter": {
+              "mode": "strict",
+              "snapshot_at": "2026-11-06T12:00:00Z"
+            },
+            "temporal_status": "verified",
+            "warnings": [],
+            "content": "# Reservation cancellation\n\nOnly reservations that have not yet been collected can be cancelled.\n\nThe original booking r",
+            "offset": 0,
+            "total_chars": 208,
+            "next_offset": 120,
+            "retrieval_profile_id": "fixture-profile-v1",
+            "citation": {
+              "citation_id": "citation-v1:ab2737cbd444d6498f9d6963cffce75b4f3efe7f95f870ccc49da24cdc5fb86e",
+              "source": {
+                "scope": {
+                  "corpus_id": "ticketiq-fixtures",
+                  "dataset_id": "part4-dataset",
+                  "project_id": "toolnest"
+                },
+                "kind": "document",
+                "doc_id": "EX-CANCEL-01",
+                "source_version": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "excerpt": "# Reservation cancellation\n\nOnly reservations that have not yet been collected can be cancelled.\n\nThe original booking r",
+              "span": {
+                "start": 0,
+                "end": 120
+              },
+              "metadata": {
+                "title": "Reservation cancellation",
+                "source_path": "part4-dataset/docs/EX-CANCEL-01.md",
+                "url": null,
+                "document_type": "business_rules",
+                "status": "active",
+                "availability": {
+                  "known_available_at": "2026-11-01T09:00:00Z",
+                  "complete": true
+                }
+              },
+              "temporal_status": "verified"
+            }
+          },
+          "isError": false
+        }
+      }
+    },
+    {
+      "name": "Continue reading the same document",
+      "scenario": "refinement",
+      "schema": "ToolCallRequest",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 7,
+        "method": "tools/call",
+        "params": {
+          "name": "get_document",
+          "arguments": {
+            "project_id": "toolnest",
+            "doc_id": "EX-CANCEL-01",
+            "offset": 120,
+            "limit": 120
+          },
+          "_meta": {
+            "ticketiq/context": {
+              "contract_version": "1.0",
+              "run_id": "run-001",
+              "session_id": "session-001",
+              "actor_id": "user-author-001",
+              "connection_id": "jira-demo",
+              "project_id": "toolnest",
+              "ticket_selector": "TN-123",
+              "rag_scope": {
+                "corpus_id": "ticketiq-fixtures",
+                "dataset_id": "part4-dataset",
+                "project_id": "toolnest"
+              },
+              "target_corpus_ticket_id": "EX-TARGET-001",
+              "temporal_filter": {
+                "mode": "strict",
+                "snapshot_at": "2026-11-06T12:00:00Z"
+              },
+              "retrieval_mode": "hybrid",
+              "initial_index_revision": null
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Final pinned source page",
+      "scenario": "refinement",
+      "schema": "GetDocumentResponse",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 7,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"ok\":true,\"source\":{\"scope\":{\"corpus_id\":\"ticketiq-fixtures\",\"dataset_id\":\"part4-dataset\",\"project_id\":\"toolnest\"},\"kind\":\"document\",\"doc_id\":\"EX-CANCEL-01\",\"source_version\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},\"index_revision\":\"fixtures-20261109-r1\",\"metadata\":{\"title\":\"Reservation cancellation\",\"source_path\":\"part4-dataset/docs/EX-CANCEL-01.md\",\"url\":null,\"document_type\":\"business_rules\",\"status\":\"active\",\"availability\":{\"known_available_at\":\"2026-11-01T09:00:00Z\",\"complete\":true}},\"temporal_filter\":{\"mode\":\"strict\",\"snapshot_at\":\"2026-11-06T12:00:00Z\"},\"temporal_status\":\"verified\",\"warnings\":[],\"content\":\"emains visible after cancellation. This document does not define a notification policy.\\n\",\"offset\":120,\"total_chars\":208,\"next_offset\":null,\"retrieval_profile_id\":\"fixture-profile-v1\",\"citation\":{\"citation_id\":\"citation-v1:b486b2359dd2a4351cc345e6e2f5de26835900cb3572040ba6eb51950d186cba\",\"source\":{\"scope\":{\"corpus_id\":\"ticketiq-fixtures\",\"dataset_id\":\"part4-dataset\",\"project_id\":\"toolnest\"},\"kind\":\"document\",\"doc_id\":\"EX-CANCEL-01\",\"source_version\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},\"excerpt\":\"emains visible after cancellation. This document does not define a notification policy.\\n\",\"span\":{\"start\":120,\"end\":208},\"metadata\":{\"title\":\"Reservation cancellation\",\"source_path\":\"part4-dataset/docs/EX-CANCEL-01.md\",\"url\":null,\"document_type\":\"business_rules\",\"status\":\"active\",\"availability\":{\"known_available_at\":\"2026-11-01T09:00:00Z\",\"complete\":true}},\"temporal_status\":\"verified\"}}"
+            }
+          ],
+          "structuredContent": {
+            "ok": true,
+            "source": {
+              "scope": {
+                "corpus_id": "ticketiq-fixtures",
+                "dataset_id": "part4-dataset",
+                "project_id": "toolnest"
+              },
+              "kind": "document",
+              "doc_id": "EX-CANCEL-01",
+              "source_version": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "index_revision": "fixtures-20261109-r1",
+            "metadata": {
+              "title": "Reservation cancellation",
+              "source_path": "part4-dataset/docs/EX-CANCEL-01.md",
+              "url": null,
+              "document_type": "business_rules",
+              "status": "active",
+              "availability": {
+                "known_available_at": "2026-11-01T09:00:00Z",
+                "complete": true
+              }
+            },
+            "temporal_filter": {
+              "mode": "strict",
+              "snapshot_at": "2026-11-06T12:00:00Z"
+            },
+            "temporal_status": "verified",
+            "warnings": [],
+            "content": "emains visible after cancellation. This document does not define a notification policy.\n",
+            "offset": 120,
+            "total_chars": 208,
+            "next_offset": null,
+            "retrieval_profile_id": "fixture-profile-v1",
+            "citation": {
+              "citation_id": "citation-v1:b486b2359dd2a4351cc345e6e2f5de26835900cb3572040ba6eb51950d186cba",
+              "source": {
+                "scope": {
+                  "corpus_id": "ticketiq-fixtures",
+                  "dataset_id": "part4-dataset",
+                  "project_id": "toolnest"
+                },
+                "kind": "document",
+                "doc_id": "EX-CANCEL-01",
+                "source_version": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "excerpt": "emains visible after cancellation. This document does not define a notification policy.\n",
+              "span": {
+                "start": 120,
+                "end": 208
+              },
+              "metadata": {
+                "title": "Reservation cancellation",
+                "source_path": "part4-dataset/docs/EX-CANCEL-01.md",
+                "url": null,
+                "document_type": "business_rules",
+                "status": "active",
+                "availability": {
+                  "known_available_at": "2026-11-01T09:00:00Z",
+                  "complete": true
+                }
+              },
+              "temporal_status": "verified"
+            }
+          },
+          "isError": false
+        }
+      }
+    },
+    {
+      "name": "Backend saves an explicitly approved proposal",
+      "scenario": "refinement",
+      "schema": "ToolCallRequest",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 8,
+        "method": "tools/call",
+        "params": {
+          "name": "update_ticket",
+          "arguments": {
+            "ticket_id": "10001",
+            "changes": {
+              "description": {
+                "type": "doc",
+                "version": 1,
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Allow cancellation of reservations that have not yet been collected. After successful cancellation, email the person who made the reservation."
+                      }
+                    ]
+                  }
+                ]
+              },
+              "acceptance_criteria": {
+                "type": "doc",
+                "version": 1,
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "1. A reservation that has not been collected can be cancelled."
+                      }
+                    ]
+                  },
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "2. A reservation that has already been collected cannot be cancelled."
+                      }
+                    ]
+                  },
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "3. After a successful cancellation, email the person who made the reservation."
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "approval_id": "approval-001",
+            "expected_version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "_meta": {
+            "ticketiq/context": {
+              "contract_version": "1.0",
+              "run_id": "run-001",
+              "session_id": "session-001",
+              "actor_id": "user-author-001",
+              "connection_id": "jira-demo",
+              "project_id": "toolnest",
+              "ticket_selector": "TN-123",
+              "rag_scope": {
+                "corpus_id": "ticketiq-fixtures",
+                "dataset_id": "part4-dataset",
+                "project_id": "toolnest"
+              },
+              "target_corpus_ticket_id": "EX-TARGET-001",
+              "temporal_filter": {
+                "mode": "strict",
+                "snapshot_at": "2026-11-06T12:00:00Z"
+              },
+              "retrieval_mode": "hybrid",
+              "initial_index_revision": null
+            },
+            "ticketiq/write": {
+              "proposal_id": "proposal-001",
+              "operation_id": "save-001"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Verified update with recorded approval outcome",
+      "scenario": "refinement",
+      "schema": "UpdateTicketResponse",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 8,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"ok\":true,\"update\":{\"ok\":true,\"status\":\"updated\",\"operation_id\":\"save-001\",\"approval_id\":\"approval-001\",\"changed_fields\":[\"description\",\"acceptance_criteria\"],\"ticket\":{\"connection_id\":\"jira-demo\",\"project_id\":\"toolnest\",\"ticket_id\":\"10001\",\"key\":\"TN-123\",\"jira_project_id\":\"10000\",\"title\":\"Allow reservation cancellation\",\"description\":{\"type\":\"doc\",\"version\":1,\"content\":[{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"Allow cancellation of reservations that have not yet been collected. After successful cancellation, email the person who made the reservation.\"}]}]},\"acceptance_criteria\":{\"type\":\"doc\",\"version\":1,\"content\":[{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"1. A reservation that has not been collected can be cancelled.\"}]},{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"2. A reservation that has already been collected cannot be cancelled.\"}]},{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"3. After a successful cancellation, email the person who made the reservation.\"}]}]},\"acceptance_criteria_state\":\"available\",\"status\":{\"id\":\"10000\",\"name\":\"To Do\"},\"label\":[\"reservations\"],\"updated_at\":\"2026-11-09T10:05:00Z\",\"version\":\"snapshot-v1:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\"}},\"approval_receipt\":{\"ok\":true,\"approval_id\":\"approval-001\",\"operation_id\":\"save-001\",\"attempt_id\":\"attempt-002\",\"recorded_at\":\"2026-11-09T10:05:01Z\",\"recorded_state\":\"succeeded\",\"replayed\":false},\"replayed\":false}"
+            }
+          ],
+          "structuredContent": {
+            "ok": true,
+            "update": {
+              "ok": true,
+              "status": "updated",
+              "operation_id": "save-001",
+              "approval_id": "approval-001",
+              "changed_fields": [
+                "description",
+                "acceptance_criteria"
+              ],
+              "ticket": {
+                "connection_id": "jira-demo",
+                "project_id": "toolnest",
+                "ticket_id": "10001",
+                "key": "TN-123",
+                "jira_project_id": "10000",
+                "title": "Allow reservation cancellation",
+                "description": {
+                  "type": "doc",
+                  "version": 1,
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "Allow cancellation of reservations that have not yet been collected. After successful cancellation, email the person who made the reservation."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "acceptance_criteria": {
+                  "type": "doc",
+                  "version": 1,
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "1. A reservation that has not been collected can be cancelled."
+                        }
+                      ]
+                    },
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "2. A reservation that has already been collected cannot be cancelled."
+                        }
+                      ]
+                    },
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "3. After a successful cancellation, email the person who made the reservation."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "acceptance_criteria_state": "available",
+                "status": {
+                  "id": "10000",
+                  "name": "To Do"
+                },
+                "label": [
+                  "reservations"
+                ],
+                "updated_at": "2026-11-09T10:05:00Z",
+                "version": "snapshot-v1:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+              }
+            },
+            "approval_receipt": {
+              "ok": true,
+              "approval_id": "approval-001",
+              "operation_id": "save-001",
+              "attempt_id": "attempt-002",
+              "recorded_at": "2026-11-09T10:05:01Z",
+              "recorded_state": "succeeded",
+              "replayed": false
+            },
+            "replayed": false
+          },
+          "isError": false
+        }
+      }
+    },
+    {
+      "name": "Backend resumes the same operation after losing a reply",
+      "scenario": "refinement",
+      "schema": "ToolCallRequest",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 9,
+        "method": "tools/call",
+        "params": {
+          "name": "update_ticket",
+          "arguments": {
+            "ticket_id": "10001",
+            "changes": {
+              "description": {
+                "type": "doc",
+                "version": 1,
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Allow cancellation of reservations that have not yet been collected. After successful cancellation, email the person who made the reservation."
+                      }
+                    ]
+                  }
+                ]
+              },
+              "acceptance_criteria": {
+                "type": "doc",
+                "version": 1,
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "1. A reservation that has not been collected can be cancelled."
+                      }
+                    ]
+                  },
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "2. A reservation that has already been collected cannot be cancelled."
+                      }
+                    ]
+                  },
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "3. After a successful cancellation, email the person who made the reservation."
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "approval_id": "approval-001",
+            "expected_version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "_meta": {
+            "ticketiq/context": {
+              "contract_version": "1.0",
+              "run_id": "run-001",
+              "session_id": "session-001",
+              "actor_id": "user-author-001",
+              "connection_id": "jira-demo",
+              "project_id": "toolnest",
+              "ticket_selector": "TN-123",
+              "rag_scope": {
+                "corpus_id": "ticketiq-fixtures",
+                "dataset_id": "part4-dataset",
+                "project_id": "toolnest"
+              },
+              "target_corpus_ticket_id": "EX-TARGET-001",
+              "temporal_filter": {
+                "mode": "strict",
+                "snapshot_at": "2026-11-06T12:00:00Z"
+              },
+              "retrieval_mode": "hybrid",
+              "initial_index_revision": null
+            },
+            "ticketiq/write": {
+              "proposal_id": "proposal-001",
+              "operation_id": "save-001"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Completed duplicate causes no additional Jira write",
+      "scenario": "refinement",
+      "schema": "UpdateTicketResponse",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 9,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"ok\":true,\"update\":{\"ok\":true,\"status\":\"updated\",\"operation_id\":\"save-001\",\"approval_id\":\"approval-001\",\"changed_fields\":[\"description\",\"acceptance_criteria\"],\"ticket\":{\"connection_id\":\"jira-demo\",\"project_id\":\"toolnest\",\"ticket_id\":\"10001\",\"key\":\"TN-123\",\"jira_project_id\":\"10000\",\"title\":\"Allow reservation cancellation\",\"description\":{\"type\":\"doc\",\"version\":1,\"content\":[{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"Allow cancellation of reservations that have not yet been collected. After successful cancellation, email the person who made the reservation.\"}]}]},\"acceptance_criteria\":{\"type\":\"doc\",\"version\":1,\"content\":[{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"1. A reservation that has not been collected can be cancelled.\"}]},{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"2. A reservation that has already been collected cannot be cancelled.\"}]},{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"3. After a successful cancellation, email the person who made the reservation.\"}]}]},\"acceptance_criteria_state\":\"available\",\"status\":{\"id\":\"10000\",\"name\":\"To Do\"},\"label\":[\"reservations\"],\"updated_at\":\"2026-11-09T10:05:00Z\",\"version\":\"snapshot-v1:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\"}},\"approval_receipt\":{\"ok\":true,\"approval_id\":\"approval-001\",\"operation_id\":\"save-001\",\"attempt_id\":\"attempt-002\",\"recorded_at\":\"2026-11-09T10:05:01Z\",\"recorded_state\":\"succeeded\",\"replayed\":false},\"replayed\":true}"
+            }
+          ],
+          "structuredContent": {
+            "ok": true,
+            "update": {
+              "ok": true,
+              "status": "updated",
+              "operation_id": "save-001",
+              "approval_id": "approval-001",
+              "changed_fields": [
+                "description",
+                "acceptance_criteria"
+              ],
+              "ticket": {
+                "connection_id": "jira-demo",
+                "project_id": "toolnest",
+                "ticket_id": "10001",
+                "key": "TN-123",
+                "jira_project_id": "10000",
+                "title": "Allow reservation cancellation",
+                "description": {
+                  "type": "doc",
+                  "version": 1,
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "Allow cancellation of reservations that have not yet been collected. After successful cancellation, email the person who made the reservation."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "acceptance_criteria": {
+                  "type": "doc",
+                  "version": 1,
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "1. A reservation that has not been collected can be cancelled."
+                        }
+                      ]
+                    },
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "2. A reservation that has already been collected cannot be cancelled."
+                        }
+                      ]
+                    },
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "3. After a successful cancellation, email the person who made the reservation."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "acceptance_criteria_state": "available",
+                "status": {
+                  "id": "10000",
+                  "name": "To Do"
+                },
+                "label": [
+                  "reservations"
+                ],
+                "updated_at": "2026-11-09T10:05:00Z",
+                "version": "snapshot-v1:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+              }
+            },
+            "approval_receipt": {
+              "ok": true,
+              "approval_id": "approval-001",
+              "operation_id": "save-001",
+              "attempt_id": "attempt-002",
+              "recorded_at": "2026-11-09T10:05:01Z",
+              "recorded_state": "succeeded",
+              "replayed": false
+            },
+            "replayed": true
+          },
+          "isError": false
+        }
+      }
+    },
+    {
+      "name": "Reject a mismatched project assertion",
+      "scenario": "errors",
+      "schema": "SearchDocsResponse",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 10,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"ok\":false,\"source\":\"mcp\",\"error\":{\"code\":\"CONTEXT_MISMATCH\",\"message\":\"The requested project does not match this run.\",\"retryable\":false,\"write_outcome\":\"not_attempted\"}}"
+            }
+          ],
+          "structuredContent": {
+            "ok": false,
+            "source": "mcp",
+            "error": {
+              "code": "CONTEXT_MISMATCH",
+              "message": "The requested project does not match this run.",
+              "retryable": false,
+              "write_outcome": "not_attempted"
+            }
+          },
+          "isError": true
+        }
+      }
+    },
+    {
+      "name": "Require retrieval before reading an unknown citation",
+      "scenario": "errors",
+      "schema": "GetDocumentResponse",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 11,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"ok\":false,\"source\":\"mcp\",\"error\":{\"code\":\"CITATION_NOT_FOUND\",\"message\":\"Retrieve this document in the current run before reading it.\",\"retryable\":false,\"write_outcome\":\"not_attempted\"}}"
+            }
+          ],
+          "structuredContent": {
+            "ok": false,
+            "source": "mcp",
+            "error": {
+              "code": "CITATION_NOT_FOUND",
+              "message": "Retrieve this document in the current run before reading it.",
+              "retryable": false,
+              "write_outcome": "not_attempted"
+            }
+          },
+          "isError": true
+        }
+      }
+    },
+    {
+      "name": "Distinguish RAG unavailability from empty evidence",
+      "scenario": "errors",
+      "schema": "SearchDocsResponse",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 12,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"ok\":false,\"source\":\"rag\",\"error\":{\"code\":\"INDEX_NOT_READY\",\"message\":\"The configured corpus has no ready index generation.\",\"retryable\":true}}"
+            }
+          ],
+          "structuredContent": {
+            "ok": false,
+            "source": "rag",
+            "error": {
+              "code": "INDEX_NOT_READY",
+              "message": "The configured corpus has no ready index generation.",
+              "retryable": true
+            }
+          },
+          "isError": true
+        }
+      }
+    },
+    {
+      "name": "Propagate a stale Jira snapshot",
+      "scenario": "errors",
+      "schema": "UpdateTicketResponse",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 13,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"ok\":false,\"source\":\"jira\",\"error\":{\"code\":\"VERSION_CONFLICT\",\"message\":\"The ticket changed after this proposal was reviewed. Read it again and obtain approval for the current snapshot.\",\"retryable\":false,\"write_outcome\":\"not_attempted\"}}"
+            }
+          ],
+          "structuredContent": {
+            "ok": false,
+            "source": "jira",
+            "error": {
+              "code": "VERSION_CONFLICT",
+              "message": "The ticket changed after this proposal was reviewed. Read it again and obtain approval for the current snapshot.",
+              "retryable": false,
+              "write_outcome": "not_attempted"
+            }
+          },
+          "isError": true
+        }
+      }
+    },
+    {
+      "name": "Reject unapproved changes before dispatch",
+      "scenario": "errors",
+      "schema": "UpdateTicketResponse",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 14,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"ok\":false,\"source\":\"jira\",\"error\":{\"code\":\"APPROVAL_INVALID\",\"message\":\"The submitted changes do not match an active author approval.\",\"retryable\":false,\"write_outcome\":\"not_attempted\"}}"
+            }
+          ],
+          "structuredContent": {
+            "ok": false,
+            "source": "jira",
+            "error": {
+              "code": "APPROVAL_INVALID",
+              "message": "The submitted changes do not match an active author approval.",
+              "retryable": false,
+              "write_outcome": "not_attempted"
+            }
+          },
+          "isError": true
+        }
+      }
+    },
+    {
+      "name": "Keep an uncertain write distinct from a rejected update",
+      "scenario": "errors",
+      "schema": "UpdateTicketResponse",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 15,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"ok\":false,\"source\":\"jira\",\"error\":{\"code\":\"UPDATE_OUTCOME_UNKNOWN\",\"message\":\"The write may have reached Jira. Reconcile this operation before attempting another save.\",\"retryable\":false,\"write_outcome\":\"unknown\"}}"
+            }
+          ],
+          "structuredContent": {
+            "ok": false,
+            "source": "jira",
+            "error": {
+              "code": "UPDATE_OUTCOME_UNKNOWN",
+              "message": "The write may have reached Jira. Reconcile this operation before attempting another save.",
+              "retryable": false,
+              "write_outcome": "unknown"
+            }
+          },
+          "isError": true
+        }
+      }
+    },
+    {
+      "name": "Ticket remains readable when edit capabilities are unavailable",
+      "scenario": "read_only",
+      "schema": "GetTicketResponse",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 16,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"ok\":true,\"ticket\":{\"connection_id\":\"jira-demo\",\"project_id\":\"toolnest\",\"ticket_id\":\"10001\",\"key\":\"TN-123\",\"jira_project_id\":\"10000\",\"title\":\"Allow reservation cancellation\",\"description\":{\"type\":\"doc\",\"version\":1,\"content\":[{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"Add the ability to cancel a reservation.\"}]}]},\"acceptance_criteria\":null,\"acceptance_criteria_state\":\"available\",\"status\":{\"id\":\"10000\",\"name\":\"To Do\"},\"label\":[\"reservations\"],\"updated_at\":\"2026-11-05T10:00:00Z\",\"version\":\"snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},\"edit_capabilities\":null,\"capability_error\":{\"ok\":false,\"source\":\"jira\",\"error\":{\"code\":\"PERMISSION_DENIED\",\"message\":\"Edit capabilities are not available to this Jira identity.\",\"retryable\":false,\"write_outcome\":\"not_attempted\",\"upstream_status\":403}}}"
+            }
+          ],
+          "structuredContent": {
+            "ok": true,
+            "ticket": {
+              "connection_id": "jira-demo",
+              "project_id": "toolnest",
+              "ticket_id": "10001",
+              "key": "TN-123",
+              "jira_project_id": "10000",
+              "title": "Allow reservation cancellation",
+              "description": {
+                "type": "doc",
+                "version": 1,
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Add the ability to cancel a reservation."
+                      }
+                    ]
+                  }
+                ]
+              },
+              "acceptance_criteria": null,
+              "acceptance_criteria_state": "available",
+              "status": {
+                "id": "10000",
+                "name": "To Do"
+              },
+              "label": [
+                "reservations"
+              ],
+              "updated_at": "2026-11-05T10:00:00Z",
+              "version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "edit_capabilities": null,
+            "capability_error": {
+              "ok": false,
+              "source": "jira",
+              "error": {
+                "code": "PERMISSION_DENIED",
+                "message": "Edit capabilities are not available to this Jira identity.",
+                "retryable": false,
+                "write_outcome": "not_attempted",
+                "upstream_status": 403
+              }
+            }
+          },
+          "isError": false
+        }
+      }
+    },
+    {
+      "name": "Unknown tool is a protocol error",
+      "scenario": "protocol",
+      "schema": "ProtocolErrorResponse",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 17,
+        "error": {
+          "code": -32602,
+          "message": "Unknown tool: delete_ticket"
+        }
+      }
+    },
+    {
+      "name": "Search against the pinned generation before eviction",
+      "schema": "ToolCallRequest",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 100,
+        "method": "tools/call",
+        "params": {
+          "name": "search_docs",
+          "arguments": {
+            "project_id": "toolnest",
+            "query": "When can a reservation be cancelled?",
+            "top_k": 5
+          },
+          "_meta": {
+            "ticketiq/context": {
+              "contract_version": "1.0",
+              "run_id": "run-001",
+              "session_id": "session-001",
+              "actor_id": "user-author-001",
+              "connection_id": "jira-demo",
+              "project_id": "toolnest",
+              "ticket_selector": "TN-123",
+              "rag_scope": {
+                "corpus_id": "ticketiq-fixtures",
+                "dataset_id": "part4-dataset",
+                "project_id": "toolnest"
+              },
+              "target_corpus_ticket_id": "EX-TARGET-001",
+              "temporal_filter": {
+                "mode": "strict",
+                "snapshot_at": "2026-11-06T12:00:00Z"
+              },
+              "retrieval_mode": "hybrid",
+              "initial_index_revision": null
+            }
+          }
+        }
+      },
+      "scenario": "evidence_refresh"
+    },
+    {
+      "name": "Propagate eviction without an internal recovery search",
+      "schema": "SearchDocsResponse",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 100,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"ok\":false,\"error\":{\"code\":\"INDEX_REVISION_UNAVAILABLE\",\"message\":\"The requested generation is unavailable. Search the current index to refresh citations.\",\"retryable\":false},\"source\":\"rag\"}"
+            }
+          ],
+          "structuredContent": {
+            "ok": false,
+            "error": {
+              "code": "INDEX_REVISION_UNAVAILABLE",
+              "message": "The requested generation is unavailable. Search the current index to refresh citations.",
+              "retryable": false
+            },
+            "source": "rag"
+          },
+          "isError": true
+        }
+      },
+      "scenario": "evidence_refresh"
+    },
+    {
+      "name": "Agent bootstraps a new run after eviction",
+      "schema": "ToolCallRequest",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 101,
+        "method": "tools/call",
+        "params": {
+          "name": "get_ticket",
+          "arguments": {
+            "ticket_id": "TN-123"
+          },
+          "_meta": {
+            "ticketiq/context": {
+              "contract_version": "1.0",
+              "run_id": "run-refresh-002",
+              "session_id": "session-001",
+              "actor_id": "user-author-001",
+              "connection_id": "jira-demo",
+              "project_id": "toolnest",
+              "ticket_selector": "TN-123",
+              "rag_scope": {
+                "corpus_id": "ticketiq-fixtures",
+                "dataset_id": "part4-dataset",
+                "project_id": "toolnest"
+              },
+              "target_corpus_ticket_id": "EX-TARGET-001",
+              "temporal_filter": {
+                "mode": "strict",
+                "snapshot_at": "2026-11-06T12:00:00Z"
+              },
+              "retrieval_mode": "hybrid",
+              "initial_index_revision": null
+            }
+          }
+        }
+      },
+      "scenario": "evidence_refresh"
+    },
+    {
+      "name": "Replay a finalized recovered operation without dispatch",
+      "scenario": "recovery_success",
+      "schema": "UpdateTicketResponse",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 110,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"ok\":true,\"update\":{\"ok\":true,\"status\":\"updated\",\"operation_id\":\"save-001\",\"approval_id\":\"approval-001\",\"changed_fields\":[\"description\",\"acceptance_criteria\"],\"ticket\":{\"connection_id\":\"jira-demo\",\"project_id\":\"toolnest\",\"ticket_id\":\"10001\",\"key\":\"TN-123\",\"jira_project_id\":\"10000\",\"title\":\"Allow reservation cancellation\",\"description\":{\"type\":\"doc\",\"version\":1,\"content\":[{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"Allow cancellation of reservations that have not yet been collected. After successful cancellation, email the person who made the reservation.\"}]}]},\"acceptance_criteria\":{\"type\":\"doc\",\"version\":1,\"content\":[{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"1. A reservation that has not been collected can be cancelled.\"}]},{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"2. A reservation that has already been collected cannot be cancelled.\"}]},{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"3. After a successful cancellation, email the person who made the reservation.\"}]}]},\"acceptance_criteria_state\":\"available\",\"status\":{\"id\":\"10000\",\"name\":\"To Do\"},\"label\":[\"reservations\"],\"updated_at\":\"2026-11-09T10:05:00Z\",\"version\":\"snapshot-v1:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\"}},\"approval_receipt\":{\"ok\":true,\"approval_id\":\"approval-001\",\"operation_id\":\"save-001\",\"attempt_id\":\"attempt-002\",\"recorded_at\":\"2026-11-09T11:00:02Z\",\"recorded_state\":\"succeeded\",\"replayed\":false},\"replayed\":true}"
+            }
+          ],
+          "structuredContent": {
+            "ok": true,
+            "update": {
+              "ok": true,
+              "status": "updated",
+              "operation_id": "save-001",
+              "approval_id": "approval-001",
+              "changed_fields": [
+                "description",
+                "acceptance_criteria"
+              ],
+              "ticket": {
+                "connection_id": "jira-demo",
+                "project_id": "toolnest",
+                "ticket_id": "10001",
+                "key": "TN-123",
+                "jira_project_id": "10000",
+                "title": "Allow reservation cancellation",
+                "description": {
+                  "type": "doc",
+                  "version": 1,
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "Allow cancellation of reservations that have not yet been collected. After successful cancellation, email the person who made the reservation."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "acceptance_criteria": {
+                  "type": "doc",
+                  "version": 1,
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "1. A reservation that has not been collected can be cancelled."
+                        }
+                      ]
+                    },
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "2. A reservation that has already been collected cannot be cancelled."
+                        }
+                      ]
+                    },
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "3. After a successful cancellation, email the person who made the reservation."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "acceptance_criteria_state": "available",
+                "status": {
+                  "id": "10000",
+                  "name": "To Do"
+                },
+                "label": [
+                  "reservations"
+                ],
+                "updated_at": "2026-11-09T10:05:00Z",
+                "version": "snapshot-v1:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+              }
+            },
+            "approval_receipt": {
+              "ok": true,
+              "approval_id": "approval-001",
+              "operation_id": "save-001",
+              "attempt_id": "attempt-002",
+              "recorded_at": "2026-11-09T11:00:02Z",
+              "recorded_state": "succeeded",
+              "replayed": false
+            },
+            "replayed": true
+          },
+          "isError": false
+        }
+      }
+    },
+    {
+      "name": "Request the exact newly discovered rule",
+      "scenario": "document_read",
+      "schema": "ToolCallRequest",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 111,
+        "method": "tools/call",
+        "params": {
+          "name": "get_document",
+          "arguments": {
+            "project_id": "toolnest",
+            "doc_id": "EX-CANCEL-01",
+            "offset": 98,
+            "limit": 56
+          },
+          "_meta": {
+            "ticketiq/context": {
+              "contract_version": "1.0",
+              "run_id": "run-001",
+              "session_id": "session-001",
+              "actor_id": "user-author-001",
+              "connection_id": "jira-demo",
+              "project_id": "toolnest",
+              "ticket_selector": "TN-123",
+              "rag_scope": {
+                "corpus_id": "ticketiq-fixtures",
+                "dataset_id": "part4-dataset",
+                "project_id": "toolnest"
+              },
+              "target_corpus_ticket_id": "EX-TARGET-001",
+              "temporal_filter": {
+                "mode": "strict",
+                "snapshot_at": "2026-11-06T12:00:00Z"
+              },
+              "retrieval_mode": "hybrid",
+              "initial_index_revision": null
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Forward and register the newly discovered rule citation",
+      "scenario": "document_read",
+      "schema": "GetDocumentResponse",
+      "payload": {
+        "jsonrpc": "2.0",
+        "id": 111,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"ok\":true,\"source\":{\"scope\":{\"corpus_id\":\"ticketiq-fixtures\",\"dataset_id\":\"part4-dataset\",\"project_id\":\"toolnest\"},\"kind\":\"document\",\"doc_id\":\"EX-CANCEL-01\",\"source_version\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},\"index_revision\":\"fixtures-20261109-r1\",\"metadata\":{\"title\":\"Reservation cancellation\",\"source_path\":\"part4-dataset/docs/EX-CANCEL-01.md\",\"url\":null,\"document_type\":\"business_rules\",\"status\":\"active\",\"availability\":{\"known_available_at\":\"2026-11-01T09:00:00Z\",\"complete\":true}},\"temporal_filter\":{\"mode\":\"strict\",\"snapshot_at\":\"2026-11-06T12:00:00Z\"},\"temporal_status\":\"verified\",\"warnings\":[],\"content\":\"The original booking remains visible after cancellation.\",\"offset\":98,\"total_chars\":208,\"next_offset\":154,\"retrieval_profile_id\":\"fixture-profile-v1\",\"citation\":{\"citation_id\":\"citation-v1:598928770581460a54cebd068be3a44d33f4ad27cd04f1db75a4e88fac56d10e\",\"source\":{\"scope\":{\"corpus_id\":\"ticketiq-fixtures\",\"dataset_id\":\"part4-dataset\",\"project_id\":\"toolnest\"},\"kind\":\"document\",\"doc_id\":\"EX-CANCEL-01\",\"source_version\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},\"excerpt\":\"The original booking remains visible after cancellation.\",\"span\":{\"start\":98,\"end\":154},\"metadata\":{\"title\":\"Reservation cancellation\",\"source_path\":\"part4-dataset/docs/EX-CANCEL-01.md\",\"url\":null,\"document_type\":\"business_rules\",\"status\":\"active\",\"availability\":{\"known_available_at\":\"2026-11-01T09:00:00Z\",\"complete\":true}},\"temporal_status\":\"verified\"}}"
+            }
+          ],
+          "structuredContent": {
+            "ok": true,
+            "source": {
+              "scope": {
+                "corpus_id": "ticketiq-fixtures",
+                "dataset_id": "part4-dataset",
+                "project_id": "toolnest"
+              },
+              "kind": "document",
+              "doc_id": "EX-CANCEL-01",
+              "source_version": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "index_revision": "fixtures-20261109-r1",
+            "metadata": {
+              "title": "Reservation cancellation",
+              "source_path": "part4-dataset/docs/EX-CANCEL-01.md",
+              "url": null,
+              "document_type": "business_rules",
+              "status": "active",
+              "availability": {
+                "known_available_at": "2026-11-01T09:00:00Z",
+                "complete": true
+              }
+            },
+            "temporal_filter": {
+              "mode": "strict",
+              "snapshot_at": "2026-11-06T12:00:00Z"
+            },
+            "temporal_status": "verified",
+            "warnings": [],
+            "content": "The original booking remains visible after cancellation.",
+            "offset": 98,
+            "total_chars": 208,
+            "next_offset": 154,
+            "retrieval_profile_id": "fixture-profile-v1",
+            "citation": {
+              "citation_id": "citation-v1:598928770581460a54cebd068be3a44d33f4ad27cd04f1db75a4e88fac56d10e",
+              "source": {
+                "scope": {
+                  "corpus_id": "ticketiq-fixtures",
+                  "dataset_id": "part4-dataset",
+                  "project_id": "toolnest"
+                },
+                "kind": "document",
+                "doc_id": "EX-CANCEL-01",
+                "source_version": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "excerpt": "The original booking remains visible after cancellation.",
+              "span": {
+                "start": 98,
+                "end": 154
+              },
+              "metadata": {
+                "title": "Reservation cancellation",
+                "source_path": "part4-dataset/docs/EX-CANCEL-01.md",
+                "url": null,
+                "document_type": "business_rules",
+                "status": "active",
+                "availability": {
+                  "known_available_at": "2026-11-01T09:00:00Z",
+                  "complete": true
+                }
+              },
+              "temporal_status": "verified"
+            }
+          },
+          "isError": false
+        }
+      }
+    }
+  ]
+}

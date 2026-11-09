@@ -1,0 +1,1059 @@
+{
+  "description": "Fictional messages. schema selects a definition in contract.schema.json. successful_retry is one sequence; unknown_outcome is an alternative branch, not a second result for a completed attempt. Snapshot hashes are inherited illustrative fixtures.",
+  "examples": [
+    {
+      "name": "Approved record before the first attempt",
+      "scenario": "successful_retry",
+      "method": "GET",
+      "route": "/internal/v1/approvals/approval-001",
+      "schema": "RecordResponse",
+      "http_status": 200,
+      "payload": {
+        "ok": true,
+        "approval": {
+          "approval_id": "approval-001",
+          "proposal_id": "proposal-001",
+          "session_id": "session-001",
+          "approved_by": "user-author-001",
+          "approval_event_id": "event-approve-001",
+          "approved_at": "2026-11-09T10:04:00Z",
+          "expires_at": "2026-11-09T10:34:00Z",
+          "proposal": {
+            "connection_id": "jira-demo",
+            "project_id": "toolnest",
+            "ticket_id": "10001",
+            "expected_version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "changes": {
+              "description": {
+                "type": "doc",
+                "version": 1,
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Allow cancellation of reservations that have not yet been collected. After successful cancellation, email the person who made the reservation."
+                      }
+                    ]
+                  }
+                ]
+              },
+              "acceptance_criteria": {
+                "type": "doc",
+                "version": 1,
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "1. A reservation that has not been collected can be cancelled."
+                      }
+                    ]
+                  },
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "2. A reservation that has already been collected cannot be cancelled."
+                      }
+                    ]
+                  },
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "3. After a successful cancellation, email the person who made the reservation."
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "mapping_revision": "1",
+            "acceptance_criteria_field_id": "customfield_10042"
+          },
+          "state": "approved",
+          "operation_id": "save-001",
+          "attempt_id": null,
+          "last_result": null,
+          "recovery": null
+        }
+      }
+    },
+    {
+      "name": "Reserve approval for the first attempt",
+      "scenario": "successful_retry",
+      "method": "POST",
+      "route": "/internal/v1/approvals/approval-001/authorize",
+      "schema": "AuthorizeRequest",
+      "payload": {
+        "contract_version": "1.0",
+        "actor_id": "user-author-001",
+        "session_id": "session-001",
+        "proposal_id": "proposal-001",
+        "mapping_revision": "1",
+        "acceptance_criteria_field_id": "customfield_10042",
+        "attempt_id": "attempt-001",
+        "update": {
+          "contract_version": "1.0",
+          "connection_id": "jira-demo",
+          "project_id": "toolnest",
+          "ticket_id": "10001",
+          "expected_version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "approval_id": "approval-001",
+          "operation_id": "save-001",
+          "changes": {
+            "description": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Allow cancellation of reservations that have not yet been collected. After successful cancellation, email the person who made the reservation."
+                    }
+                  ]
+                }
+              ]
+            },
+            "acceptance_criteria": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "1. A reservation that has not been collected can be cancelled."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "2. A reservation that has already been collected cannot be cancelled."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "3. After a successful cancellation, email the person who made the reservation."
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "First authorization granted",
+      "scenario": "successful_retry",
+      "method": "POST",
+      "route": "/internal/v1/approvals/approval-001/authorize",
+      "schema": "AuthorizeResponse",
+      "http_status": 200,
+      "payload": {
+        "ok": true,
+        "approval_id": "approval-001",
+        "operation_id": "save-001",
+        "attempt_id": "attempt-001",
+        "authorized_at": "2026-11-09T10:04:10Z",
+        "state": "in_progress",
+        "replayed": false
+      }
+    },
+    {
+      "name": "Repeated authorization returns the existing grant",
+      "scenario": "successful_retry",
+      "method": "POST",
+      "route": "/internal/v1/approvals/approval-001/authorize",
+      "schema": "AuthorizeResponse",
+      "http_status": 200,
+      "payload": {
+        "ok": true,
+        "approval_id": "approval-001",
+        "operation_id": "save-001",
+        "attempt_id": "attempt-001",
+        "authorized_at": "2026-11-09T10:04:10Z",
+        "state": "in_progress",
+        "replayed": true
+      }
+    },
+    {
+      "name": "Report a definite rate-limit rejection",
+      "scenario": "successful_retry",
+      "method": "POST",
+      "route": "/internal/v1/approvals/approval-001/result",
+      "schema": "ResultRequest",
+      "payload": {
+        "contract_version": "1.0",
+        "operation_id": "save-001",
+        "attempt_id": "attempt-001",
+        "result": {
+          "ok": false,
+          "error": {
+            "code": "RATE_LIMITED",
+            "message": "Jira rejected this attempt due to rate limiting. Repeat approval and version checks before a retry.",
+            "retryable": true,
+            "write_outcome": "rejected",
+            "upstream_status": 429,
+            "retry_after_seconds": 30
+          }
+        }
+      }
+    },
+    {
+      "name": "Retryable rejection reopens the same operation",
+      "scenario": "successful_retry",
+      "method": "POST",
+      "route": "/internal/v1/approvals/approval-001/result",
+      "schema": "ResultResponse",
+      "http_status": 200,
+      "payload": {
+        "ok": true,
+        "approval_id": "approval-001",
+        "operation_id": "save-001",
+        "attempt_id": "attempt-001",
+        "recorded_at": "2026-11-09T10:04:11Z",
+        "recorded_state": "approved",
+        "replayed": false
+      }
+    },
+    {
+      "name": "Authorize another attempt after the retry delay",
+      "scenario": "successful_retry",
+      "method": "POST",
+      "route": "/internal/v1/approvals/approval-001/authorize",
+      "schema": "AuthorizeRequest",
+      "payload": {
+        "contract_version": "1.0",
+        "actor_id": "user-author-001",
+        "session_id": "session-001",
+        "proposal_id": "proposal-001",
+        "mapping_revision": "1",
+        "acceptance_criteria_field_id": "customfield_10042",
+        "attempt_id": "attempt-002",
+        "update": {
+          "contract_version": "1.0",
+          "connection_id": "jira-demo",
+          "project_id": "toolnest",
+          "ticket_id": "10001",
+          "expected_version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "approval_id": "approval-001",
+          "operation_id": "save-001",
+          "changes": {
+            "description": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Allow cancellation of reservations that have not yet been collected. After successful cancellation, email the person who made the reservation."
+                    }
+                  ]
+                }
+              ]
+            },
+            "acceptance_criteria": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "1. A reservation that has not been collected can be cancelled."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "2. A reservation that has already been collected cannot be cancelled."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "3. After a successful cancellation, email the person who made the reservation."
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Second authorization granted",
+      "scenario": "successful_retry",
+      "method": "POST",
+      "route": "/internal/v1/approvals/approval-001/authorize",
+      "schema": "AuthorizeResponse",
+      "http_status": 200,
+      "payload": {
+        "ok": true,
+        "approval_id": "approval-001",
+        "operation_id": "save-001",
+        "attempt_id": "attempt-002",
+        "authorized_at": "2026-11-09T10:04:45Z",
+        "state": "in_progress",
+        "replayed": false
+      }
+    },
+    {
+      "name": "Report the verified Jira update",
+      "scenario": "successful_retry",
+      "method": "POST",
+      "route": "/internal/v1/approvals/approval-001/result",
+      "schema": "ResultRequest",
+      "payload": {
+        "contract_version": "1.0",
+        "operation_id": "save-001",
+        "attempt_id": "attempt-002",
+        "result": {
+          "ok": true,
+          "status": "updated",
+          "operation_id": "save-001",
+          "approval_id": "approval-001",
+          "changed_fields": [
+            "description",
+            "acceptance_criteria"
+          ],
+          "ticket": {
+            "connection_id": "jira-demo",
+            "project_id": "toolnest",
+            "ticket_id": "10001",
+            "key": "TN-123",
+            "jira_project_id": "10000",
+            "title": "Allow reservation cancellation",
+            "description": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Allow cancellation of reservations that have not yet been collected. After successful cancellation, email the person who made the reservation."
+                    }
+                  ]
+                }
+              ]
+            },
+            "acceptance_criteria": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "1. A reservation that has not been collected can be cancelled."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "2. A reservation that has already been collected cannot be cancelled."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "3. After a successful cancellation, email the person who made the reservation."
+                    }
+                  ]
+                }
+              ]
+            },
+            "acceptance_criteria_state": "available",
+            "status": {
+              "id": "10000",
+              "name": "To Do"
+            },
+            "label": [
+              "reservations"
+            ],
+            "updated_at": "2026-11-09T10:05:00Z",
+            "version": "snapshot-v1:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+          }
+        }
+      }
+    },
+    {
+      "name": "Successful save recorded",
+      "scenario": "successful_retry",
+      "method": "POST",
+      "route": "/internal/v1/approvals/approval-001/result",
+      "schema": "ResultResponse",
+      "http_status": 200,
+      "payload": {
+        "ok": true,
+        "approval_id": "approval-001",
+        "operation_id": "save-001",
+        "attempt_id": "attempt-002",
+        "recorded_at": "2026-11-09T10:05:01Z",
+        "recorded_state": "succeeded",
+        "replayed": false
+      }
+    },
+    {
+      "name": "Repeated result report returns the original receipt",
+      "scenario": "successful_retry",
+      "method": "POST",
+      "route": "/internal/v1/approvals/approval-001/result",
+      "schema": "ResultResponse",
+      "http_status": 200,
+      "payload": {
+        "ok": true,
+        "approval_id": "approval-001",
+        "operation_id": "save-001",
+        "attempt_id": "attempt-002",
+        "recorded_at": "2026-11-09T10:05:01Z",
+        "recorded_state": "succeeded",
+        "replayed": true
+      }
+    },
+    {
+      "name": "Completed approval record",
+      "scenario": "successful_retry",
+      "method": "GET",
+      "route": "/internal/v1/approvals/approval-001",
+      "schema": "RecordResponse",
+      "http_status": 200,
+      "payload": {
+        "ok": true,
+        "approval": {
+          "approval_id": "approval-001",
+          "proposal_id": "proposal-001",
+          "session_id": "session-001",
+          "approved_by": "user-author-001",
+          "approval_event_id": "event-approve-001",
+          "approved_at": "2026-11-09T10:04:00Z",
+          "expires_at": "2026-11-09T10:34:00Z",
+          "proposal": {
+            "connection_id": "jira-demo",
+            "project_id": "toolnest",
+            "ticket_id": "10001",
+            "expected_version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "changes": {
+              "description": {
+                "type": "doc",
+                "version": 1,
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Allow cancellation of reservations that have not yet been collected. After successful cancellation, email the person who made the reservation."
+                      }
+                    ]
+                  }
+                ]
+              },
+              "acceptance_criteria": {
+                "type": "doc",
+                "version": 1,
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "1. A reservation that has not been collected can be cancelled."
+                      }
+                    ]
+                  },
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "2. A reservation that has already been collected cannot be cancelled."
+                      }
+                    ]
+                  },
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "3. After a successful cancellation, email the person who made the reservation."
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "mapping_revision": "1",
+            "acceptance_criteria_field_id": "customfield_10042"
+          },
+          "state": "succeeded",
+          "operation_id": "save-001",
+          "attempt_id": "attempt-002",
+          "last_result": {
+            "ok": true,
+            "status": "updated",
+            "operation_id": "save-001",
+            "approval_id": "approval-001",
+            "changed_fields": [
+              "description",
+              "acceptance_criteria"
+            ],
+            "ticket": {
+              "connection_id": "jira-demo",
+              "project_id": "toolnest",
+              "ticket_id": "10001",
+              "key": "TN-123",
+              "jira_project_id": "10000",
+              "title": "Allow reservation cancellation",
+              "description": {
+                "type": "doc",
+                "version": 1,
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Allow cancellation of reservations that have not yet been collected. After successful cancellation, email the person who made the reservation."
+                      }
+                    ]
+                  }
+                ]
+              },
+              "acceptance_criteria": {
+                "type": "doc",
+                "version": 1,
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "1. A reservation that has not been collected can be cancelled."
+                      }
+                    ]
+                  },
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "2. A reservation that has already been collected cannot be cancelled."
+                      }
+                    ]
+                  },
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "3. After a successful cancellation, email the person who made the reservation."
+                      }
+                    ]
+                  }
+                ]
+              },
+              "acceptance_criteria_state": "available",
+              "status": {
+                "id": "10000",
+                "name": "To Do"
+              },
+              "label": [
+                "reservations"
+              ],
+              "updated_at": "2026-11-09T10:05:00Z",
+              "version": "snapshot-v1:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            }
+          },
+          "recovery": null
+        }
+      }
+    },
+    {
+      "name": "Alternative branch: lost Jira acknowledgement",
+      "scenario": "unknown_outcome",
+      "method": "POST",
+      "route": "/internal/v1/approvals/approval-001/result",
+      "schema": "ResultRequest",
+      "payload": {
+        "contract_version": "1.0",
+        "operation_id": "save-001",
+        "attempt_id": "attempt-002",
+        "result": {
+          "ok": false,
+          "error": {
+            "code": "UPDATE_OUTCOME_UNKNOWN",
+            "message": "The write may have reached Jira. Reconcile this operation before attempting another save.",
+            "retryable": false,
+            "write_outcome": "unknown"
+          }
+        }
+      }
+    },
+    {
+      "name": "Alternative branch: uncertain operation stays blocked",
+      "scenario": "unknown_outcome",
+      "method": "POST",
+      "route": "/internal/v1/approvals/approval-001/result",
+      "schema": "ResultResponse",
+      "http_status": 200,
+      "payload": {
+        "ok": true,
+        "approval_id": "approval-001",
+        "operation_id": "save-001",
+        "attempt_id": "attempt-002",
+        "recorded_at": "2026-11-09T10:05:01Z",
+        "recorded_state": "unknown",
+        "replayed": false
+      }
+    },
+    {
+      "name": "Reject altered proposal content",
+      "scenario": "denials",
+      "method": "POST",
+      "route": "/internal/v1/approvals/approval-001/authorize",
+      "schema": "ErrorResponse",
+      "http_status": 409,
+      "payload": {
+        "ok": false,
+        "error": {
+          "code": "APPROVAL_MISMATCH",
+          "message": "The submitted update does not match this approval.",
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "Reject an expired approval",
+      "scenario": "denials",
+      "method": "POST",
+      "route": "/internal/v1/approvals/approval-001/authorize",
+      "schema": "ErrorResponse",
+      "http_status": 409,
+      "payload": {
+        "ok": false,
+        "error": {
+          "code": "APPROVAL_EXPIRED",
+          "message": "Approval expired before this attempt was authorized.",
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "Reject a revoked approval",
+      "scenario": "denials",
+      "method": "POST",
+      "route": "/internal/v1/approvals/approval-001/authorize",
+      "schema": "ErrorResponse",
+      "http_status": 409,
+      "payload": {
+        "ok": false,
+        "error": {
+          "code": "APPROVAL_REVOKED",
+          "message": "This approval was revoked before authorization.",
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "Reject a competing attempt",
+      "scenario": "denials",
+      "method": "POST",
+      "route": "/internal/v1/approvals/approval-001/authorize",
+      "schema": "ErrorResponse",
+      "http_status": 409,
+      "payload": {
+        "ok": false,
+        "error": {
+          "code": "APPROVAL_IN_PROGRESS",
+          "message": "Another attempt already holds this approval.",
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "Reject an unauthorized service caller",
+      "scenario": "denials",
+      "method": "POST",
+      "route": "/internal/v1/approvals/approval-001/authorize",
+      "schema": "ErrorResponse",
+      "http_status": 401,
+      "payload": {
+        "ok": false,
+        "error": {
+          "code": "UNAUTHENTICATED",
+          "message": "Valid service authentication is required.",
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "Fail closed when approval storage is unavailable",
+      "scenario": "denials",
+      "method": "POST",
+      "route": "/internal/v1/approvals/approval-001/authorize",
+      "schema": "ErrorResponse",
+      "http_status": 503,
+      "payload": {
+        "ok": false,
+        "error": {
+          "code": "SERVICE_UNAVAILABLE",
+          "message": "Approval verification is temporarily unavailable.",
+          "retryable": true
+        }
+      }
+    },
+    {
+      "name": "Operator prepares verified success recovery",
+      "schema": "RecoveryDecision",
+      "payload": {
+        "recovery_id": "recovery-001",
+        "approval_id": "approval-001",
+        "operation_id": "save-001",
+        "attempt_id": "attempt-002",
+        "operator_id": "operator-demo",
+        "decided_at": "2026-11-09T11:00:00Z",
+        "reason": "Correlated provider acknowledgement and approved-value verification recovered from durable evidence.",
+        "evidence_refs": [
+          "audit-provider-ack-002",
+          "audit-verification-002"
+        ],
+        "outcome": "verified_succeeded",
+        "result": {
+          "ok": true,
+          "status": "updated",
+          "operation_id": "save-001",
+          "approval_id": "approval-001",
+          "changed_fields": [
+            "description",
+            "acceptance_criteria"
+          ],
+          "ticket": {
+            "connection_id": "jira-demo",
+            "project_id": "toolnest",
+            "ticket_id": "10001",
+            "key": "TN-123",
+            "jira_project_id": "10000",
+            "title": "Allow reservation cancellation",
+            "description": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Allow cancellation of reservations that have not yet been collected. After successful cancellation, email the person who made the reservation."
+                    }
+                  ]
+                }
+              ]
+            },
+            "acceptance_criteria": {
+              "type": "doc",
+              "version": 1,
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "1. A reservation that has not been collected can be cancelled."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "2. A reservation that has already been collected cannot be cancelled."
+                    }
+                  ]
+                },
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "3. After a successful cancellation, email the person who made the reservation."
+                    }
+                  ]
+                }
+              ]
+            },
+            "acceptance_criteria_state": "available",
+            "status": {
+              "id": "10000",
+              "name": "To Do"
+            },
+            "label": [
+              "reservations"
+            ],
+            "updated_at": "2026-11-09T10:05:00Z",
+            "version": "snapshot-v1:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+          }
+        }
+      },
+      "scenario": "recovery_success"
+    },
+    {
+      "name": "Recovered state preserves the original uncertain result",
+      "schema": "RecordResponse",
+      "payload": {
+        "ok": true,
+        "approval": {
+          "approval_id": "approval-001",
+          "proposal_id": "proposal-001",
+          "session_id": "session-001",
+          "approved_by": "user-author-001",
+          "approval_event_id": "event-approve-001",
+          "approved_at": "2026-11-09T10:04:00Z",
+          "expires_at": "2026-11-09T10:34:00Z",
+          "proposal": {
+            "connection_id": "jira-demo",
+            "project_id": "toolnest",
+            "ticket_id": "10001",
+            "expected_version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "changes": {
+              "description": {
+                "type": "doc",
+                "version": 1,
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "Allow cancellation of reservations that have not yet been collected. After successful cancellation, email the person who made the reservation."
+                      }
+                    ]
+                  }
+                ]
+              },
+              "acceptance_criteria": {
+                "type": "doc",
+                "version": 1,
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "1. A reservation that has not been collected can be cancelled."
+                      }
+                    ]
+                  },
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "2. A reservation that has already been collected cannot be cancelled."
+                      }
+                    ]
+                  },
+                  {
+                    "type": "paragraph",
+                    "content": [
+                      {
+                        "type": "text",
+                        "text": "3. After a successful cancellation, email the person who made the reservation."
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "mapping_revision": "1",
+            "acceptance_criteria_field_id": "customfield_10042"
+          },
+          "state": "succeeded",
+          "operation_id": "save-001",
+          "attempt_id": "attempt-002",
+          "last_result": {
+            "ok": false,
+            "error": {
+              "code": "UPDATE_OUTCOME_UNKNOWN",
+              "message": "The write may have reached Jira. Reconcile this operation before attempting another save.",
+              "retryable": false,
+              "write_outcome": "unknown"
+            }
+          },
+          "recovery": {
+            "recovery_id": "recovery-001",
+            "approval_id": "approval-001",
+            "operation_id": "save-001",
+            "attempt_id": "attempt-002",
+            "operator_id": "operator-demo",
+            "decided_at": "2026-11-09T11:00:00Z",
+            "reason": "Correlated provider acknowledgement and approved-value verification recovered from durable evidence.",
+            "evidence_refs": [
+              "audit-provider-ack-002",
+              "audit-verification-002"
+            ],
+            "outcome": "verified_succeeded",
+            "result": {
+              "ok": true,
+              "status": "updated",
+              "operation_id": "save-001",
+              "approval_id": "approval-001",
+              "changed_fields": [
+                "description",
+                "acceptance_criteria"
+              ],
+              "ticket": {
+                "connection_id": "jira-demo",
+                "project_id": "toolnest",
+                "ticket_id": "10001",
+                "key": "TN-123",
+                "jira_project_id": "10000",
+                "title": "Allow reservation cancellation",
+                "description": {
+                  "type": "doc",
+                  "version": 1,
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "Allow cancellation of reservations that have not yet been collected. After successful cancellation, email the person who made the reservation."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "acceptance_criteria": {
+                  "type": "doc",
+                  "version": 1,
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "1. A reservation that has not been collected can be cancelled."
+                        }
+                      ]
+                    },
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "2. A reservation that has already been collected cannot be cancelled."
+                        }
+                      ]
+                    },
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "3. After a successful cancellation, email the person who made the reservation."
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "acceptance_criteria_state": "available",
+                "status": {
+                  "id": "10000",
+                  "name": "To Do"
+                },
+                "label": [
+                  "reservations"
+                ],
+                "updated_at": "2026-11-09T10:05:00Z",
+                "version": "snapshot-v1:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+              }
+            }
+          }
+        }
+      },
+      "method": "GET",
+      "route": "/internal/v1/approvals/approval-001",
+      "http_status": 200,
+      "scenario": "recovery_success"
+    },
+    {
+      "name": "Operator prepares verified non-application recovery",
+      "schema": "RecoveryDecision",
+      "payload": {
+        "recovery_id": "recovery-002",
+        "approval_id": "approval-001",
+        "operation_id": "save-001",
+        "attempt_id": "attempt-002",
+        "operator_id": "operator-demo",
+        "decided_at": "2026-11-09T11:00:00Z",
+        "reason": "Fenced dispatch ledger proves the worker never dispatched this attempt.",
+        "evidence_refs": [
+          "audit-dispatch-fence-002"
+        ],
+        "outcome": "verified_not_applied",
+        "result": {
+          "ok": false,
+          "error": {
+            "code": "UPSTREAM_ERROR",
+            "message": "Recovery established that no write was dispatched; create a fresh proposal after reanalysis.",
+            "retryable": false,
+            "write_outcome": "not_attempted"
+          }
+        }
+      },
+      "scenario": "recovery_not_applied"
+    },
+    {
+      "name": "Finalized recovery has a separate administrative receipt",
+      "scenario": "recovery_success",
+      "schema": "ResultResponse",
+      "payload": {
+        "ok": true,
+        "approval_id": "approval-001",
+        "operation_id": "save-001",
+        "attempt_id": "attempt-002",
+        "recorded_at": "2026-11-09T11:00:02Z",
+        "recorded_state": "succeeded",
+        "replayed": false
+      }
+    }
+  ]
+}

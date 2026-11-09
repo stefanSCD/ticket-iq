@@ -1,0 +1,525 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TicketIQ MCP to Agent Approval Records v1",
+  "description": "Internal HTTP messages. Reuses the Jira adapter payloads; lifecycle and authentication are specified in README.md.",
+  "anyOf": [
+    {
+      "$ref": "#/$defs/RecordResponse"
+    },
+    {
+      "$ref": "#/$defs/AuthorizeRequest"
+    },
+    {
+      "$ref": "#/$defs/AuthorizeResponse"
+    },
+    {
+      "$ref": "#/$defs/ResultRequest"
+    },
+    {
+      "$ref": "#/$defs/ResultResponse"
+    },
+    {
+      "$ref": "#/$defs/ErrorResponse"
+    },
+    {
+      "$ref": "#/$defs/RecoveryDecision"
+    }
+  ],
+  "$defs": {
+    "ApprovedProposal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "connection_id",
+        "project_id",
+        "ticket_id",
+        "expected_version",
+        "mapping_revision",
+        "acceptance_criteria_field_id",
+        "changes"
+      ],
+      "properties": {
+        "connection_id": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Id"
+        },
+        "project_id": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Id"
+        },
+        "ticket_id": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Id"
+        },
+        "expected_version": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Version"
+        },
+        "mapping_revision": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Id"
+        },
+        "acceptance_criteria_field_id": {
+          "anyOf": [
+            {
+              "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "changes": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Changes"
+        }
+      }
+    },
+    "ApprovalRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "approval_id",
+        "proposal_id",
+        "session_id",
+        "approved_by",
+        "approval_event_id",
+        "approved_at",
+        "expires_at",
+        "proposal",
+        "state",
+        "operation_id",
+        "attempt_id",
+        "last_result",
+        "recovery"
+      ],
+      "properties": {
+        "approval_id": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Id"
+        },
+        "proposal_id": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Id"
+        },
+        "session_id": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Id"
+        },
+        "approved_by": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Id"
+        },
+        "approval_event_id": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Id"
+        },
+        "approved_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "proposal": {
+          "$ref": "#/$defs/ApprovedProposal"
+        },
+        "state": {
+          "enum": [
+            "approved",
+            "in_progress",
+            "succeeded",
+            "failed",
+            "unknown",
+            "revoked",
+            "expired"
+          ]
+        },
+        "operation_id": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Id"
+        },
+        "attempt_id": {
+          "anyOf": [
+            {
+              "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "last_result": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AdapterResult"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "recovery": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RecoveryDecision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "AdapterResult": {
+      "anyOf": [
+        {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/UpdateResponse"
+        },
+        {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/ErrorResponse"
+        }
+      ]
+    },
+    "RecordResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ok",
+        "approval"
+      ],
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "approval": {
+          "$ref": "#/$defs/ApprovalRecord"
+        }
+      }
+    },
+    "AuthorizeRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_version",
+        "actor_id",
+        "session_id",
+        "proposal_id",
+        "mapping_revision",
+        "acceptance_criteria_field_id",
+        "attempt_id",
+        "update"
+      ],
+      "properties": {
+        "contract_version": {
+          "const": "1.0"
+        },
+        "actor_id": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Id"
+        },
+        "session_id": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Id"
+        },
+        "proposal_id": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Id"
+        },
+        "mapping_revision": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Id"
+        },
+        "acceptance_criteria_field_id": {
+          "anyOf": [
+            {
+              "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "attempt_id": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Id"
+        },
+        "update": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/UpdateRequest"
+        }
+      }
+    },
+    "AuthorizeResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ok",
+        "approval_id",
+        "operation_id",
+        "attempt_id",
+        "authorized_at",
+        "state",
+        "replayed"
+      ],
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "approval_id": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Id"
+        },
+        "operation_id": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Id"
+        },
+        "attempt_id": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Id"
+        },
+        "authorized_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "state": {
+          "const": "in_progress"
+        },
+        "replayed": {
+          "type": "boolean"
+        }
+      }
+    },
+    "ResultRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_version",
+        "operation_id",
+        "attempt_id",
+        "result"
+      ],
+      "properties": {
+        "contract_version": {
+          "const": "1.0"
+        },
+        "operation_id": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Id"
+        },
+        "attempt_id": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Id"
+        },
+        "result": {
+          "$ref": "#/$defs/AdapterResult"
+        }
+      }
+    },
+    "ResultResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ok",
+        "approval_id",
+        "operation_id",
+        "attempt_id",
+        "recorded_at",
+        "recorded_state",
+        "replayed"
+      ],
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "approval_id": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Id"
+        },
+        "operation_id": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Id"
+        },
+        "attempt_id": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Id"
+        },
+        "recorded_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "recorded_state": {
+          "enum": [
+            "approved",
+            "expired",
+            "succeeded",
+            "failed",
+            "unknown"
+          ]
+        },
+        "replayed": {
+          "type": "boolean"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ok",
+        "error"
+      ],
+      "properties": {
+        "ok": {
+          "const": false
+        },
+        "error": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "code",
+            "message",
+            "retryable"
+          ],
+          "properties": {
+            "code": {
+              "enum": [
+                "INVALID_REQUEST",
+                "UNAUTHENTICATED",
+                "FORBIDDEN",
+                "APPROVAL_NOT_FOUND",
+                "APPROVAL_MISMATCH",
+                "APPROVAL_EXPIRED",
+                "APPROVAL_REVOKED",
+                "APPROVAL_IN_PROGRESS",
+                "TARGET_BLOCKED",
+                "APPROVAL_TERMINAL",
+                "OPERATION_CONFLICT",
+                "ATTEMPT_MISMATCH",
+                "RESULT_MISMATCH",
+                "RESULT_CONFLICT",
+                "SERVICE_UNAVAILABLE"
+              ]
+            },
+            "message": {
+              "type": "string",
+              "minLength": 1
+            },
+            "retryable": {
+              "type": "boolean"
+            },
+            "retry_after_seconds": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "code": {
+                    "const": "SERVICE_UNAVAILABLE"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "retryable": {
+                    "const": true
+                  }
+                }
+              },
+              "else": {
+                "properties": {
+                  "retryable": {
+                    "const": false
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "RecoveryDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "recovery_id",
+        "approval_id",
+        "operation_id",
+        "attempt_id",
+        "operator_id",
+        "decided_at",
+        "reason",
+        "evidence_refs",
+        "outcome",
+        "result"
+      ],
+      "properties": {
+        "recovery_id": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Id"
+        },
+        "approval_id": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Id"
+        },
+        "operation_id": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Id"
+        },
+        "attempt_id": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Id"
+        },
+        "operator_id": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Id"
+        },
+        "decided_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "evidence_refs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Id"
+          }
+        },
+        "outcome": {
+          "enum": [
+            "verified_succeeded",
+            "verified_not_applied"
+          ]
+        },
+        "result": {
+          "$ref": "#/$defs/AdapterResult"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "const": "verified_succeeded"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "result": {
+                "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/UpdateResponse"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "result": {
+                "allOf": [
+                  {
+                    "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/ErrorResponse"
+                  },
+                  {
+                    "properties": {
+                      "error": {
+                        "properties": {
+                          "retryable": {
+                            "const": false
+                          },
+                          "write_outcome": {
+                            "enum": [
+                              "not_attempted",
+                              "rejected"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

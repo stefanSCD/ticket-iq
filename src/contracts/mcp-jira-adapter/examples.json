@@ -1,0 +1,340 @@
+{
+  "description": "Fictional fixtures. schema selects a definition in contract.schema.json; snapshot hashes are illustrative. Each payload is a separate call/result, not one batch.",
+  "examples": [
+    {
+      "name": "Read ticket by key",
+      "operation": "get_ticket",
+      "schema": "TicketRequest",
+      "payload": {
+        "contract_version": "1.0",
+        "connection_id": "jira-demo",
+        "project_id": "toolnest",
+        "ticket_id": "TN-123"
+      }
+    },
+    {
+      "name": "Read ticket response",
+      "operation": "get_ticket",
+      "schema": "TicketResponse",
+      "payload": {
+        "ok": true,
+        "ticket": {
+          "connection_id": "jira-demo",
+          "project_id": "toolnest",
+          "ticket_id": "10001",
+          "key": "TN-123",
+          "jira_project_id": "10000",
+          "title": "Allow reservation cancellation",
+          "description": {
+            "type": "doc",
+            "version": 1,
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Add the ability to cancel a reservation."
+                  }
+                ]
+              }
+            ]
+          },
+          "acceptance_criteria": null,
+          "acceptance_criteria_state": "available",
+          "status": {
+            "id": "10000",
+            "name": "To Do"
+          },
+          "label": [
+            "reservations"
+          ],
+          "updated_at": "2026-11-09T10:00:00Z",
+          "version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      }
+    },
+    {
+      "name": "Read capabilities by immutable ID",
+      "operation": "get_edit_capabilities",
+      "schema": "TicketRequest",
+      "payload": {
+        "contract_version": "1.0",
+        "connection_id": "jira-demo",
+        "project_id": "toolnest",
+        "ticket_id": "10001"
+      }
+    },
+    {
+      "name": "Capabilities with mapped acceptance criteria",
+      "operation": "get_edit_capabilities",
+      "schema": "CapabilitiesResponse",
+      "payload": {
+        "ok": true,
+        "connection_id": "jira-demo",
+        "project_id": "toolnest",
+        "ticket_id": "10001",
+        "version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "concurrency": "preflight_only",
+        "mapping": {
+          "revision": "1",
+          "acceptance_criteria_field_id": "customfield_10042"
+        },
+        "fields": {
+          "title": {
+            "editable": true,
+            "clearable": false,
+            "reason": null
+          },
+          "description": {
+            "editable": true,
+            "clearable": true,
+            "reason": null
+          },
+          "acceptance_criteria": {
+            "editable": true,
+            "clearable": true,
+            "reason": null
+          }
+        }
+      }
+    },
+    {
+      "name": "Save the exact approved proposal",
+      "operation": "update_ticket",
+      "schema": "UpdateRequest",
+      "payload": {
+        "contract_version": "1.0",
+        "connection_id": "jira-demo",
+        "project_id": "toolnest",
+        "ticket_id": "10001",
+        "expected_version": "snapshot-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "approval_id": "approval-001",
+        "operation_id": "save-001",
+        "changes": {
+          "description": {
+            "type": "doc",
+            "version": 1,
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Allow cancellation of reservations that have not yet been collected. After successful cancellation, email the person who made the reservation."
+                  }
+                ]
+              }
+            ]
+          },
+          "acceptance_criteria": {
+            "type": "doc",
+            "version": 1,
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "1. A reservation that has not been collected can be cancelled."
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "2. A reservation that has already been collected cannot be cancelled."
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "3. After a successful cancellation, email the person who made the reservation."
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "Verified update response",
+      "operation": "update_ticket",
+      "schema": "UpdateResponse",
+      "payload": {
+        "ok": true,
+        "status": "updated",
+        "operation_id": "save-001",
+        "approval_id": "approval-001",
+        "changed_fields": [
+          "description",
+          "acceptance_criteria"
+        ],
+        "ticket": {
+          "connection_id": "jira-demo",
+          "project_id": "toolnest",
+          "ticket_id": "10001",
+          "key": "TN-123",
+          "jira_project_id": "10000",
+          "title": "Allow reservation cancellation",
+          "description": {
+            "type": "doc",
+            "version": 1,
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "Allow cancellation of reservations that have not yet been collected. After successful cancellation, email the person who made the reservation."
+                  }
+                ]
+              }
+            ]
+          },
+          "acceptance_criteria": {
+            "type": "doc",
+            "version": 1,
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "1. A reservation that has not been collected can be cancelled."
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "2. A reservation that has already been collected cannot be cancelled."
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "3. After a successful cancellation, email the person who made the reservation."
+                  }
+                ]
+              }
+            ]
+          },
+          "acceptance_criteria_state": "available",
+          "status": {
+            "id": "10000",
+            "name": "To Do"
+          },
+          "label": [
+            "reservations"
+          ],
+          "updated_at": "2026-11-09T10:05:00Z",
+          "version": "snapshot-v1:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        }
+      }
+    },
+    {
+      "name": "Explicitly clear an optional field after separate approval",
+      "operation": "update_ticket",
+      "schema": "UpdateRequest",
+      "payload": {
+        "contract_version": "1.0",
+        "connection_id": "jira-demo",
+        "project_id": "toolnest",
+        "ticket_id": "10001",
+        "expected_version": "snapshot-v1:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "approval_id": "approval-002",
+        "operation_id": "save-002",
+        "changes": {
+          "acceptance_criteria": null
+        }
+      }
+    },
+    {
+      "name": "Reject a stale snapshot before writing",
+      "operation": "update_ticket",
+      "schema": "ErrorResponse",
+      "payload": {
+        "ok": false,
+        "error": {
+          "code": "VERSION_CONFLICT",
+          "message": "The ticket changed after this proposal was reviewed. Read it again and obtain approval for the current snapshot.",
+          "retryable": false,
+          "write_outcome": "not_attempted"
+        }
+      }
+    },
+    {
+      "name": "Missing acceptance criteria mapping",
+      "operation": "update_ticket",
+      "schema": "ErrorResponse",
+      "payload": {
+        "ok": false,
+        "error": {
+          "code": "FIELD_NOT_EDITABLE",
+          "message": "No acceptance criteria field is configured for this project.",
+          "retryable": false,
+          "write_outcome": "not_attempted",
+          "field_errors": {
+            "acceptance_criteria": "not_configured"
+          }
+        }
+      }
+    },
+    {
+      "name": "Provider rate limit",
+      "operation": "update_ticket",
+      "schema": "ErrorResponse",
+      "payload": {
+        "ok": false,
+        "error": {
+          "code": "RATE_LIMITED",
+          "message": "Jira rejected this attempt due to rate limiting. Repeat approval and version checks before a retry.",
+          "retryable": true,
+          "write_outcome": "rejected",
+          "upstream_status": 429,
+          "retry_after_seconds": 30
+        }
+      }
+    },
+    {
+      "name": "Lost acknowledgement after PUT dispatch",
+      "operation": "update_ticket",
+      "schema": "ErrorResponse",
+      "payload": {
+        "ok": false,
+        "error": {
+          "code": "UPDATE_OUTCOME_UNKNOWN",
+          "message": "The write may have reached Jira. Reconcile this operation before attempting another save.",
+          "retryable": false,
+          "write_outcome": "unknown"
+        }
+      }
+    },
+    {
+      "name": "Acknowledged write followed by a mismatched verification read",
+      "operation": "update_ticket",
+      "schema": "ErrorResponse",
+      "payload": {
+        "ok": false,
+        "error": {
+          "code": "VERIFICATION_FAILED",
+          "message": "Jira acknowledged the write, but the current fields differ from the approved proposal.",
+          "retryable": false,
+          "write_outcome": "applied_unverified"
+        }
+      }
+    }
+  ]
+}

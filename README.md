@@ -1,2 +1,4 @@
 # ticket-iq
 An AI agent that analyzes tickets from Jira or other project management tools to determine whether they contain enough context for implementation. It identifies ambiguities, missing requirements, and unclear acceptance criteria, then asks follow-up questions to resolve them. 
+
+Start with the [architecture](docs/high-level-architecture.md), [workflow example](docs/workflow-example.md), and [work allocation](docs/work.md). Shared behavior is defined in the [assessment rubric](docs/assessment-rubric.md) and [save reconciliation runbook](docs/save-reconciliation.md). See the [interface contracts](src/contracts/README.md) and [integration scenarios](docs/integration-scenarios.md) for payload fixtures and checks. Services remain documentation scaffolds; the dataset normalization pipeline is implemented.

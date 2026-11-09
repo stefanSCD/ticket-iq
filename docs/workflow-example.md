@@ -66,3 +66,9 @@ The agent saves the approved description and acceptance criteria through the tic
 **Agent:** The ticket has been updated with the description and acceptance criteria you approved.
 
 The workflow trace preserves the original ticket, retrieved evidence, clarification question and answer, proposed changes, explicit approval, and update result.
+
+## 8. Alternative paths before approval
+
+**A rule found after reading more of a document.** Suppose search returns only the introduction of `RES-BR-01`. The agent calls `get_document` and finds the eligibility rule on a later page. RAG returns that page's exact text, source version, offsets, and citation ID. MCP validates and registers the citation, then Agent retains it with the retrieval context. The proposal cites this page's ID, not the original introduction's citation. If a shorter quote is needed, another read requests that exact span and RAG issues its citation. See the [document-read citation rules](../src/contracts/mcp-rag/README.md#6-reading-a-document-and-index-consistency).
+
+**The author changes a decision during proposal review.** Instead of approving step 5, the author requests: “Use SMS instead of email for the cancellation notification.” Agent stores the exact request as a `revision_request` message and retains the original proposal binding. If the request leaves implementation details open, Agent asks for those details before offering the revision for approval. The resulting proposal has a new ID and cites the revision message for the channel decision, while retaining the earlier email answer and proposal in the audit trail. The author must review and explicitly approve the new proposal; the revision request does not save the ticket. See the [author-message provenance rules](../src/contracts/frontend-agent/README.md#5-proposal-review-and-evidence).

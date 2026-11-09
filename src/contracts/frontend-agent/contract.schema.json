@@ -1,0 +1,1560 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TicketIQ Frontend to Agent v1",
+  "description": "Application HTTP payloads. Routes, auth, idempotency, lifecycle and polling are specified in README.md.",
+  "x-ticketiq-routes": [
+    {
+      "method": "GET",
+      "path": "/bootstrap",
+      "request_definition": null,
+      "response_definition": "BootstrapResponse",
+      "success_status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/sessions",
+      "request_definition": "CreateSessionRequest",
+      "response_definition": "CommandReceipt",
+      "success_status": 202
+    },
+    {
+      "method": "GET",
+      "path": "/sessions/{session_id}",
+      "request_definition": null,
+      "response_definition": "SessionResponse",
+      "success_status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/sessions/{session_id}/messages",
+      "request_definition": null,
+      "response_definition": "MessagePage",
+      "success_status": 200,
+      "query_definition": "PaginationQuery"
+    },
+    {
+      "method": "POST",
+      "path": "/sessions/{session_id}/messages",
+      "request_definition": "MessageRequest",
+      "response_definition": "CommandReceipt",
+      "success_status": 202
+    },
+    {
+      "method": "GET",
+      "path": "/sessions/{session_id}/proposals/{proposal_id}",
+      "request_definition": null,
+      "response_definition": "ProposalResponse",
+      "success_status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/sessions/{session_id}/revisions",
+      "request_definition": "RevisionRequest",
+      "response_definition": "CommandReceipt",
+      "success_status": 202
+    },
+    {
+      "method": "POST",
+      "path": "/sessions/{session_id}/approvals",
+      "request_definition": "ApproveRequest",
+      "response_definition": "CommandReceipt",
+      "success_status": 202
+    },
+    {
+      "method": "POST",
+      "path": "/sessions/{session_id}/approvals/{approval_id}/revoke",
+      "request_definition": "SessionCommand",
+      "response_definition": "CommandReceipt",
+      "success_status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/sessions/{session_id}/reanalyze",
+      "request_definition": "SessionCommand",
+      "response_definition": "CommandReceipt",
+      "success_status": 202
+    },
+    {
+      "method": "GET",
+      "path": "/sessions/{session_id}/citations/{citation_id}",
+      "request_definition": null,
+      "response_definition": "CitationResponse",
+      "success_status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/sessions/{session_id}/events",
+      "request_definition": null,
+      "response_definition": "EventPage",
+      "success_status": 200,
+      "query_definition": "PaginationQuery"
+    }
+  ],
+  "anyOf": [
+    {
+      "$ref": "#/$defs/BootstrapResponse"
+    },
+    {
+      "$ref": "#/$defs/CreateSessionRequest"
+    },
+    {
+      "$ref": "#/$defs/SessionCommand"
+    },
+    {
+      "$ref": "#/$defs/MessageRequest"
+    },
+    {
+      "$ref": "#/$defs/RevisionRequest"
+    },
+    {
+      "$ref": "#/$defs/ApproveRequest"
+    },
+    {
+      "$ref": "#/$defs/CommandReceipt"
+    },
+    {
+      "$ref": "#/$defs/SessionResponse"
+    },
+    {
+      "$ref": "#/$defs/MessagePage"
+    },
+    {
+      "$ref": "#/$defs/ProposalResponse"
+    },
+    {
+      "$ref": "#/$defs/CitationResponse"
+    },
+    {
+      "$ref": "#/$defs/EventPage"
+    },
+    {
+      "$ref": "#/$defs/ErrorResponse"
+    }
+  ],
+  "$defs": {
+    "Id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "Text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 8000,
+      "pattern": "\\S"
+    },
+    "ProjectOption": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "project_ref",
+        "label"
+      ],
+      "properties": {
+        "project_ref": {
+          "$ref": "#/$defs/Id"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "BootstrapResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ok",
+        "user",
+        "csrf_token",
+        "projects"
+      ],
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "user": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "user_id",
+            "display_name"
+          ],
+          "properties": {
+            "user_id": {
+              "$ref": "#/$defs/Id"
+            },
+            "display_name": {
+              "type": "string"
+            }
+          }
+        },
+        "csrf_token": {
+          "type": "string",
+          "minLength": 1
+        },
+        "projects": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/$defs/ProjectOption"
+          }
+        }
+      }
+    },
+    "CreateSessionRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_version",
+        "command_id",
+        "project_ref",
+        "ticket_selector"
+      ],
+      "properties": {
+        "contract_version": {
+          "const": "1.0"
+        },
+        "command_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "project_ref": {
+          "$ref": "#/$defs/Id"
+        },
+        "ticket_selector": {
+          "$ref": "#/$defs/Id"
+        }
+      }
+    },
+    "SessionCommand": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_version",
+        "command_id",
+        "expected_session_version"
+      ],
+      "properties": {
+        "contract_version": {
+          "const": "1.0"
+        },
+        "command_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "expected_session_version": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "MessageRequest": {
+      "type": "object",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "contract_version",
+            "command_id",
+            "expected_session_version",
+            "kind",
+            "question_id",
+            "text"
+          ],
+          "properties": {
+            "contract_version": {
+              "const": "1.0"
+            },
+            "command_id": {
+              "$ref": "#/$defs/Id"
+            },
+            "expected_session_version": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "kind": {
+              "const": "clarification_answer"
+            },
+            "question_id": {
+              "$ref": "#/$defs/Id"
+            },
+            "text": {
+              "$ref": "#/$defs/Text"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "contract_version",
+            "command_id",
+            "expected_session_version",
+            "kind",
+            "text"
+          ],
+          "properties": {
+            "contract_version": {
+              "const": "1.0"
+            },
+            "command_id": {
+              "$ref": "#/$defs/Id"
+            },
+            "expected_session_version": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "kind": {
+              "const": "comment"
+            },
+            "text": {
+              "$ref": "#/$defs/Text"
+            }
+          }
+        }
+      ]
+    },
+    "RevisionRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_version",
+        "command_id",
+        "expected_session_version",
+        "proposal_id",
+        "text"
+      ],
+      "properties": {
+        "contract_version": {
+          "const": "1.0"
+        },
+        "command_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "expected_session_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "proposal_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "text": {
+          "$ref": "#/$defs/Text"
+        }
+      }
+    },
+    "ApproveRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_version",
+        "command_id",
+        "expected_session_version",
+        "proposal_id"
+      ],
+      "properties": {
+        "contract_version": {
+          "const": "1.0"
+        },
+        "command_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "expected_session_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "proposal_id": {
+          "$ref": "#/$defs/Id"
+        }
+      }
+    },
+    "CommandReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ok",
+        "command_id",
+        "session_id",
+        "accepted_version",
+        "action",
+        "replayed"
+      ],
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "command_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "session_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "accepted_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "action": {
+          "enum": [
+            "create_session",
+            "send_message",
+            "request_revision",
+            "approve",
+            "revoke",
+            "reanalyze"
+          ]
+        },
+        "replayed": {
+          "type": "boolean"
+        }
+      }
+    },
+    "PaginationQuery": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "after": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      }
+    },
+    "EditableFields": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "description",
+        "acceptance_criteria"
+      ],
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/RichText"
+        },
+        "acceptance_criteria": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/RichText"
+        }
+      }
+    },
+    "Actions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "can_send_message",
+        "can_request_revision",
+        "can_approve",
+        "can_revoke",
+        "can_reanalyze"
+      ],
+      "properties": {
+        "can_send_message": {
+          "type": "boolean"
+        },
+        "can_request_revision": {
+          "type": "boolean"
+        },
+        "can_approve": {
+          "type": "boolean"
+        },
+        "can_revoke": {
+          "type": "boolean"
+        },
+        "can_reanalyze": {
+          "type": "boolean"
+        }
+      }
+    },
+    "Question": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "question_id",
+        "text",
+        "state",
+        "answer_message_id",
+        "citation_ids"
+      ],
+      "properties": {
+        "question_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "text": {
+          "$ref": "#/$defs/Text"
+        },
+        "state": {
+          "enum": [
+            "open",
+            "answered"
+          ]
+        },
+        "answer_message_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "citation_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/Id"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "open"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "answer_message_id": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "answer_message_id": {
+                "$ref": "#/$defs/Id"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Assessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "verdict",
+        "summary",
+        "ticket_version",
+        "questions",
+        "citation_ids",
+        "author_message_ids",
+        "blocking_reasons"
+      ],
+      "properties": {
+        "verdict": {
+          "enum": [
+            "ready",
+            "needs_clarification",
+            "insufficient_evidence"
+          ]
+        },
+        "summary": {
+          "$ref": "#/$defs/Text"
+        },
+        "ticket_version": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Version"
+        },
+        "questions": {
+          "type": "array",
+          "maxItems": 20,
+          "items": {
+            "$ref": "#/$defs/Question"
+          }
+        },
+        "citation_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/Id"
+          }
+        },
+        "author_message_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/Id"
+          }
+        },
+        "blocking_reasons": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "open_decision",
+              "conflicting_evidence",
+              "missing_required_context"
+            ]
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "verdict": {
+                "const": "ready"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "blocking_reasons": {
+                "maxItems": 0
+              },
+              "questions": {
+                "items": {
+                  "properties": {
+                    "state": {
+                      "const": "answered"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "verdict": {
+                "const": "needs_clarification"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "blocking_reasons": {
+                "minItems": 1,
+                "items": {
+                  "enum": [
+                    "open_decision",
+                    "conflicting_evidence"
+                  ]
+                }
+              },
+              "questions": {
+                "contains": {
+                  "properties": {
+                    "state": {
+                      "const": "open"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "verdict": {
+                "const": "insufficient_evidence"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "blocking_reasons": {
+                "contains": {
+                  "const": "missing_required_context"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Message": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "message_id",
+        "sequence",
+        "role",
+        "kind",
+        "text",
+        "question_id",
+        "created_at"
+      ],
+      "properties": {
+        "message_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "role": {
+          "enum": [
+            "user",
+            "assistant"
+          ]
+        },
+        "kind": {
+          "enum": [
+            "clarification_answer",
+            "comment",
+            "revision_request",
+            "question",
+            "assessment",
+            "proposal_notice",
+            "status"
+          ]
+        },
+        "text": {
+          "$ref": "#/$defs/Text"
+        },
+        "question_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "enum": [
+                  "clarification_answer",
+                  "comment",
+                  "revision_request"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "role": {
+                "const": "user"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "role": {
+                "const": "assistant"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "enum": [
+                  "clarification_answer",
+                  "question"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "question_id": {
+                "$ref": "#/$defs/Id"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "question_id": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ProvenanceSource": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "citation_id"
+          ],
+          "properties": {
+            "kind": {
+              "const": "citation"
+            },
+            "citation_id": {
+              "$ref": "#/$defs/Id"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "message_id"
+          ],
+          "properties": {
+            "kind": {
+              "const": "author_message"
+            },
+            "message_id": {
+              "$ref": "#/$defs/Id"
+            }
+          }
+        }
+      ]
+    },
+    "Requirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requirement_id",
+        "text",
+        "affected_fields",
+        "sources"
+      ],
+      "properties": {
+        "requirement_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "text": {
+          "$ref": "#/$defs/Text"
+        },
+        "affected_fields": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/FieldName"
+          }
+        },
+        "sources": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/ProvenanceSource"
+          }
+        }
+      }
+    },
+    "Proposal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "proposal_id",
+        "created_at",
+        "ticket_version",
+        "base",
+        "changes",
+        "preview",
+        "requirements"
+      ],
+      "properties": {
+        "proposal_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "ticket_version": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Version"
+        },
+        "base": {
+          "$ref": "#/$defs/EditableFields"
+        },
+        "changes": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Changes"
+        },
+        "preview": {
+          "$ref": "#/$defs/EditableFields"
+        },
+        "requirements": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/Requirement"
+          }
+        }
+      }
+    },
+    "ProposalResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ok",
+        "status",
+        "proposal"
+      ],
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "status": {
+          "enum": [
+            "current",
+            "superseded",
+            "approved",
+            "applied",
+            "invalidated"
+          ]
+        },
+        "proposal": {
+          "$ref": "#/$defs/Proposal"
+        }
+      }
+    },
+    "Citation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "citation_id",
+        "source",
+        "excerpt",
+        "span",
+        "metadata",
+        "index_revision",
+        "temporal_filter",
+        "temporal_status",
+        "retrieval_profile_id"
+      ],
+      "properties": {
+        "citation_id": {
+          "$ref": "../mcp-rag/contract.schema.json#/$defs/CitationId"
+        },
+        "source": {
+          "oneOf": [
+            {
+              "$ref": "../mcp-rag/contract.schema.json#/$defs/DocumentRef"
+            },
+            {
+              "$ref": "../mcp-rag/contract.schema.json#/$defs/HistoryTicketRef"
+            }
+          ]
+        },
+        "excerpt": {
+          "type": "string",
+          "minLength": 1
+        },
+        "span": {
+          "$ref": "../mcp-rag/contract.schema.json#/$defs/Span"
+        },
+        "metadata": {
+          "$ref": "../mcp-rag/contract.schema.json#/$defs/SourceMetadata"
+        },
+        "index_revision": {
+          "$ref": "#/$defs/Id"
+        },
+        "temporal_filter": {
+          "$ref": "../mcp-rag/contract.schema.json#/$defs/TemporalFilter"
+        },
+        "temporal_status": {
+          "$ref": "../mcp-rag/contract.schema.json#/$defs/TemporalStatus"
+        },
+        "retrieval_profile_id": {
+          "$ref": "#/$defs/Id"
+        }
+      }
+    },
+    "CitationResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ok",
+        "citation"
+      ],
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "citation": {
+          "$ref": "#/$defs/Citation"
+        }
+      }
+    },
+    "UpdateSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ticket_id",
+        "key",
+        "version",
+        "changed_fields"
+      ],
+      "properties": {
+        "ticket_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "key": {
+          "$ref": "#/$defs/Id"
+        },
+        "version": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Version"
+        },
+        "changed_fields": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/FieldName"
+          }
+        }
+      }
+    },
+    "Event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sequence",
+        "session_id",
+        "session_version",
+        "occurred_at",
+        "type",
+        "resource_id"
+      ],
+      "properties": {
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "session_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "session_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "occurred_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "type": {
+          "enum": [
+            "session.changed",
+            "message.created",
+            "assessment.changed",
+            "proposal.created",
+            "approval.changed",
+            "save.changed"
+          ]
+        },
+        "resource_id": {
+          "$ref": "#/$defs/Id"
+        }
+      }
+    },
+    "ErrorInfo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "message",
+        "retryable"
+      ],
+      "properties": {
+        "code": {
+          "enum": [
+            "INVALID_REQUEST",
+            "UNAUTHENTICATED",
+            "CSRF_INVALID",
+            "NOT_FOUND_OR_INACCESSIBLE",
+            "SESSION_VERSION_CONFLICT",
+            "COMMAND_CONFLICT",
+            "INVALID_STATE",
+            "QUESTION_NOT_OPEN",
+            "PROPOSAL_STALE",
+            "APPROVAL_IN_PROGRESS",
+            "TARGET_BLOCKED",
+            "PROPOSAL_NOT_APPROVABLE",
+            "RATE_LIMITED",
+            "SERVICE_UNAVAILABLE",
+            "DEPENDENCY_UNAVAILABLE",
+            "TICKET_CHANGED",
+            "SAVE_REJECTED",
+            "SAVE_OUTCOME_UNKNOWN",
+            "EVIDENCE_REFRESH_REQUIRED",
+            "RECOVERY_PENDING"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        },
+        "retryable": {
+          "type": "boolean"
+        },
+        "retry_after_seconds": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "code": {
+                "const": "RATE_LIMITED"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "retry_after_seconds"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "code": {
+                "enum": [
+                  "EVIDENCE_REFRESH_REQUIRED",
+                  "RECOVERY_PENDING"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "retryable": {
+                "const": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ErrorResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ok",
+        "error"
+      ],
+      "properties": {
+        "ok": {
+          "const": false
+        },
+        "error": {
+          "$ref": "#/$defs/ErrorInfo"
+        }
+      }
+    },
+    "TicketView": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ticket_id",
+        "key",
+        "title",
+        "description",
+        "acceptance_criteria",
+        "acceptance_criteria_state",
+        "status",
+        "label",
+        "updated_at",
+        "version"
+      ],
+      "properties": {
+        "ticket_id": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Ticket/properties/ticket_id"
+        },
+        "key": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Ticket/properties/key"
+        },
+        "title": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Ticket/properties/title"
+        },
+        "description": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Ticket/properties/description"
+        },
+        "acceptance_criteria": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Ticket/properties/acceptance_criteria"
+        },
+        "acceptance_criteria_state": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Ticket/properties/acceptance_criteria_state"
+        },
+        "status": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Ticket/properties/status"
+        },
+        "label": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Ticket/properties/label"
+        },
+        "updated_at": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Ticket/properties/updated_at"
+        },
+        "version": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Ticket/properties/version"
+        }
+      }
+    },
+    "SaveSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "approval_id",
+        "operation_id",
+        "stage",
+        "expires_at",
+        "verified_update",
+        "error"
+      ],
+      "properties": {
+        "approval_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "operation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "stage": {
+          "enum": [
+            "queued",
+            "in_progress",
+            "reporting_pending",
+            "succeeded",
+            "failed",
+            "unknown",
+            "revoked",
+            "expired"
+          ]
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "verified_update": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/UpdateSummary"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "error": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ErrorInfo"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "stage": {
+                "const": "succeeded"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "verified_update": {
+                "$ref": "#/$defs/UpdateSummary"
+              },
+              "error": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "SessionView": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "session_id",
+        "version",
+        "created_at",
+        "updated_at",
+        "project",
+        "ticket_selector",
+        "state",
+        "ticket",
+        "assessment",
+        "current_proposal_id",
+        "save",
+        "actions",
+        "last_error",
+        "last_event_sequence",
+        "last_message_sequence"
+      ],
+      "properties": {
+        "session_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "project": {
+          "$ref": "#/$defs/ProjectOption"
+        },
+        "ticket_selector": {
+          "$ref": "#/$defs/Id"
+        },
+        "state": {
+          "enum": [
+            "analyzing",
+            "awaiting_clarification",
+            "proposal_ready",
+            "saving",
+            "updated",
+            "complete",
+            "blocked",
+            "failed"
+          ]
+        },
+        "ticket": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TicketView"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "assessment": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Assessment"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "current_proposal_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "save": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SaveSummary"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "actions": {
+          "$ref": "#/$defs/Actions"
+        },
+        "last_error": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ErrorInfo"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "last_event_sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "last_message_sequence": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "updated"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "save": {
+                "allOf": [
+                  {
+                    "$ref": "#/$defs/SaveSummary"
+                  },
+                  {
+                    "properties": {
+                      "stage": {
+                        "const": "succeeded"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "anyOf": [
+              {
+                "properties": {
+                  "state": {
+                    "const": "proposal_ready"
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "actions": {
+                    "properties": {
+                      "can_approve": {
+                        "const": true
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "then": {
+            "properties": {
+              "assessment": {
+                "allOf": [
+                  {
+                    "$ref": "#/$defs/Assessment"
+                  },
+                  {
+                    "properties": {
+                      "verdict": {
+                        "const": "ready"
+                      }
+                    }
+                  }
+                ]
+              },
+              "current_proposal_id": {
+                "$ref": "#/$defs/Id"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "SessionResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ok",
+        "session"
+      ],
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "session": {
+          "$ref": "#/$defs/SessionView"
+        }
+      }
+    },
+    "MessagePage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ok",
+        "session_id",
+        "messages",
+        "next_after",
+        "has_more"
+      ],
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "session_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "messages": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/$defs/Message"
+          }
+        },
+        "next_after": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "has_more": {
+          "type": "boolean"
+        }
+      }
+    },
+    "EventPage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ok",
+        "session_id",
+        "events",
+        "next_after",
+        "has_more"
+      ],
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "session_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "events": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/$defs/Event"
+          }
+        },
+        "next_after": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "has_more": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

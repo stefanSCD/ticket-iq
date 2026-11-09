@@ -25,6 +25,8 @@ The active product lends cameras, laptops, lab tools, and kits. It launched as a
 
 ## Files and boundaries
 
+For the shared TicketIQ pipeline, the [normalized collection rules](../normalized/README.md) take precedence: use normalized documents and completed history with the common chunking strategy. The prebuilt retrieval corpus and usage instructions below are for standalone ToolNest experiments; do not add that corpus to the normalized index.
+
 ```text
 docs/                         RAG-safe Markdown, including INDEX.md
 corpus/documents.jsonl         same documentation as structured records
@@ -46,7 +48,7 @@ toolnest-docs.zip              optional generated copy of source docs
 toolnest-tickets.zip           optional generated copy of inputs, history, and SEPARATE keys
 ```
 
-**Retrieval:** index `retrieval/chunks.jsonl` with `project_id=toolnest`. Do not also index loose Markdown or the archived copies. Enforce `available_at <= ticket.snapshot_at`. Only the 40 completed history tickets belong in the prebuilt corpus; the review targets do not. All recorded source publication and history completion dates precede every target snapshot. Historical outcomes do not override active release rules.
+**Standalone retrieval:** index `retrieval/chunks.jsonl` with `project_id=toolnest`. Do not also index loose Markdown or the archived copies. Enforce `available_at <= ticket.snapshot_at`. Only the 40 completed history tickets belong in the prebuilt corpus; the review targets do not. All recorded source publication and history completion dates precede every target snapshot. Historical outcomes do not override active release rules.
 
 **Fine-tuning:** use `splits/train_sft.jsonl`; reserve validation and test files for evaluation. SFT user messages include selected oracle documentation excerpts and the two same-area completed tickets. The assistant message is the expected review. This tests evidence use with supplied context, not retrieval quality. For end-to-end evaluation, retrieve context yourself and keep all labels and completions hidden.
 

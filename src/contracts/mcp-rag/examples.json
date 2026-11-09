@@ -1,0 +1,1232 @@
+{
+  "description": "Fictional retrieval fixtures, not source dataset records or benchmark answers. Source hashes and citation identifiers are illustrative. fixtures supply canonical text for checking quote spans and pagination; examples are alternative API calls/results.",
+  "fixtures": [
+    {
+      "source": {
+        "scope": {
+          "corpus_id": "ticketiq-fixtures",
+          "dataset_id": "part4-dataset",
+          "project_id": "toolnest"
+        },
+        "kind": "document",
+        "doc_id": "EX-CANCEL-01",
+        "source_version": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "canonical_text": "# Reservation cancellation\n\nOnly reservations that have not yet been collected can be cancelled.\n\nThe original booking remains visible after cancellation. This document does not define a notification policy.\n",
+      "metadata": {
+        "title": "Reservation cancellation",
+        "source_path": "part4-dataset/docs/EX-CANCEL-01.md",
+        "url": null,
+        "document_type": "business_rules",
+        "status": "active",
+        "availability": {
+          "known_available_at": "2026-11-01T09:00:00Z",
+          "complete": true
+        }
+      }
+    },
+    {
+      "source": {
+        "scope": {
+          "corpus_id": "ticketiq-fixtures",
+          "dataset_id": "part4-dataset",
+          "project_id": "toolnest"
+        },
+        "kind": "document",
+        "doc_id": "EX-NOTIFY-01",
+        "source_version": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "canonical_text": "# Cancellation notification discussion\n\nThe notification channel remains an open decision in this discussion.\n",
+      "metadata": {
+        "title": "Cancellation notification discussion",
+        "source_path": "part4-dataset/docs/EX-NOTIFY-01.md",
+        "url": null,
+        "document_type": "faq",
+        "status": "draft",
+        "availability": {
+          "known_available_at": null,
+          "complete": false
+        }
+      }
+    },
+    {
+      "source": {
+        "scope": {
+          "corpus_id": "ticketiq-fixtures",
+          "dataset_id": "part4-dataset",
+          "project_id": "toolnest"
+        },
+        "kind": "document",
+        "doc_id": "EX-CANCEL-02",
+        "source_version": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      },
+      "canonical_text": "# Later cancellation policy\n\nA new cancellation policy was published after the review snapshot.\n",
+      "metadata": {
+        "title": "Later cancellation policy",
+        "source_path": "part4-dataset/docs/EX-CANCEL-02.md",
+        "url": null,
+        "document_type": "business_rules",
+        "status": "active",
+        "availability": {
+          "known_available_at": "2026-11-08T09:00:00Z",
+          "complete": false
+        }
+      }
+    },
+    {
+      "source": {
+        "scope": {
+          "corpus_id": "ticketiq-fixtures",
+          "dataset_id": "part4-dataset",
+          "project_id": "toolnest"
+        },
+        "kind": "history_ticket",
+        "ticket_id": "EX-HIST-001",
+        "source_version": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+      },
+      "canonical_text": "Title: Cancellation eligibility check\nDescription: Block cancellation after collection.\nStatus: Done\nResolved at: 2026-11-04T10:00:00Z\nComment (2026-11-04T09:00:00Z): Implemented and accepted: cancellation is blocked once the reservation is collected.\n",
+      "metadata": {
+        "title": "Cancellation eligibility check",
+        "source_path": "part4-dataset/corpus/history_tickets.jsonl",
+        "url": null,
+        "document_type": null,
+        "status": "Done",
+        "availability": {
+          "known_available_at": "2026-11-04T10:00:00Z",
+          "complete": true
+        }
+      }
+    },
+    {
+      "source": {
+        "scope": {
+          "corpus_id": "ticketiq-fixtures",
+          "dataset_id": "part4-dataset",
+          "project_id": "toolnest"
+        },
+        "kind": "document",
+        "doc_id": "EX-CANCEL-CONFLICT",
+        "source_version": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+      },
+      "canonical_text": "Collected reservations can also be cancelled.\n",
+      "metadata": {
+        "title": "Conflicting cancellation FAQ",
+        "source_path": "part4-dataset/docs/EX-CANCEL-CONFLICT.md",
+        "url": null,
+        "document_type": "faq",
+        "status": "active",
+        "availability": {
+          "known_available_at": "2026-11-01T09:00:00Z",
+          "complete": true
+        }
+      }
+    }
+  ],
+  "examples": [
+    {
+      "name": "Search documents at the ticket snapshot",
+      "method": "POST",
+      "route": "/internal/v1/documents/search",
+      "schema": "SearchRequest",
+      "payload": {
+        "contract_version": "1.0",
+        "scope": {
+          "corpus_id": "ticketiq-fixtures",
+          "dataset_id": "part4-dataset",
+          "project_id": "toolnest"
+        },
+        "query": "When can a reservation be cancelled?",
+        "top_k": 5,
+        "retrieval_mode": "hybrid",
+        "temporal_filter": {
+          "mode": "strict",
+          "snapshot_at": "2026-11-06T12:00:00Z"
+        },
+        "index_revision": null
+      }
+    },
+    {
+      "name": "Strict search excludes unknown and known future sources",
+      "method": "POST",
+      "route": "/internal/v1/documents/search",
+      "schema": "DocumentSearchResponse",
+      "http_status": 200,
+      "payload": {
+        "ok": true,
+        "scope": {
+          "corpus_id": "ticketiq-fixtures",
+          "dataset_id": "part4-dataset",
+          "project_id": "toolnest"
+        },
+        "index_revision": "fixtures-20261109-r1",
+        "retrieval_profile_id": "fixture-profile-v1",
+        "retrieval_mode": "hybrid",
+        "temporal_filter": {
+          "mode": "strict",
+          "snapshot_at": "2026-11-06T12:00:00Z"
+        },
+        "warnings": [
+          "UNKNOWN_AVAILABILITY_EXCLUDED",
+          "KNOWN_FUTURE_SOURCE_EXCLUDED"
+        ],
+        "returned_count": 1,
+        "results": [
+          {
+            "rank": 1,
+            "score": 0.9,
+            "citation_id": "citation-v1:3218d96d9c641973220551237c48b2deec98774d89067bff73f0edb52ffaeecf",
+            "source": {
+              "scope": {
+                "corpus_id": "ticketiq-fixtures",
+                "dataset_id": "part4-dataset",
+                "project_id": "toolnest"
+              },
+              "kind": "document",
+              "doc_id": "EX-CANCEL-01",
+              "source_version": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "chunk_id": "chunk-cancel-01",
+            "passage_id": null,
+            "excerpt": "Only reservations that have not yet been collected can be cancelled.",
+            "span": {
+              "start": 28,
+              "end": 96
+            },
+            "metadata": {
+              "title": "Reservation cancellation",
+              "source_path": "part4-dataset/docs/EX-CANCEL-01.md",
+              "url": null,
+              "document_type": "business_rules",
+              "status": "active",
+              "availability": {
+                "known_available_at": "2026-11-01T09:00:00Z",
+                "complete": true
+              }
+            },
+            "temporal_status": "verified"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Explicit best-effort search",
+      "method": "POST",
+      "route": "/internal/v1/documents/search",
+      "schema": "SearchRequest",
+      "payload": {
+        "contract_version": "1.0",
+        "scope": {
+          "corpus_id": "ticketiq-fixtures",
+          "dataset_id": "part4-dataset",
+          "project_id": "toolnest"
+        },
+        "query": "When can a reservation be cancelled?",
+        "top_k": 5,
+        "retrieval_mode": "hybrid",
+        "temporal_filter": {
+          "mode": "best_effort",
+          "snapshot_at": "2026-11-06T12:00:00Z"
+        },
+        "index_revision": "fixtures-20261109-r1"
+      }
+    },
+    {
+      "name": "Best-effort search marks unknown availability",
+      "method": "POST",
+      "route": "/internal/v1/documents/search",
+      "schema": "DocumentSearchResponse",
+      "http_status": 200,
+      "payload": {
+        "ok": true,
+        "scope": {
+          "corpus_id": "ticketiq-fixtures",
+          "dataset_id": "part4-dataset",
+          "project_id": "toolnest"
+        },
+        "index_revision": "fixtures-20261109-r1",
+        "retrieval_profile_id": "fixture-profile-v1",
+        "retrieval_mode": "hybrid",
+        "temporal_filter": {
+          "mode": "best_effort",
+          "snapshot_at": "2026-11-06T12:00:00Z"
+        },
+        "warnings": [
+          "UNKNOWN_AVAILABILITY_INCLUDED",
+          "KNOWN_FUTURE_SOURCE_EXCLUDED"
+        ],
+        "returned_count": 2,
+        "results": [
+          {
+            "rank": 1,
+            "score": 0.9,
+            "citation_id": "citation-v1:3218d96d9c641973220551237c48b2deec98774d89067bff73f0edb52ffaeecf",
+            "source": {
+              "scope": {
+                "corpus_id": "ticketiq-fixtures",
+                "dataset_id": "part4-dataset",
+                "project_id": "toolnest"
+              },
+              "kind": "document",
+              "doc_id": "EX-CANCEL-01",
+              "source_version": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "chunk_id": "chunk-cancel-01",
+            "passage_id": null,
+            "excerpt": "Only reservations that have not yet been collected can be cancelled.",
+            "span": {
+              "start": 28,
+              "end": 96
+            },
+            "metadata": {
+              "title": "Reservation cancellation",
+              "source_path": "part4-dataset/docs/EX-CANCEL-01.md",
+              "url": null,
+              "document_type": "business_rules",
+              "status": "active",
+              "availability": {
+                "known_available_at": "2026-11-01T09:00:00Z",
+                "complete": true
+              }
+            },
+            "temporal_status": "verified"
+          },
+          {
+            "rank": 2,
+            "score": 0.7,
+            "citation_id": "citation-v1:2c712695764ff67bc2458aab44f68f84269e04e8f116998cfede46ec6522af68",
+            "source": {
+              "scope": {
+                "corpus_id": "ticketiq-fixtures",
+                "dataset_id": "part4-dataset",
+                "project_id": "toolnest"
+              },
+              "kind": "document",
+              "doc_id": "EX-NOTIFY-01",
+              "source_version": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "chunk_id": "chunk-notify-01",
+            "passage_id": null,
+            "excerpt": "The notification channel remains an open decision in this discussion.",
+            "span": {
+              "start": 40,
+              "end": 109
+            },
+            "metadata": {
+              "title": "Cancellation notification discussion",
+              "source_path": "part4-dataset/docs/EX-NOTIFY-01.md",
+              "url": null,
+              "document_type": "faq",
+              "status": "draft",
+              "availability": {
+                "known_available_at": null,
+                "complete": false
+              }
+            },
+            "temporal_status": "unknown"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Search without a historical cutoff",
+      "method": "POST",
+      "route": "/internal/v1/documents/search",
+      "schema": "SearchRequest",
+      "payload": {
+        "contract_version": "1.0",
+        "scope": {
+          "corpus_id": "ticketiq-fixtures",
+          "dataset_id": "part4-dataset",
+          "project_id": "toolnest"
+        },
+        "query": "When can a reservation be cancelled?",
+        "top_k": 5,
+        "retrieval_mode": "hybrid",
+        "temporal_filter": {
+          "mode": "none",
+          "snapshot_at": null
+        },
+        "index_revision": "fixtures-20261109-r1"
+      }
+    },
+    {
+      "name": "Unfiltered search makes no temporal claim",
+      "method": "POST",
+      "route": "/internal/v1/documents/search",
+      "schema": "DocumentSearchResponse",
+      "http_status": 200,
+      "payload": {
+        "ok": true,
+        "scope": {
+          "corpus_id": "ticketiq-fixtures",
+          "dataset_id": "part4-dataset",
+          "project_id": "toolnest"
+        },
+        "index_revision": "fixtures-20261109-r1",
+        "retrieval_profile_id": "fixture-profile-v1",
+        "retrieval_mode": "hybrid",
+        "temporal_filter": {
+          "mode": "none",
+          "snapshot_at": null
+        },
+        "warnings": [],
+        "returned_count": 3,
+        "results": [
+          {
+            "rank": 1,
+            "score": 0.9,
+            "citation_id": "citation-v1:3218d96d9c641973220551237c48b2deec98774d89067bff73f0edb52ffaeecf",
+            "source": {
+              "scope": {
+                "corpus_id": "ticketiq-fixtures",
+                "dataset_id": "part4-dataset",
+                "project_id": "toolnest"
+              },
+              "kind": "document",
+              "doc_id": "EX-CANCEL-01",
+              "source_version": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "chunk_id": "chunk-cancel-01",
+            "passage_id": null,
+            "excerpt": "Only reservations that have not yet been collected can be cancelled.",
+            "span": {
+              "start": 28,
+              "end": 96
+            },
+            "metadata": {
+              "title": "Reservation cancellation",
+              "source_path": "part4-dataset/docs/EX-CANCEL-01.md",
+              "url": null,
+              "document_type": "business_rules",
+              "status": "active",
+              "availability": {
+                "known_available_at": "2026-11-01T09:00:00Z",
+                "complete": true
+              }
+            },
+            "temporal_status": "not_checked"
+          },
+          {
+            "rank": 2,
+            "score": 0.7,
+            "citation_id": "citation-v1:2c712695764ff67bc2458aab44f68f84269e04e8f116998cfede46ec6522af68",
+            "source": {
+              "scope": {
+                "corpus_id": "ticketiq-fixtures",
+                "dataset_id": "part4-dataset",
+                "project_id": "toolnest"
+              },
+              "kind": "document",
+              "doc_id": "EX-NOTIFY-01",
+              "source_version": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            "chunk_id": "chunk-notify-01",
+            "passage_id": null,
+            "excerpt": "The notification channel remains an open decision in this discussion.",
+            "span": {
+              "start": 40,
+              "end": 109
+            },
+            "metadata": {
+              "title": "Cancellation notification discussion",
+              "source_path": "part4-dataset/docs/EX-NOTIFY-01.md",
+              "url": null,
+              "document_type": "faq",
+              "status": "draft",
+              "availability": {
+                "known_available_at": null,
+                "complete": false
+              }
+            },
+            "temporal_status": "not_checked"
+          },
+          {
+            "rank": 3,
+            "score": 0.6,
+            "citation_id": "citation-v1:ca376a2044866f7580e7ebc73066d1c37e3a45bf06901b3d73ae0da7e6b40677",
+            "source": {
+              "scope": {
+                "corpus_id": "ticketiq-fixtures",
+                "dataset_id": "part4-dataset",
+                "project_id": "toolnest"
+              },
+              "kind": "document",
+              "doc_id": "EX-CANCEL-02",
+              "source_version": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+            },
+            "chunk_id": "chunk-cancel-02",
+            "passage_id": null,
+            "excerpt": "A new cancellation policy was published after the review snapshot.",
+            "span": {
+              "start": 29,
+              "end": 95
+            },
+            "metadata": {
+              "title": "Later cancellation policy",
+              "source_path": "part4-dataset/docs/EX-CANCEL-02.md",
+              "url": null,
+              "document_type": "business_rules",
+              "status": "active",
+              "availability": {
+                "known_available_at": "2026-11-08T09:00:00Z",
+                "complete": false
+              }
+            },
+            "temporal_status": "not_checked"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Search completed history with target exclusion",
+      "method": "POST",
+      "route": "/internal/v1/history-tickets/search",
+      "schema": "TicketSearchRequest",
+      "payload": {
+        "contract_version": "1.0",
+        "scope": {
+          "corpus_id": "ticketiq-fixtures",
+          "dataset_id": "part4-dataset",
+          "project_id": "toolnest"
+        },
+        "query": "When can a reservation be cancelled?",
+        "top_k": 5,
+        "retrieval_mode": "hybrid",
+        "temporal_filter": {
+          "mode": "strict",
+          "snapshot_at": "2026-11-06T12:00:00Z"
+        },
+        "index_revision": "fixtures-20261109-r1",
+        "exclude_ticket_ids": [
+          "EX-TARGET-001"
+        ]
+      }
+    },
+    {
+      "name": "Historical completion evidence",
+      "method": "POST",
+      "route": "/internal/v1/history-tickets/search",
+      "schema": "TicketSearchResponse",
+      "http_status": 200,
+      "payload": {
+        "ok": true,
+        "scope": {
+          "corpus_id": "ticketiq-fixtures",
+          "dataset_id": "part4-dataset",
+          "project_id": "toolnest"
+        },
+        "index_revision": "fixtures-20261109-r1",
+        "retrieval_profile_id": "fixture-profile-v1",
+        "retrieval_mode": "hybrid",
+        "temporal_filter": {
+          "mode": "strict",
+          "snapshot_at": "2026-11-06T12:00:00Z"
+        },
+        "warnings": [],
+        "returned_count": 1,
+        "results": [
+          {
+            "rank": 1,
+            "score": 0.8,
+            "citation_id": "citation-v1:6219ba06c0bbde2ebfe2f75ff5b271d083a145ba3de6e0318e533a9b6f04f9ee",
+            "source": {
+              "scope": {
+                "corpus_id": "ticketiq-fixtures",
+                "dataset_id": "part4-dataset",
+                "project_id": "toolnest"
+              },
+              "kind": "history_ticket",
+              "ticket_id": "EX-HIST-001",
+              "source_version": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+            },
+            "chunk_id": "chunk-history-01",
+            "passage_id": null,
+            "excerpt": "Implemented and accepted: cancellation is blocked once the reservation is collected.",
+            "span": {
+              "start": 167,
+              "end": 251
+            },
+            "metadata": {
+              "title": "Cancellation eligibility check",
+              "source_path": "part4-dataset/corpus/history_tickets.jsonl",
+              "url": null,
+              "document_type": null,
+              "status": "Done",
+              "availability": {
+                "known_available_at": "2026-11-04T10:00:00Z",
+                "complete": true
+              }
+            },
+            "temporal_status": "verified"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Read the cited document first page",
+      "method": "POST",
+      "route": "/internal/v1/documents/read",
+      "schema": "DocumentReadRequest",
+      "payload": {
+        "contract_version": "1.0",
+        "source": {
+          "scope": {
+            "corpus_id": "ticketiq-fixtures",
+            "dataset_id": "part4-dataset",
+            "project_id": "toolnest"
+          },
+          "kind": "document",
+          "doc_id": "EX-CANCEL-01",
+          "source_version": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "index_revision": "fixtures-20261109-r1",
+        "temporal_filter": {
+          "mode": "strict",
+          "snapshot_at": "2026-11-06T12:00:00Z"
+        },
+        "offset": 0,
+        "limit": 120
+      }
+    },
+    {
+      "name": "First document page",
+      "method": "POST",
+      "route": "/internal/v1/documents/read",
+      "schema": "DocumentReadResponse",
+      "http_status": 200,
+      "payload": {
+        "ok": true,
+        "source": {
+          "scope": {
+            "corpus_id": "ticketiq-fixtures",
+            "dataset_id": "part4-dataset",
+            "project_id": "toolnest"
+          },
+          "kind": "document",
+          "doc_id": "EX-CANCEL-01",
+          "source_version": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "index_revision": "fixtures-20261109-r1",
+        "metadata": {
+          "title": "Reservation cancellation",
+          "source_path": "part4-dataset/docs/EX-CANCEL-01.md",
+          "url": null,
+          "document_type": "business_rules",
+          "status": "active",
+          "availability": {
+            "known_available_at": "2026-11-01T09:00:00Z",
+            "complete": true
+          }
+        },
+        "temporal_filter": {
+          "mode": "strict",
+          "snapshot_at": "2026-11-06T12:00:00Z"
+        },
+        "temporal_status": "verified",
+        "warnings": [],
+        "content": "# Reservation cancellation\n\nOnly reservations that have not yet been collected can be cancelled.\n\nThe original booking r",
+        "offset": 0,
+        "total_chars": 208,
+        "next_offset": 120,
+        "retrieval_profile_id": "fixture-profile-v1",
+        "citation": {
+          "citation_id": "citation-v1:ab2737cbd444d6498f9d6963cffce75b4f3efe7f95f870ccc49da24cdc5fb86e",
+          "source": {
+            "scope": {
+              "corpus_id": "ticketiq-fixtures",
+              "dataset_id": "part4-dataset",
+              "project_id": "toolnest"
+            },
+            "kind": "document",
+            "doc_id": "EX-CANCEL-01",
+            "source_version": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "excerpt": "# Reservation cancellation\n\nOnly reservations that have not yet been collected can be cancelled.\n\nThe original booking r",
+          "span": {
+            "start": 0,
+            "end": 120
+          },
+          "metadata": {
+            "title": "Reservation cancellation",
+            "source_path": "part4-dataset/docs/EX-CANCEL-01.md",
+            "url": null,
+            "document_type": "business_rules",
+            "status": "active",
+            "availability": {
+              "known_available_at": "2026-11-01T09:00:00Z",
+              "complete": true
+            }
+          },
+          "temporal_status": "verified"
+        }
+      }
+    },
+    {
+      "name": "Continue the same pinned document",
+      "method": "POST",
+      "route": "/internal/v1/documents/read",
+      "schema": "DocumentReadRequest",
+      "payload": {
+        "contract_version": "1.0",
+        "source": {
+          "scope": {
+            "corpus_id": "ticketiq-fixtures",
+            "dataset_id": "part4-dataset",
+            "project_id": "toolnest"
+          },
+          "kind": "document",
+          "doc_id": "EX-CANCEL-01",
+          "source_version": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "index_revision": "fixtures-20261109-r1",
+        "temporal_filter": {
+          "mode": "strict",
+          "snapshot_at": "2026-11-06T12:00:00Z"
+        },
+        "offset": 120,
+        "limit": 120
+      }
+    },
+    {
+      "name": "Last document page",
+      "method": "POST",
+      "route": "/internal/v1/documents/read",
+      "schema": "DocumentReadResponse",
+      "http_status": 200,
+      "payload": {
+        "ok": true,
+        "source": {
+          "scope": {
+            "corpus_id": "ticketiq-fixtures",
+            "dataset_id": "part4-dataset",
+            "project_id": "toolnest"
+          },
+          "kind": "document",
+          "doc_id": "EX-CANCEL-01",
+          "source_version": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "index_revision": "fixtures-20261109-r1",
+        "metadata": {
+          "title": "Reservation cancellation",
+          "source_path": "part4-dataset/docs/EX-CANCEL-01.md",
+          "url": null,
+          "document_type": "business_rules",
+          "status": "active",
+          "availability": {
+            "known_available_at": "2026-11-01T09:00:00Z",
+            "complete": true
+          }
+        },
+        "temporal_filter": {
+          "mode": "strict",
+          "snapshot_at": "2026-11-06T12:00:00Z"
+        },
+        "temporal_status": "verified",
+        "warnings": [],
+        "content": "emains visible after cancellation. This document does not define a notification policy.\n",
+        "offset": 120,
+        "total_chars": 208,
+        "next_offset": null,
+        "retrieval_profile_id": "fixture-profile-v1",
+        "citation": {
+          "citation_id": "citation-v1:b486b2359dd2a4351cc345e6e2f5de26835900cb3572040ba6eb51950d186cba",
+          "source": {
+            "scope": {
+              "corpus_id": "ticketiq-fixtures",
+              "dataset_id": "part4-dataset",
+              "project_id": "toolnest"
+            },
+            "kind": "document",
+            "doc_id": "EX-CANCEL-01",
+            "source_version": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "excerpt": "emains visible after cancellation. This document does not define a notification policy.\n",
+          "span": {
+            "start": 120,
+            "end": 208
+          },
+          "metadata": {
+            "title": "Reservation cancellation",
+            "source_path": "part4-dataset/docs/EX-CANCEL-01.md",
+            "url": null,
+            "document_type": "business_rules",
+            "status": "active",
+            "availability": {
+              "known_available_at": "2026-11-01T09:00:00Z",
+              "complete": true
+            }
+          },
+          "temporal_status": "verified"
+        }
+      }
+    },
+    {
+      "name": "Exclude the only historical source in these fixtures",
+      "method": "POST",
+      "route": "/internal/v1/history-tickets/search",
+      "schema": "TicketSearchRequest",
+      "payload": {
+        "contract_version": "1.0",
+        "scope": {
+          "corpus_id": "ticketiq-fixtures",
+          "dataset_id": "part4-dataset",
+          "project_id": "toolnest"
+        },
+        "query": "When can a reservation be cancelled?",
+        "top_k": 5,
+        "retrieval_mode": "hybrid",
+        "temporal_filter": {
+          "mode": "strict",
+          "snapshot_at": "2026-11-06T12:00:00Z"
+        },
+        "index_revision": "fixtures-20261109-r1",
+        "exclude_ticket_ids": [
+          "EX-TARGET-001",
+          "EX-HIST-001"
+        ]
+      }
+    },
+    {
+      "name": "Ready index with no eligible history after exclusions",
+      "method": "POST",
+      "route": "/internal/v1/history-tickets/search",
+      "schema": "TicketSearchResponse",
+      "http_status": 200,
+      "payload": {
+        "ok": true,
+        "scope": {
+          "corpus_id": "ticketiq-fixtures",
+          "dataset_id": "part4-dataset",
+          "project_id": "toolnest"
+        },
+        "index_revision": "fixtures-20261109-r1",
+        "retrieval_profile_id": "fixture-profile-v1",
+        "retrieval_mode": "hybrid",
+        "temporal_filter": {
+          "mode": "strict",
+          "snapshot_at": "2026-11-06T12:00:00Z"
+        },
+        "warnings": [],
+        "returned_count": 0,
+        "results": []
+      }
+    },
+    {
+      "name": "Unknown or forbidden scope",
+      "method": "POST",
+      "route": "/internal/v1/documents/search",
+      "schema": "ErrorResponse",
+      "http_status": 404,
+      "payload": {
+        "ok": false,
+        "error": {
+          "code": "SCOPE_NOT_FOUND_OR_INACCESSIBLE",
+          "message": "The requested scope is unavailable.",
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "Temporally excluded source cannot bypass filtering through read",
+      "method": "POST",
+      "route": "/internal/v1/documents/read",
+      "schema": "ErrorResponse",
+      "http_status": 404,
+      "payload": {
+        "ok": false,
+        "error": {
+          "code": "SOURCE_NOT_FOUND_OR_INACCESSIBLE",
+          "message": "The source is unavailable under the requested scope and policy.",
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "Pinned generation no longer retained",
+      "method": "POST",
+      "route": "/internal/v1/documents/read",
+      "schema": "ErrorResponse",
+      "http_status": 409,
+      "payload": {
+        "ok": false,
+        "error": {
+          "code": "INDEX_REVISION_UNAVAILABLE",
+          "message": "The requested generation is unavailable. Search the current index to refresh citations.",
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "Source changed under a stale reference",
+      "method": "POST",
+      "route": "/internal/v1/documents/read",
+      "schema": "ErrorResponse",
+      "http_status": 409,
+      "payload": {
+        "ok": false,
+        "error": {
+          "code": "SOURCE_VERSION_UNAVAILABLE",
+          "message": "The requested source version is unavailable in this generation.",
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "Do not silently substitute dense retrieval",
+      "method": "POST",
+      "route": "/internal/v1/documents/search",
+      "schema": "ErrorResponse",
+      "http_status": 422,
+      "payload": {
+        "ok": false,
+        "error": {
+          "code": "RETRIEVAL_MODE_UNSUPPORTED",
+          "message": "The selected profile does not support the requested retrieval mode.",
+          "retryable": false
+        }
+      }
+    },
+    {
+      "name": "Rate-limited retrieval",
+      "method": "POST",
+      "route": "/internal/v1/documents/search",
+      "schema": "ErrorResponse",
+      "http_status": 429,
+      "payload": {
+        "ok": false,
+        "error": {
+          "code": "RATE_LIMITED",
+          "message": "The retrieval service is throttling requests.",
+          "retryable": true,
+          "retry_after_seconds": 2
+        }
+      }
+    },
+    {
+      "name": "No ready index is an error, not empty results",
+      "method": "POST",
+      "route": "/internal/v1/documents/search",
+      "schema": "ErrorResponse",
+      "http_status": 503,
+      "payload": {
+        "ok": false,
+        "error": {
+          "code": "INDEX_NOT_READY",
+          "message": "The configured corpus has no ready index generation.",
+          "retryable": true
+        }
+      }
+    },
+    {
+      "name": "Retrieval timeout produces no partial success",
+      "method": "POST",
+      "route": "/internal/v1/history-tickets/search",
+      "schema": "ErrorResponse",
+      "http_status": 504,
+      "payload": {
+        "ok": false,
+        "error": {
+          "code": "RETRIEVAL_TIMEOUT",
+          "message": "The retrieval deadline was exceeded.",
+          "retryable": true
+        }
+      }
+    },
+    {
+      "name": "Empty final page has no citation",
+      "schema": "DocumentReadResponse",
+      "payload": {
+        "ok": true,
+        "source": {
+          "scope": {
+            "corpus_id": "ticketiq-fixtures",
+            "dataset_id": "part4-dataset",
+            "project_id": "toolnest"
+          },
+          "kind": "document",
+          "doc_id": "EX-CANCEL-01",
+          "source_version": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "index_revision": "fixtures-20261109-r1",
+        "metadata": {
+          "title": "Reservation cancellation",
+          "source_path": "part4-dataset/docs/EX-CANCEL-01.md",
+          "url": null,
+          "document_type": "business_rules",
+          "status": "active",
+          "availability": {
+            "known_available_at": "2026-11-01T09:00:00Z",
+            "complete": true
+          }
+        },
+        "temporal_filter": {
+          "mode": "strict",
+          "snapshot_at": "2026-11-06T12:00:00Z"
+        },
+        "temporal_status": "verified",
+        "warnings": [],
+        "content": "",
+        "offset": 208,
+        "total_chars": 208,
+        "next_offset": null,
+        "retrieval_profile_id": "fixture-profile-v1",
+        "citation": null
+      }
+    },
+    {
+      "name": "Read a new exact rule beyond the initial search excerpt",
+      "schema": "DocumentReadRequest",
+      "payload": {
+        "contract_version": "1.0",
+        "source": {
+          "scope": {
+            "corpus_id": "ticketiq-fixtures",
+            "dataset_id": "part4-dataset",
+            "project_id": "toolnest"
+          },
+          "kind": "document",
+          "doc_id": "EX-CANCEL-01",
+          "source_version": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "index_revision": "fixtures-20261109-r1",
+        "temporal_filter": {
+          "mode": "strict",
+          "snapshot_at": "2026-11-06T12:00:00Z"
+        },
+        "offset": 98,
+        "limit": 56
+      }
+    },
+    {
+      "name": "New rule returned with its own citation",
+      "schema": "DocumentReadResponse",
+      "payload": {
+        "ok": true,
+        "source": {
+          "scope": {
+            "corpus_id": "ticketiq-fixtures",
+            "dataset_id": "part4-dataset",
+            "project_id": "toolnest"
+          },
+          "kind": "document",
+          "doc_id": "EX-CANCEL-01",
+          "source_version": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "index_revision": "fixtures-20261109-r1",
+        "metadata": {
+          "title": "Reservation cancellation",
+          "source_path": "part4-dataset/docs/EX-CANCEL-01.md",
+          "url": null,
+          "document_type": "business_rules",
+          "status": "active",
+          "availability": {
+            "known_available_at": "2026-11-01T09:00:00Z",
+            "complete": true
+          }
+        },
+        "temporal_filter": {
+          "mode": "strict",
+          "snapshot_at": "2026-11-06T12:00:00Z"
+        },
+        "temporal_status": "verified",
+        "warnings": [],
+        "content": "The original booking remains visible after cancellation.",
+        "offset": 98,
+        "total_chars": 208,
+        "next_offset": 154,
+        "retrieval_profile_id": "fixture-profile-v1",
+        "citation": {
+          "citation_id": "citation-v1:598928770581460a54cebd068be3a44d33f4ad27cd04f1db75a4e88fac56d10e",
+          "source": {
+            "scope": {
+              "corpus_id": "ticketiq-fixtures",
+              "dataset_id": "part4-dataset",
+              "project_id": "toolnest"
+            },
+            "kind": "document",
+            "doc_id": "EX-CANCEL-01",
+            "source_version": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "excerpt": "The original booking remains visible after cancellation.",
+          "span": {
+            "start": 98,
+            "end": 154
+          },
+          "metadata": {
+            "title": "Reservation cancellation",
+            "source_path": "part4-dataset/docs/EX-CANCEL-01.md",
+            "url": null,
+            "document_type": "business_rules",
+            "status": "active",
+            "availability": {
+              "known_available_at": "2026-11-01T09:00:00Z",
+              "complete": true
+            }
+          },
+          "temporal_status": "verified"
+        }
+      }
+    },
+    {
+      "name": "Read the same span as a search hit",
+      "schema": "DocumentReadResponse",
+      "payload": {
+        "ok": true,
+        "source": {
+          "scope": {
+            "corpus_id": "ticketiq-fixtures",
+            "dataset_id": "part4-dataset",
+            "project_id": "toolnest"
+          },
+          "kind": "document",
+          "doc_id": "EX-CANCEL-01",
+          "source_version": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "index_revision": "fixtures-20261109-r1",
+        "metadata": {
+          "title": "Reservation cancellation",
+          "source_path": "part4-dataset/docs/EX-CANCEL-01.md",
+          "url": null,
+          "document_type": "business_rules",
+          "status": "active",
+          "availability": {
+            "known_available_at": "2026-11-01T09:00:00Z",
+            "complete": true
+          }
+        },
+        "temporal_filter": {
+          "mode": "strict",
+          "snapshot_at": "2026-11-06T12:00:00Z"
+        },
+        "temporal_status": "verified",
+        "warnings": [],
+        "content": "Only reservations that have not yet been collected can be cancelled.",
+        "offset": 28,
+        "total_chars": 208,
+        "next_offset": 96,
+        "retrieval_profile_id": "fixture-profile-v1",
+        "citation": {
+          "citation_id": "citation-v1:3218d96d9c641973220551237c48b2deec98774d89067bff73f0edb52ffaeecf",
+          "source": {
+            "scope": {
+              "corpus_id": "ticketiq-fixtures",
+              "dataset_id": "part4-dataset",
+              "project_id": "toolnest"
+            },
+            "kind": "document",
+            "doc_id": "EX-CANCEL-01",
+            "source_version": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "excerpt": "Only reservations that have not yet been collected can be cancelled.",
+          "span": {
+            "start": 28,
+            "end": 96
+          },
+          "metadata": {
+            "title": "Reservation cancellation",
+            "source_path": "part4-dataset/docs/EX-CANCEL-01.md",
+            "url": null,
+            "document_type": "business_rules",
+            "status": "active",
+            "availability": {
+              "known_available_at": "2026-11-01T09:00:00Z",
+              "complete": true
+            }
+          },
+          "temporal_status": "verified"
+        }
+      }
+    },
+    {
+      "name": "Retrieve both sides of an active conflict",
+      "schema": "DocumentSearchResponse",
+      "payload": {
+        "ok": true,
+        "scope": {
+          "corpus_id": "ticketiq-fixtures",
+          "dataset_id": "part4-dataset",
+          "project_id": "toolnest"
+        },
+        "index_revision": "fixtures-20261109-r1",
+        "retrieval_profile_id": "fixture-profile-v1",
+        "retrieval_mode": "hybrid",
+        "temporal_filter": {
+          "mode": "strict",
+          "snapshot_at": "2026-11-06T12:00:00Z"
+        },
+        "warnings": [],
+        "returned_count": 2,
+        "results": [
+          {
+            "rank": 1,
+            "score": 0.9,
+            "citation_id": "citation-v1:3218d96d9c641973220551237c48b2deec98774d89067bff73f0edb52ffaeecf",
+            "source": {
+              "scope": {
+                "corpus_id": "ticketiq-fixtures",
+                "dataset_id": "part4-dataset",
+                "project_id": "toolnest"
+              },
+              "kind": "document",
+              "doc_id": "EX-CANCEL-01",
+              "source_version": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            "chunk_id": "chunk-cancel-01",
+            "passage_id": null,
+            "excerpt": "Only reservations that have not yet been collected can be cancelled.",
+            "span": {
+              "start": 28,
+              "end": 96
+            },
+            "metadata": {
+              "title": "Reservation cancellation",
+              "source_path": "part4-dataset/docs/EX-CANCEL-01.md",
+              "url": null,
+              "document_type": "business_rules",
+              "status": "active",
+              "availability": {
+                "known_available_at": "2026-11-01T09:00:00Z",
+                "complete": true
+              }
+            },
+            "temporal_status": "verified"
+          },
+          {
+            "source": {
+              "scope": {
+                "corpus_id": "ticketiq-fixtures",
+                "dataset_id": "part4-dataset",
+                "project_id": "toolnest"
+              },
+              "kind": "document",
+              "doc_id": "EX-CANCEL-CONFLICT",
+              "source_version": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+            },
+            "excerpt": "Collected reservations can also be cancelled.",
+            "span": {
+              "start": 0,
+              "end": 45
+            },
+            "metadata": {
+              "title": "Conflicting cancellation FAQ",
+              "source_path": "part4-dataset/docs/EX-CANCEL-CONFLICT.md",
+              "url": null,
+              "document_type": "faq",
+              "status": "active",
+              "availability": {
+                "known_available_at": "2026-11-01T09:00:00Z",
+                "complete": true
+              }
+            },
+            "temporal_status": "verified",
+            "citation_id": "citation-v1:a9ca4af306971b5e42c751a8b457241f68ea7031865562c488af6503b2ebf20e",
+            "rank": 2,
+            "score": 0.7,
+            "chunk_id": "conflict-0",
+            "passage_id": null
+          }
+        ]
+      }
+    }
+  ]
+}

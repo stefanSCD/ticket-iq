@@ -52,7 +52,7 @@ We separated reference answers from agent inputs and retrieval content to preven
 
 We retained part 1's project-based splits and ToolNest's feature-based splits. PCON and TeamFlow's 400 tickets are currently unassigned; our plan is to group them by underlying topic or decision before splitting, reducing overlap between training and testing. Results will be reported by dataset.
 
-Our evaluation will compare agent outputs with the references using readiness F1, retrieval Recall@k, citation correctness, clarification-topic coverage, unnecessary questions, and latency. For readiness scoring, resolved-by-documentation and already-clear cases count as Ready; the other categories require clarification. Abstention is tracked separately. Additional scripted conversations will test author approval and ticket updates, which the current golden records do not cover.
+Our evaluation will compare agent outputs with the references using readiness F1, retrieval Recall@k, citation correctness, clarification-topic coverage, unnecessary questions, and latency. The [assessment rubric](assessment-rubric.md) defines verdicts and scoring: resolved-by-documentation and already-clear cases count as Ready; the other categories require clarification. Primary readiness macro-F1 includes abstentions and operational failures as missed gold-class predictions, with coverage, abstention/failure rates, and conditional F1 reported separately. Additional [scripted integration scenarios](integration-scenarios.md) test author approval and ticket updates, which the current golden records do not cover.
 
 ## 4. RAG design and model choices
 
@@ -69,6 +69,8 @@ Our evaluation will compare agent outputs with the references using readiness F1
 ## 5. Agent decisions and MCP tools
 
 The agent selects sources, separates facts from open decisions, returns **Ready / Needs clarification / Insufficient evidence**, and drafts grounded changes.
+
+Follow the shared [assessment rubric](assessment-rubric.md): concrete unresolved decisions require clarification, material missing context requires abstention, and v1 does not offer partial proposals for approval. Evidence must be available alongside assessments and questions before proposal review. MCP propagates unavailable-generation errors; Agent owns the bounded restart under the same scope and snapshot policy. Uncertain saves follow the [operator reconciliation runbook](save-reconciliation.md).
 
 | MCP tool | Purpose |
 |---|---|

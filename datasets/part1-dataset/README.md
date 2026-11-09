@@ -35,7 +35,9 @@ ticketiq_synthetic_v1/
 
 ## How to use
 
-**RAG:** embed `retrieval/structured_chunks.jsonl` into a vector store with a strict `project_id` filter. Search additional tickets using `global/tickets.jsonl`, excluding the target ticket. Use source IDs in `global/documents.jsonl` for citations. For metadata-ablation experiments use `flat_chunks.jsonl` instead. Its text and chunk IDs are identical to structured chunks, but category and source-path metadata are stripped. The flattened Markdown file is for browsing; do not index both document representations at once.
+**Shared TicketIQ pipeline:** follow the [normalized collection rules](../normalized/README.md), which take precedence over the standalone instructions below. Use normalized documentation and completed history with the common chunking strategy. All 500 tickets in this dataset are review targets, including `global/tickets.jsonl`; none may be indexed as historical context. Part 1 contributes documentation but no completed historical tickets.
+
+**Standalone RAG experiments:** embed `retrieval/structured_chunks.jsonl` into a separate vector store with a strict `project_id` filter. Use source IDs in `global/documents.jsonl` for citations. For metadata-ablation experiments use `flat_chunks.jsonl` instead. Its text and chunk IDs are identical to structured chunks, but category and source-path metadata are stripped. The flattened Markdown file is for browsing; do not index both document representations at once or combine these prebuilt chunks with the shared normalized corpus. Review targets remain excluded from retrieval.
 
 **Leakage protection:** ground-truth ticket classes are stored in `global/ticket_labels.jsonl` and omitted from the Jira-like ticket records and their ordinary labels. Do not concatenate the annotation files into retrieval corpora.
 

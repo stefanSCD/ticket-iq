@@ -1,0 +1,1365 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TicketIQ Agent to MCP v1",
+  "description": "TicketIQ's MCP 2025-11-25 profile. Named input/output definitions are used per tool; bundle relative references before publishing tools/list. Runtime invariants are in README.md.",
+  "x-ticketiq-tools": [
+    {
+      "name": "get_ticket",
+      "description": "Read the selected ticket and available edit metadata.",
+      "input_definition": "GetTicketArguments",
+      "output_definition": "GetTicketOutput",
+      "agent_invocation": "model_or_backend",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "search_docs",
+      "description": "Search project documentation with cited excerpts.",
+      "input_definition": "SearchArguments",
+      "output_definition": "SearchDocsOutput",
+      "agent_invocation": "model_or_backend",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "search_tickets",
+      "description": "Search completed project history with cited excerpts.",
+      "input_definition": "SearchArguments",
+      "output_definition": "SearchTicketsOutput",
+      "agent_invocation": "model_or_backend",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "get_document",
+      "description": "Read a page of a document already cited in this run.",
+      "input_definition": "GetDocumentArguments",
+      "output_definition": "GetDocumentOutput",
+      "agent_invocation": "model_or_backend",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "update_ticket",
+      "description": "Save the exact approved proposal. Agent backend invocation only.",
+      "input_definition": "UpdateTicketArguments",
+      "output_definition": "UpdateTicketOutput",
+      "agent_invocation": "backend_only",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    }
+  ],
+  "anyOf": [
+    {
+      "$ref": "#/$defs/InvocationContext"
+    },
+    {
+      "$ref": "#/$defs/WriteContext"
+    },
+    {
+      "$ref": "#/$defs/ToolCallRequest"
+    },
+    {
+      "$ref": "#/$defs/GetTicketResponse"
+    },
+    {
+      "$ref": "#/$defs/SearchDocsResponse"
+    },
+    {
+      "$ref": "#/$defs/SearchTicketsResponse"
+    },
+    {
+      "$ref": "#/$defs/GetDocumentResponse"
+    },
+    {
+      "$ref": "#/$defs/UpdateTicketResponse"
+    },
+    {
+      "$ref": "#/$defs/ProtocolErrorResponse"
+    },
+    {
+      "$ref": "#/$defs/InitializeRequest"
+    },
+    {
+      "$ref": "#/$defs/InitializeResponse"
+    },
+    {
+      "$ref": "#/$defs/InitializedNotification"
+    },
+    {
+      "$ref": "#/$defs/ToolsListRequest"
+    }
+  ],
+  "$defs": {
+    "RpcId": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "string",
+          "minLength": 1
+        }
+      ]
+    },
+    "InvocationContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_version",
+        "run_id",
+        "session_id",
+        "actor_id",
+        "connection_id",
+        "project_id",
+        "ticket_selector",
+        "rag_scope",
+        "target_corpus_ticket_id",
+        "temporal_filter",
+        "retrieval_mode",
+        "initial_index_revision"
+      ],
+      "properties": {
+        "contract_version": {
+          "const": "1.0"
+        },
+        "run_id": {
+          "$ref": "../mcp-rag/contract.schema.json#/$defs/Id"
+        },
+        "session_id": {
+          "$ref": "../mcp-rag/contract.schema.json#/$defs/Id"
+        },
+        "actor_id": {
+          "$ref": "../mcp-rag/contract.schema.json#/$defs/Id"
+        },
+        "connection_id": {
+          "$ref": "../mcp-rag/contract.schema.json#/$defs/Id"
+        },
+        "project_id": {
+          "$ref": "../mcp-rag/contract.schema.json#/$defs/Id"
+        },
+        "ticket_selector": {
+          "$ref": "../mcp-rag/contract.schema.json#/$defs/Id"
+        },
+        "rag_scope": {
+          "$ref": "../mcp-rag/contract.schema.json#/$defs/Scope"
+        },
+        "target_corpus_ticket_id": {
+          "anyOf": [
+            {
+              "$ref": "../mcp-rag/contract.schema.json#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "temporal_filter": {
+          "$ref": "../mcp-rag/contract.schema.json#/$defs/TemporalFilter"
+        },
+        "retrieval_mode": {
+          "enum": [
+            "dense",
+            "hybrid"
+          ]
+        },
+        "initial_index_revision": {
+          "anyOf": [
+            {
+              "$ref": "../mcp-rag/contract.schema.json#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "WriteContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "proposal_id",
+        "operation_id"
+      ],
+      "properties": {
+        "proposal_id": {
+          "$ref": "../mcp-rag/contract.schema.json#/$defs/Id"
+        },
+        "operation_id": {
+          "$ref": "../mcp-rag/contract.schema.json#/$defs/Id"
+        }
+      }
+    },
+    "GetTicketArguments": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ticket_id"
+      ],
+      "properties": {
+        "ticket_id": {
+          "$ref": "../mcp-rag/contract.schema.json#/$defs/Id"
+        }
+      }
+    },
+    "SearchArguments": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "project_id",
+        "query"
+      ],
+      "properties": {
+        "project_id": {
+          "$ref": "../mcp-rag/contract.schema.json#/$defs/Id"
+        },
+        "query": {
+          "$ref": "../mcp-rag/contract.schema.json#/$defs/SearchRequest/properties/query"
+        },
+        "top_k": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 20,
+          "default": 5
+        }
+      }
+    },
+    "GetDocumentArguments": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "project_id",
+        "doc_id"
+      ],
+      "properties": {
+        "project_id": {
+          "$ref": "../mcp-rag/contract.schema.json#/$defs/Id"
+        },
+        "doc_id": {
+          "$ref": "../mcp-rag/contract.schema.json#/$defs/Id"
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 20000,
+          "default": 8000
+        }
+      }
+    },
+    "UpdateTicketArguments": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ticket_id",
+        "changes",
+        "approval_id",
+        "expected_version"
+      ],
+      "properties": {
+        "ticket_id": {
+          "$ref": "../mcp-rag/contract.schema.json#/$defs/Id"
+        },
+        "changes": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Changes"
+        },
+        "approval_id": {
+          "$ref": "../mcp-rag/contract.schema.json#/$defs/Id"
+        },
+        "expected_version": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Version"
+        }
+      }
+    },
+    "McpLocalError": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ok",
+        "source",
+        "error"
+      ],
+      "properties": {
+        "ok": {
+          "const": false
+        },
+        "source": {
+          "const": "mcp"
+        },
+        "error": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "code",
+            "message",
+            "retryable",
+            "write_outcome"
+          ],
+          "properties": {
+            "code": {
+              "enum": [
+                "INVALID_ARGUMENTS",
+                "CONTEXT_REQUIRED",
+                "CONTEXT_MISMATCH",
+                "RUN_NOT_INITIALIZED",
+                "CITATION_NOT_FOUND",
+                "CITATION_AMBIGUOUS",
+                "TICKET_CHANGED_DURING_READ",
+                "UPSTREAM_CONTRACT_ERROR"
+              ]
+            },
+            "message": {
+              "type": "string",
+              "minLength": 1
+            },
+            "retryable": {
+              "const": false
+            },
+            "write_outcome": {
+              "const": "not_attempted"
+            }
+          }
+        }
+      }
+    },
+    "JiraToolError": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ok",
+        "source",
+        "error"
+      ],
+      "properties": {
+        "ok": {
+          "const": false
+        },
+        "source": {
+          "const": "jira"
+        },
+        "error": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/ErrorResponse/properties/error"
+        }
+      }
+    },
+    "RagToolError": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ok",
+        "source",
+        "error"
+      ],
+      "properties": {
+        "ok": {
+          "const": false
+        },
+        "source": {
+          "const": "rag"
+        },
+        "error": {
+          "$ref": "../mcp-rag/contract.schema.json#/$defs/ErrorResponse/properties/error"
+        }
+      }
+    },
+    "ToolError": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/McpLocalError"
+        },
+        {
+          "$ref": "#/$defs/JiraToolError"
+        },
+        {
+          "$ref": "#/$defs/RagToolError"
+        }
+      ]
+    },
+    "GetTicketSuccess": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ok",
+        "ticket",
+        "edit_capabilities",
+        "capability_error"
+      ],
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "ticket": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/Ticket"
+        },
+        "edit_capabilities": {
+          "anyOf": [
+            {
+              "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/CapabilitiesResponse"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "capability_error": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ToolError"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "edit_capabilities": {
+                "type": "null"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "capability_error": {
+                "$ref": "#/$defs/ToolError"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "capability_error": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "UpdateTicketSuccess": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ok",
+        "update",
+        "approval_receipt",
+        "replayed"
+      ],
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "update": {
+          "$ref": "../mcp-jira-adapter/contract.schema.json#/$defs/UpdateResponse"
+        },
+        "approval_receipt": {
+          "allOf": [
+            {
+              "$ref": "../mcp-agent-approvals/contract.schema.json#/$defs/ResultResponse"
+            },
+            {
+              "properties": {
+                "recorded_state": {
+                  "const": "succeeded"
+                }
+              }
+            }
+          ]
+        },
+        "replayed": {
+          "type": "boolean"
+        }
+      }
+    },
+    "GetTicketOutput": {
+      "type": "object",
+      "anyOf": [
+        {
+          "$ref": "#/$defs/GetTicketSuccess"
+        },
+        {
+          "$ref": "#/$defs/ToolError"
+        }
+      ]
+    },
+    "SearchDocsOutput": {
+      "type": "object",
+      "anyOf": [
+        {
+          "$ref": "../mcp-rag/contract.schema.json#/$defs/DocumentSearchResponse"
+        },
+        {
+          "$ref": "#/$defs/ToolError"
+        }
+      ]
+    },
+    "SearchTicketsOutput": {
+      "type": "object",
+      "anyOf": [
+        {
+          "$ref": "../mcp-rag/contract.schema.json#/$defs/TicketSearchResponse"
+        },
+        {
+          "$ref": "#/$defs/ToolError"
+        }
+      ]
+    },
+    "GetDocumentOutput": {
+      "type": "object",
+      "anyOf": [
+        {
+          "$ref": "../mcp-rag/contract.schema.json#/$defs/DocumentReadResponse"
+        },
+        {
+          "$ref": "#/$defs/ToolError"
+        }
+      ]
+    },
+    "UpdateTicketOutput": {
+      "type": "object",
+      "anyOf": [
+        {
+          "$ref": "#/$defs/UpdateTicketSuccess"
+        },
+        {
+          "$ref": "#/$defs/ToolError"
+        }
+      ]
+    },
+    "ReadMeta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ticketiq/context"
+      ],
+      "properties": {
+        "ticketiq/context": {
+          "$ref": "#/$defs/InvocationContext"
+        },
+        "progressToken": {
+          "$ref": "#/$defs/RpcId"
+        }
+      }
+    },
+    "WriteMeta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ticketiq/context",
+        "ticketiq/write"
+      ],
+      "properties": {
+        "ticketiq/context": {
+          "$ref": "#/$defs/InvocationContext"
+        },
+        "ticketiq/write": {
+          "$ref": "#/$defs/WriteContext"
+        },
+        "progressToken": {
+          "$ref": "#/$defs/RpcId"
+        }
+      }
+    },
+    "ToolCallRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "jsonrpc",
+        "id",
+        "method",
+        "params"
+      ],
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0"
+        },
+        "id": {
+          "$ref": "#/$defs/RpcId"
+        },
+        "method": {
+          "const": "tools/call"
+        },
+        "params": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "name",
+                "arguments",
+                "_meta"
+              ],
+              "properties": {
+                "name": {
+                  "const": "get_ticket"
+                },
+                "arguments": {
+                  "$ref": "#/$defs/GetTicketArguments"
+                },
+                "_meta": {
+                  "$ref": "#/$defs/ReadMeta"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "name",
+                "arguments",
+                "_meta"
+              ],
+              "properties": {
+                "name": {
+                  "const": "search_docs"
+                },
+                "arguments": {
+                  "$ref": "#/$defs/SearchArguments"
+                },
+                "_meta": {
+                  "$ref": "#/$defs/ReadMeta"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "name",
+                "arguments",
+                "_meta"
+              ],
+              "properties": {
+                "name": {
+                  "const": "search_tickets"
+                },
+                "arguments": {
+                  "$ref": "#/$defs/SearchArguments"
+                },
+                "_meta": {
+                  "$ref": "#/$defs/ReadMeta"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "name",
+                "arguments",
+                "_meta"
+              ],
+              "properties": {
+                "name": {
+                  "const": "get_document"
+                },
+                "arguments": {
+                  "$ref": "#/$defs/GetDocumentArguments"
+                },
+                "_meta": {
+                  "$ref": "#/$defs/ReadMeta"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "name",
+                "arguments",
+                "_meta"
+              ],
+              "properties": {
+                "name": {
+                  "const": "update_ticket"
+                },
+                "arguments": {
+                  "$ref": "#/$defs/UpdateTicketArguments"
+                },
+                "_meta": {
+                  "$ref": "#/$defs/WriteMeta"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "GetTicketResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "content",
+        "structuredContent",
+        "isError"
+      ],
+      "properties": {
+        "content": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "type",
+              "text"
+            ],
+            "properties": {
+              "type": {
+                "const": "text"
+              },
+              "text": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "structuredContent": {
+          "$ref": "#/$defs/GetTicketOutput"
+        },
+        "isError": {
+          "type": "boolean"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "structuredContent": {
+                "properties": {
+                  "ok": {
+                    "const": false
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "isError": {
+                "const": true
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "isError": {
+                "const": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    "GetTicketResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "jsonrpc",
+        "id",
+        "result"
+      ],
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0"
+        },
+        "id": {
+          "$ref": "#/$defs/RpcId"
+        },
+        "result": {
+          "$ref": "#/$defs/GetTicketResult"
+        }
+      }
+    },
+    "SearchDocsResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "content",
+        "structuredContent",
+        "isError"
+      ],
+      "properties": {
+        "content": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "type",
+              "text"
+            ],
+            "properties": {
+              "type": {
+                "const": "text"
+              },
+              "text": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "structuredContent": {
+          "$ref": "#/$defs/SearchDocsOutput"
+        },
+        "isError": {
+          "type": "boolean"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "structuredContent": {
+                "properties": {
+                  "ok": {
+                    "const": false
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "isError": {
+                "const": true
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "isError": {
+                "const": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    "SearchDocsResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "jsonrpc",
+        "id",
+        "result"
+      ],
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0"
+        },
+        "id": {
+          "$ref": "#/$defs/RpcId"
+        },
+        "result": {
+          "$ref": "#/$defs/SearchDocsResult"
+        }
+      }
+    },
+    "SearchTicketsResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "content",
+        "structuredContent",
+        "isError"
+      ],
+      "properties": {
+        "content": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "type",
+              "text"
+            ],
+            "properties": {
+              "type": {
+                "const": "text"
+              },
+              "text": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "structuredContent": {
+          "$ref": "#/$defs/SearchTicketsOutput"
+        },
+        "isError": {
+          "type": "boolean"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "structuredContent": {
+                "properties": {
+                  "ok": {
+                    "const": false
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "isError": {
+                "const": true
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "isError": {
+                "const": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    "SearchTicketsResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "jsonrpc",
+        "id",
+        "result"
+      ],
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0"
+        },
+        "id": {
+          "$ref": "#/$defs/RpcId"
+        },
+        "result": {
+          "$ref": "#/$defs/SearchTicketsResult"
+        }
+      }
+    },
+    "GetDocumentResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "content",
+        "structuredContent",
+        "isError"
+      ],
+      "properties": {
+        "content": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "type",
+              "text"
+            ],
+            "properties": {
+              "type": {
+                "const": "text"
+              },
+              "text": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "structuredContent": {
+          "$ref": "#/$defs/GetDocumentOutput"
+        },
+        "isError": {
+          "type": "boolean"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "structuredContent": {
+                "properties": {
+                  "ok": {
+                    "const": false
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "isError": {
+                "const": true
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "isError": {
+                "const": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    "GetDocumentResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "jsonrpc",
+        "id",
+        "result"
+      ],
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0"
+        },
+        "id": {
+          "$ref": "#/$defs/RpcId"
+        },
+        "result": {
+          "$ref": "#/$defs/GetDocumentResult"
+        }
+      }
+    },
+    "UpdateTicketResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "content",
+        "structuredContent",
+        "isError"
+      ],
+      "properties": {
+        "content": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "type",
+              "text"
+            ],
+            "properties": {
+              "type": {
+                "const": "text"
+              },
+              "text": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "structuredContent": {
+          "$ref": "#/$defs/UpdateTicketOutput"
+        },
+        "isError": {
+          "type": "boolean"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "structuredContent": {
+                "properties": {
+                  "ok": {
+                    "const": false
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "isError": {
+                "const": true
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "isError": {
+                "const": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    "UpdateTicketResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "jsonrpc",
+        "id",
+        "result"
+      ],
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0"
+        },
+        "id": {
+          "$ref": "#/$defs/RpcId"
+        },
+        "result": {
+          "$ref": "#/$defs/UpdateTicketResult"
+        }
+      }
+    },
+    "ProtocolErrorResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "jsonrpc",
+        "id",
+        "error"
+      ],
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0"
+        },
+        "id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RpcId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "error": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "code",
+            "message"
+          ],
+          "properties": {
+            "code": {
+              "enum": [
+                -32700,
+                -32600,
+                -32601,
+                -32602,
+                -32603
+              ]
+            },
+            "message": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "InitializeRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "jsonrpc",
+        "id",
+        "method",
+        "params"
+      ],
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0"
+        },
+        "id": {
+          "$ref": "#/$defs/RpcId"
+        },
+        "method": {
+          "const": "initialize"
+        },
+        "params": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "protocolVersion",
+            "capabilities",
+            "clientInfo"
+          ],
+          "properties": {
+            "protocolVersion": {
+              "const": "2025-11-25"
+            },
+            "capabilities": {
+              "type": "object"
+            },
+            "clientInfo": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "name",
+                "version"
+              ],
+              "properties": {
+                "name": {
+                  "const": "ticketiq-agent"
+                },
+                "version": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "InitializeResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "jsonrpc",
+        "id",
+        "result"
+      ],
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0"
+        },
+        "id": {
+          "$ref": "#/$defs/RpcId"
+        },
+        "result": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "protocolVersion",
+            "capabilities",
+            "serverInfo"
+          ],
+          "properties": {
+            "protocolVersion": {
+              "const": "2025-11-25"
+            },
+            "capabilities": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "tools"
+              ],
+              "properties": {
+                "tools": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "listChanged"
+                  ],
+                  "properties": {
+                    "listChanged": {
+                      "const": false
+                    }
+                  }
+                }
+              }
+            },
+            "serverInfo": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "name",
+                "version"
+              ],
+              "properties": {
+                "name": {
+                  "const": "ticketiq-mcp"
+                },
+                "version": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "InitializedNotification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "jsonrpc",
+        "method"
+      ],
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0"
+        },
+        "method": {
+          "const": "notifications/initialized"
+        }
+      }
+    },
+    "ToolsListRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "jsonrpc",
+        "id",
+        "method",
+        "params"
+      ],
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0"
+        },
+        "id": {
+          "$ref": "#/$defs/RpcId"
+        },
+        "method": {
+          "const": "tools/list"
+        },
+        "params": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "cursor": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

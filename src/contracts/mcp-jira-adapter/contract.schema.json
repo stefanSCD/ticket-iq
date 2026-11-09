@@ -1,0 +1,558 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TicketIQ MCP to Jira Adapter v1",
+  "description": "Use the named $defs for each operation. ADF validation and behavioral invariants are specified in README.md.",
+  "anyOf": [
+    {
+      "$ref": "#/$defs/TicketRequest"
+    },
+    {
+      "$ref": "#/$defs/UpdateRequest"
+    },
+    {
+      "$ref": "#/$defs/TicketResponse"
+    },
+    {
+      "$ref": "#/$defs/CapabilitiesResponse"
+    },
+    {
+      "$ref": "#/$defs/UpdateResponse"
+    },
+    {
+      "$ref": "#/$defs/ErrorResponse"
+    }
+  ],
+  "$defs": {
+    "Id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "Version": {
+      "type": "string",
+      "pattern": "^snapshot-v1:[a-f0-9]{64}$"
+    },
+    "FieldName": {
+      "enum": [
+        "title",
+        "description",
+        "acceptance_criteria"
+      ]
+    },
+    "AdfDocument": {
+      "type": "object",
+      "required": [
+        "type",
+        "version",
+        "content"
+      ],
+      "properties": {
+        "type": {
+          "const": "doc"
+        },
+        "version": {
+          "const": 1
+        },
+        "content": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      },
+      "description": "Envelope only. Preserve original nodes and marks on read; validate supported ADF nodes before write."
+    },
+    "RichText": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/AdfDocument"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "TicketRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_version",
+        "connection_id",
+        "project_id",
+        "ticket_id"
+      ],
+      "properties": {
+        "contract_version": {
+          "const": "1.0"
+        },
+        "connection_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "project_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "ticket_id": {
+          "$ref": "#/$defs/Id"
+        }
+      }
+    },
+    "Changes": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "description": {
+          "$ref": "#/$defs/RichText"
+        },
+        "acceptance_criteria": {
+          "$ref": "#/$defs/RichText"
+        }
+      }
+    },
+    "UpdateRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_version",
+        "connection_id",
+        "project_id",
+        "ticket_id",
+        "expected_version",
+        "approval_id",
+        "operation_id",
+        "changes"
+      ],
+      "properties": {
+        "contract_version": {
+          "const": "1.0"
+        },
+        "connection_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "project_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "ticket_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "expected_version": {
+          "$ref": "#/$defs/Version"
+        },
+        "approval_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "operation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "changes": {
+          "$ref": "#/$defs/Changes"
+        }
+      }
+    },
+    "Ticket": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "connection_id",
+        "project_id",
+        "ticket_id",
+        "key",
+        "jira_project_id",
+        "title",
+        "description",
+        "acceptance_criteria",
+        "acceptance_criteria_state",
+        "status",
+        "label",
+        "updated_at",
+        "version"
+      ],
+      "properties": {
+        "connection_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "project_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "ticket_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "key": {
+          "$ref": "#/$defs/Id"
+        },
+        "jira_project_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "$ref": "#/$defs/RichText"
+        },
+        "acceptance_criteria": {
+          "$ref": "#/$defs/RichText"
+        },
+        "acceptance_criteria_state": {
+          "enum": [
+            "available",
+            "unconfigured",
+            "unavailable"
+          ]
+        },
+        "status": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "name"
+          ],
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/Id"
+            },
+            "name": {
+              "type": "string"
+            }
+          }
+        },
+        "label": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "version": {
+          "$ref": "#/$defs/Version"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "acceptance_criteria_state": {
+                "enum": [
+                  "unconfigured",
+                  "unavailable"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "acceptance_criteria": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "TicketResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ok",
+        "ticket"
+      ],
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "ticket": {
+          "$ref": "#/$defs/Ticket"
+        }
+      }
+    },
+    "FieldCapability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "editable",
+        "clearable",
+        "reason"
+      ],
+      "properties": {
+        "editable": {
+          "type": "boolean"
+        },
+        "clearable": {
+          "type": "boolean"
+        },
+        "reason": {
+          "enum": [
+            null,
+            "not_configured",
+            "not_available",
+            "not_editable",
+            "unsupported_type"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "editable": {
+                "const": false
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "clearable": {
+                "const": false
+              },
+              "reason": {
+                "type": "string"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "reason": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "CapabilitiesResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ok",
+        "connection_id",
+        "project_id",
+        "ticket_id",
+        "version",
+        "concurrency",
+        "mapping",
+        "fields"
+      ],
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "connection_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "project_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "ticket_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "version": {
+          "$ref": "#/$defs/Version"
+        },
+        "concurrency": {
+          "const": "preflight_only"
+        },
+        "mapping": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "revision",
+            "acceptance_criteria_field_id"
+          ],
+          "properties": {
+            "revision": {
+              "$ref": "#/$defs/Id"
+            },
+            "acceptance_criteria_field_id": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Id"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        },
+        "fields": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "title",
+            "description",
+            "acceptance_criteria"
+          ],
+          "properties": {
+            "title": {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/FieldCapability"
+                },
+                {
+                  "properties": {
+                    "clearable": {
+                      "const": false
+                    }
+                  }
+                }
+              ]
+            },
+            "description": {
+              "$ref": "#/$defs/FieldCapability"
+            },
+            "acceptance_criteria": {
+              "$ref": "#/$defs/FieldCapability"
+            }
+          }
+        }
+      }
+    },
+    "UpdateResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ok",
+        "status",
+        "operation_id",
+        "approval_id",
+        "changed_fields",
+        "ticket"
+      ],
+      "properties": {
+        "ok": {
+          "const": true
+        },
+        "status": {
+          "const": "updated"
+        },
+        "operation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "approval_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "changed_fields": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/FieldName"
+          }
+        },
+        "ticket": {
+          "$ref": "#/$defs/Ticket"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ok",
+        "error"
+      ],
+      "properties": {
+        "ok": {
+          "const": false
+        },
+        "error": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "code",
+            "message",
+            "retryable",
+            "write_outcome"
+          ],
+          "properties": {
+            "code": {
+              "enum": [
+                "INVALID_REQUEST",
+                "CONFIGURATION_ERROR",
+                "AUTHENTICATION_FAILED",
+                "PERMISSION_DENIED",
+                "NOT_FOUND_OR_INACCESSIBLE",
+                "PROJECT_MISMATCH",
+                "APPROVAL_INVALID",
+                "FIELD_NOT_EDITABLE",
+                "VERSION_CONFLICT",
+                "VALIDATION_FAILED",
+                "RATE_LIMITED",
+                "UPSTREAM_ERROR",
+                "OPERATION_CONFLICT",
+                "UPDATE_OUTCOME_UNKNOWN",
+                "VERIFICATION_FAILED"
+              ]
+            },
+            "message": {
+              "type": "string",
+              "minLength": 1
+            },
+            "retryable": {
+              "type": "boolean"
+            },
+            "write_outcome": {
+              "enum": [
+                "not_attempted",
+                "rejected",
+                "unknown",
+                "applied_unverified"
+              ]
+            },
+            "upstream_status": {
+              "type": "integer",
+              "minimum": 100,
+              "maximum": 599
+            },
+            "retry_after_seconds": {
+              "type": "number",
+              "minimum": 0
+            },
+            "field_errors": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "acceptance_criteria": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "write_outcome": {
+                    "enum": [
+                      "unknown",
+                      "applied_unverified"
+                    ]
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "retryable": {
+                    "const": false
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}
